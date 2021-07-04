@@ -1,0 +1,10 @@
+{
+  "name": "recorder",
+  "version": "1.0.0",
+  "description": "used for recording key strokes",
+  "main": "index.js",
+  "license": "MIT",
+  "dependencies": {
+    "electron": "^13.1.5"
+  }
+}
