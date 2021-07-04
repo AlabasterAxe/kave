@@ -1,0 +1,3 @@
+[submodule "digital-paper-edit-electron"]
+	path = digital-paper-edit-electron
+	url = https://github.com/AlabasterAxe/digital-paper-edit-electron.git
