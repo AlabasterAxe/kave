@@ -6,6 +6,14 @@ declare module "videocontext" {
     videoElementCacheSize: number;
     webglContextAttributes: any;
   }
+
+  enum VideoContextEventType {
+    UPDATE = "update",
+    STALLED = "stalled",
+    ENDED = "ended",
+    CONTENT = "content",
+    NOCONTENT = "nocontent",
+  }
   export default class VideoContext {
     /**
      * Initialise the VideoContext and render to the specific canvas. A 2nd parameter can be passed to the constructor which is a function that get's called if the VideoContext fails to initialise.
@@ -582,6 +590,8 @@ declare module "videocontext" {
     static get DEFINITIONS(): any;
 
     static get NODES(): any;
+
+    static EVENTS = VideoContextEventType;
 
     /**
      * Get a JS Object containing the state of the VideoContext instance and all the created nodes.

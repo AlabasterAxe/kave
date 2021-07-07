@@ -1,4 +1,5 @@
-import Player from "../../components/Player";
+import Player from "../components/Player";
+import { Timeline } from "../components/Timeline";
 
 function EditorView() {
   return (
@@ -6,7 +7,9 @@ function EditorView() {
       <div className="h-3/4 w-screen bg-blue-200">
         <Player />
       </div>
-      <div className="h-1/4 w-screen bg-yellow-200"></div>
+      <div className="h-1/4 w-screen ">
+        <Timeline />
+      </div>
     </div>
   );
 }
