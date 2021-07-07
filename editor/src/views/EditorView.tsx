@@ -1,5 +1,5 @@
 import Player from "../components/Player";
-import { Timeline } from "../components/Timeline";
+import { Timeline } from "../components/timeline/Timeline";
 
 function EditorView() {
   return (
