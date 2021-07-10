@@ -15,9 +15,6 @@ export function transformToScreen(
   timeSeconds: number
 ) {
   return scaleToScreen(viewport, timeSeconds - viewport.startTimeSeconds);
-  return (
-    (timeSeconds / (viewport.endTimeSeconds - viewport.startTimeSeconds)) * 100
-  );
 }
 
 export function transformToTimeline(

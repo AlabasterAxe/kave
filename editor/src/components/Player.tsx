@@ -3,21 +3,19 @@ import VideoContext from "videocontext";
 import { Composition, FileType, Project } from "../../../common/model";
 import { useAppDispatch, useAppSelector } from "../store/hooks";
 import {
-  PlaybackState,
-  PlayingState,
   PlaybackStateSource,
+  PlayingState,
   updatePlayhead,
 } from "../store/playback";
 import {
-  selectPlayback,
   selectComposition,
+  selectPlayback,
   selectProject,
 } from "../store/store";
 
 function setUpTimeline(
   videoContext: VideoContext,
   composition: Composition,
-  playbackState: PlaybackState,
   project: Project
 ) {
   videoContext.reset();
@@ -60,10 +58,6 @@ function setUpTimeline(
       videoNode.stopAt(duration);
     }
   }
-  videoContext.currentTime = playbackState.currentTimeSeconds;
-  if (playbackState.state === PlayingState.playing) {
-    videoContext.play();
-  }
 }
 
 function Player() {
@@ -81,44 +75,53 @@ function Player() {
     const context = canvasRef.current?.getContext("webgl");
 
     if (canvasRef.current && context) {
-      if (playback.source !== PlaybackStateSource.player) {
-        let videoContext = ctx;
-        if (!videoContext) {
-          videoContext = new VideoContext(canvasRef.current, (err: any) =>
-            console.error(
-              "There was a problem instantiating the Video Context.",
-              err
-            )
+      let videoContext = ctx;
+      if (!videoContext) {
+        videoContext = new VideoContext(canvasRef.current, (err: any) =>
+          console.error(
+            "There was a problem instantiating the Video Context.",
+            err
+          )
+        );
+      }
+      setUpTimeline(videoContext, composition, project);
+      videoContext.registerCallback(
+        VideoContext.EVENTS.UPDATE,
+        (currentTime: number) => {
+          dispatch(
+            updatePlayhead({
+              currentTimeSeconds: currentTime,
+              source: PlaybackStateSource.player,
+            })
           );
         }
-        setUpTimeline(videoContext, composition, playback, project);
-        videoContext.registerCallback(
-          VideoContext.EVENTS.UPDATE,
-          (currentTime: number) => {
-            dispatch(
-              updatePlayhead({
-                currentTimeSeconds: currentTime,
-                source: PlaybackStateSource.player,
-              })
-            );
-          }
-        );
-        videoContext.registerCallback(
-          VideoContext.EVENTS.ENDED,
-          (currentTime: number) => {
-            dispatch(
-              updatePlayhead({
-                currentTimeSeconds: currentTime,
-                source: PlaybackStateSource.player,
-              })
-            );
-          }
-        );
+      );
+      videoContext.registerCallback(
+        VideoContext.EVENTS.ENDED,
+        (currentTime: number) => {
+          dispatch(
+            updatePlayhead({
+              currentTimeSeconds: currentTime,
+              source: PlaybackStateSource.player,
+            })
+          );
+        }
+      );
 
-        setContext(videoContext);
+      setContext(videoContext);
+    }
+  }, [dispatch, composition, ctx, project]);
+
+  useEffect(() => {
+    if (playback.source !== PlaybackStateSource.player && ctx) {
+      ctx.currentTime = playback.currentTimeSeconds;
+      if (playback.state === PlayingState.playing) {
+        ctx.play();
+      } else {
+        ctx.pause();
       }
     }
-  }, [dispatch, composition, playback, ctx, project]);
+  }, [ctx, playback]);
 
   return (
     <>
