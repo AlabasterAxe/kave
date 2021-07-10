@@ -1,3 +1,4 @@
+import { useState } from "react";
 import {
   TimelineViewport,
   UserInteractionLog,
@@ -15,17 +16,24 @@ export interface InteractionLogProps {
   compositionId: string;
   clipStartTimeSeconds: number;
   clipDurationSeconds: number;
+  onInteractionDragStart: (time: number) => void;
+  onInteractionDragUpdate: (delta: number) => void;
+  onInteractionDragEnd: () => void;
 }
 
 export function InteractionLog(props: InteractionLogProps) {
+  const [dragState, setDragState] = useState(0);
+  const dispatch = useAppDispatch();
   const {
     userInteractionLog,
     offsetSeconds,
     viewport,
     compositionId,
     clipDurationSeconds,
+    onInteractionDragStart,
+    onInteractionDragUpdate,
+    onInteractionDragEnd,
   } = props;
-  const dispatch = useAppDispatch();
   const log = userInteractionLog.log;
   const startTime = log[0].timestampMillis / 1000;
   const userInteractionDom = log
@@ -49,11 +57,15 @@ export function InteractionLog(props: InteractionLogProps) {
           key={index}
           style={interactionStyle}
           className="h-full w-3 bg-green-300 absolute"
-          onClick={(e) => {
-            e.stopPropagation();
-            dispatch(
-              splitClip({ compositionId, splitOffsetSeconds: interactionTime })
-            );
+          onDragStart={(e) => {
+            onInteractionDragStart(interactionTime);
+            setDragState(e.clientX);
+          }}
+          onDrag={(e) => {
+            onInteractionDragUpdate(e.clientX - dragState);
+          }}
+          onDragEnd={(e) => {
+            onInteractionDragEnd();
           }}
         >
           <div className="timeline-interaction-text">{interaction.type}</div>

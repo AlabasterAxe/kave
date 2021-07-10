@@ -88,6 +88,11 @@ export interface SplitClipPayload {
   splitOffsetSeconds: number;
 }
 
+export interface UpdateClipPayload {
+  compositionId: string;
+  clip: Clip;
+}
+
 export const projectSlice = createSlice({
   name: "playback",
   initialState: initialProject(),
@@ -133,6 +138,29 @@ export const projectSlice = createSlice({
           newClips.push(clip);
         }
         durationSoFar += clip.durationSeconds;
+      }
+      composition.clips = newClips;
+      const newCompositions = state.compositions.filter(
+        (c) => c.id !== composition.id
+      );
+      newCompositions.push(composition);
+      state.compositions = newCompositions;
+    },
+    updateClip: (state, action: PayloadAction<UpdateClipPayload>) => {
+      const composition = state.compositions.find(
+        (composition) => composition.id === action.payload.compositionId
+      );
+      if (!composition) {
+        return state;
+      }
+      const newClips = [];
+      for (const clip of composition.clips) {
+        if (clip.id === action.payload.clip.id) {
+          clip.durationSeconds = action.payload.clip.durationSeconds;
+          clip.sourceOffsetSeconds = action.payload.clip.sourceOffsetSeconds;
+          clip.sourceId = action.payload.clip.sourceId;
+        }
+        newClips.push(clip);
       }
       composition.clips = newClips;
       const newCompositions = state.compositions.filter(
