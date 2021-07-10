@@ -23,7 +23,6 @@ export function InteractionLog(props: InteractionLogProps) {
     offsetSeconds,
     viewport,
     compositionId,
-    clipStartTimeSeconds,
     clipDurationSeconds,
   } = props;
   const dispatch = useAppDispatch();
@@ -33,10 +32,7 @@ export function InteractionLog(props: InteractionLogProps) {
     .filter((interaction) => {
       const interactionTime =
         interaction.timestampMillis / 1000 - startTime + offsetSeconds;
-      return (
-        interactionTime >= clipStartTimeSeconds &&
-        interactionTime < clipStartTimeSeconds + clipDurationSeconds
-      );
+      return interactionTime >= 0 && interactionTime < clipDurationSeconds;
     })
     .map((interaction, index) => {
       const interactionTime =
