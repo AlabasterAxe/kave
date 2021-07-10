@@ -17,10 +17,10 @@ export function InteractionLog(props: InteractionLogProps) {
   const { userInteractionLog, offsetSeconds, viewport, compositionId } = props;
   const dispatch = useAppDispatch();
   const log = userInteractionLog.log;
-  const startTime = log[0].date.getTime() / 1000;
+  const startTime = log[0].timestampMillis / 1000;
   const userInteractionDom = log.map((interaction, index) => {
     const interactionTime =
-      interaction.date.getTime() / 1000 - startTime + offsetSeconds;
+      interaction.timestampMillis / 1000 - startTime + offsetSeconds;
     const interactionStyle = {
       transform: `translate(${
         (interactionTime /

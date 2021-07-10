@@ -7,7 +7,7 @@ export enum FileType {
 }
 
 export interface UserInteraction {
-  date: Date;
+  timestampMillis: number;
   type: string;
 }
 

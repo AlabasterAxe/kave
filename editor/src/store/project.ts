@@ -44,19 +44,19 @@ function initialProject(): Project {
           id: uuidv4(),
           log: [
             {
-              date: interactionLogStartDate,
+              timestampMillis: interactionLogStartDate.getTime(),
               type: "A",
             },
             {
-              date: new Date(interactionLogStartDate.getTime() + 1000),
+              timestampMillis: interactionLogStartDate.getTime() + 1000,
               type: "B",
             },
             {
-              date: new Date(interactionLogStartDate.getTime() + 2000),
+              timestampMillis: interactionLogStartDate.getTime() + 2000,
               type: "C",
             },
             {
-              date: new Date(interactionLogStartDate.getTime() + 6000),
+              timestampMillis: interactionLogStartDate.getTime() + 6000,
               type: "D",
             },
           ],
