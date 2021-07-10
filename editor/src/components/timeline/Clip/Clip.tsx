@@ -57,9 +57,9 @@ export default function ClipComponent(props: ClipProps) {
     }
   }
   return (
-    <div className="flex flex-col">
-      {interactionTrack}
-      {videoTrack}
-    </div>
+    <>
+      <div className="h-1/2">{interactionTrack}</div>
+      <div className="h-1/2">{videoTrack}</div>
+    </>
   );
 }

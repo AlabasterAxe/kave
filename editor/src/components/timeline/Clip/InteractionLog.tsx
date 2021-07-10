@@ -23,7 +23,7 @@ export function InteractionLog(props: InteractionLogProps) {
       interaction.date.getTime() / 1000 - startTime + offsetSeconds;
     const interactionStyle = {
       transform: `translate(${
-        ((interactionTime - viewport.startTimeSeconds) /
+        (interactionTime /
           (viewport.endTimeSeconds - viewport.startTimeSeconds)) *
         100
       }vw, 0)`,
