@@ -1,15 +1,19 @@
 import { useState } from "react";
-import { Clip, Composition, TimelineViewport } from "../../../../common/model";
+import { Composition, TimelineViewport } from "../../../../common/model";
 import { ActiveComposition } from "../../store/composition";
-import { useAppSelector, useAppDispatch } from "../../store/hooks";
-import { updatePlayhead, PlaybackStateSource } from "../../store/playback";
+import { useAppDispatch, useAppSelector } from "../../store/hooks";
+import { PlaybackStateSource, updatePlayhead } from "../../store/playback";
 import {
   selectComposition,
   selectPlayback,
   selectProject,
 } from "../../store/store";
+import {
+  scaleToScreen,
+  transformToScreen,
+  transformToTimeline,
+} from "../../util/timeline-transformer";
 import ClipComponent from "./Clip/Clip";
-import { InteractionLog } from "./Clip/InteractionLog";
 
 export function Timeline() {
   const activeComposition: ActiveComposition =
@@ -38,15 +42,16 @@ export function Timeline() {
     const x = e.clientX - rect.left; //x position within the element.
     dispatch(
       updatePlayhead({
-        currentTimeSeconds: (x / rect.width) * composition.durationSeconds,
+        currentTimeSeconds: Math.min(
+          Math.max(0, transformToTimeline(viewport, x / rect.width)),
+          composition.durationSeconds
+        ),
         source: PlaybackStateSource.timeline,
       })
     );
   };
 
   const zoomHandler = (e: any) => {
-    e.preventDefault();
-
     if (!e.ctrlKey) {
       setViewport({
         startTimeSeconds: viewport.startTimeSeconds - e.deltaY + e.deltaX / 10,
@@ -63,14 +68,15 @@ export function Timeline() {
         key={clip.id}
         className="h-full absolute"
         style={{
-          width: (clip.durationSeconds / viewportDuration) * 100 + "vw",
-          left:
-            ((durationSoFar - viewport.startTimeSeconds) / viewportDuration) *
-              100 +
-            "vw",
+          width: scaleToScreen(viewport, clip.durationSeconds) + "vw",
+          left: transformToScreen(viewport, durationSoFar) + "vw",
         }}
       >
-        <ClipComponent clip={clip} viewport={viewport}></ClipComponent>
+        <ClipComponent
+          clip={clip}
+          viewport={viewport}
+          clipStartTime={durationSoFar}
+        ></ClipComponent>
       </div>
     );
     durationSoFar += clip.durationSeconds;

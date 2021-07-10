@@ -13,6 +13,7 @@ import { VideoClip } from "./VideoClip";
 interface ClipProps {
   clip: Clip;
   viewport: TimelineViewport;
+  clipStartTime: number;
 }
 
 // this is a pretty "smart" component that is responsible for rendering a clip and any possible sub-clips
@@ -50,8 +51,10 @@ export default function ClipComponent(props: ClipProps) {
           <InteractionLog
             userInteractionLog={trackFile.userInteractionLog}
             compositionId={activeComposition.id}
-            offsetSeconds={track.alignmentSeconds}
+            offsetSeconds={track.alignmentSeconds - clip.sourceOffsetSeconds}
             viewport={viewport}
+            clipStartTimeSeconds={props.clipStartTime}
+            clipDurationSeconds={clip.durationSeconds}
           />
         );
     }

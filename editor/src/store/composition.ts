@@ -1,6 +1,4 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
-import { Clip, Composition } from "../../../common/model";
-import { v4 as uuidv4 } from "uuid";
 
 export interface ActiveComposition {
   id: string | null;

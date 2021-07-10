@@ -118,7 +118,7 @@ function Player() {
         setContext(videoContext);
       }
     }
-  }, [dispatch, activeComposition, playback, ctx, project]);
+  }, [dispatch, composition, playback, ctx, project]);
 
   return (
     <>

@@ -74,7 +74,7 @@ function initialProject(): Project {
           },
           {
             id: uuidv4(),
-            alignmentSeconds: 0,
+            alignmentSeconds: 1,
             fileId: userInteractionLogId,
           },
         ],
@@ -134,6 +134,7 @@ export const projectSlice = createSlice({
         }
         durationSoFar += clip.durationSeconds;
       }
+      composition.clips = newClips;
       const newCompositions = state.compositions.filter(
         (c) => c.id !== composition.id
       );
