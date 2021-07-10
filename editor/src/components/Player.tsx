@@ -1,6 +1,6 @@
 import { MutableRefObject, useEffect, useRef, useState } from "react";
 import VideoContext from "videocontext";
-import { Timeline } from "../../../common/model";
+import { Composition, FileType, Project } from "../../../common/model";
 import { useAppDispatch, useAppSelector } from "../store/hooks";
 import {
   PlaybackState,
@@ -8,25 +8,57 @@ import {
   PlaybackStateSource,
   updatePlayhead,
 } from "../store/playback";
-import { selectPlayback, selectTimeline } from "../store/store";
+import {
+  selectPlayback,
+  selectComposition,
+  selectProject,
+} from "../store/store";
 
 function setUpTimeline(
   videoContext: VideoContext,
-  timeline: Timeline,
-  playbackState: PlaybackState
+  composition: Composition,
+  playbackState: PlaybackState,
+  project: Project
 ) {
   videoContext.reset();
   let duration = 0;
-  for (const clip of timeline.clips) {
-    const videoNode = videoContext.video(
-      clip.fileUri,
-      clip.fileOffsetSeconds,
-      clip.durationSeconds
-    );
-    videoNode.connect(videoContext.destination);
-    videoNode.startAt(duration);
-    duration += clip.durationSeconds;
-    videoNode.stopAt(duration);
+  for (const clip of composition.clips) {
+    let file = project.files.find((f) => f.id === clip.sourceId);
+    if (!file) {
+      const seq = project.sequences.find((s) => s.id === clip.sourceId);
+      if (!seq) {
+        continue;
+      }
+
+      for (const track of seq.tracks) {
+        const trackFile = project.files.find((f) => f.id === track.fileId);
+        if (trackFile?.type === FileType.video) {
+          // TODO: this can potentially cause issues if the track alignment causes a gap in the video.
+          const videoNode = videoContext.video(
+            trackFile.fileUri,
+            clip.sourceOffsetSeconds - track.alignmentSeconds,
+            clip.durationSeconds
+          );
+          videoNode.connect(videoContext.destination);
+          videoNode.startAt(duration);
+          duration += clip.durationSeconds;
+          videoNode.stopAt(duration);
+        }
+      }
+    } else {
+      if (file.type !== FileType.video) {
+        continue;
+      }
+      const videoNode = videoContext.video(
+        file.fileUri,
+        clip.sourceOffsetSeconds,
+        clip.durationSeconds
+      );
+      videoNode.connect(videoContext.destination);
+      videoNode.startAt(duration);
+      duration += clip.durationSeconds;
+      videoNode.stopAt(duration);
+    }
   }
   videoContext.currentTime = playbackState.currentTimeSeconds;
   if (playbackState.state === PlayingState.playing) {
@@ -37,8 +69,12 @@ function setUpTimeline(
 function Player() {
   const canvasRef: MutableRefObject<HTMLCanvasElement | null> = useRef(null);
   const [ctx, setContext] = useState<VideoContext | null>(null);
-  const timeline = useAppSelector(selectTimeline);
+  const activeComposition = useAppSelector(selectComposition);
   const playback = useAppSelector(selectPlayback);
+  const project = useAppSelector(selectProject);
+  const composition = project.compositions.find(
+    (c: Composition) => c.id === activeComposition.id
+  );
   const dispatch = useAppDispatch();
 
   useEffect(() => {
@@ -55,7 +91,7 @@ function Player() {
             )
           );
         }
-        setUpTimeline(videoContext, timeline, playback);
+        setUpTimeline(videoContext, composition, playback, project);
         videoContext.registerCallback(
           VideoContext.EVENTS.UPDATE,
           (currentTime: number) => {
@@ -82,7 +118,7 @@ function Player() {
         setContext(videoContext);
       }
     }
-  }, [dispatch, timeline, playback, ctx]);
+  }, [dispatch, activeComposition, playback, ctx, project]);
 
   return (
     <>

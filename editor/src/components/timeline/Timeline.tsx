@@ -1,22 +1,28 @@
 import { useState } from "react";
-import { Clip } from "../../../../common/model";
+import { Clip, Composition, TimelineViewport } from "../../../../common/model";
+import { ActiveComposition } from "../../store/composition";
 import { useAppSelector, useAppDispatch } from "../../store/hooks";
 import { updatePlayhead, PlaybackStateSource } from "../../store/playback";
-import { selectTimeline, selectPlayback } from "../../store/store";
-import { InteractionLog } from "./InteractionLog";
-
-export interface TimelineViewport {
-  startTimeSeconds: number;
-  endTimeSeconds: number;
-}
+import {
+  selectComposition,
+  selectPlayback,
+  selectProject,
+} from "../../store/store";
+import ClipComponent from "./Clip/Clip";
+import { InteractionLog } from "./Clip/InteractionLog";
 
 export function Timeline() {
-  const timeline = useAppSelector(selectTimeline);
+  const activeComposition: ActiveComposition =
+    useAppSelector(selectComposition);
+  const project = useAppSelector(selectProject);
   const playback = useAppSelector(selectPlayback);
+  const composition = project.compositions.find(
+    (c: Composition) => c.id === activeComposition.id
+  );
   const dispatch = useAppDispatch();
   const [viewport, setViewport] = useState<TimelineViewport>({
     startTimeSeconds: 0,
-    endTimeSeconds: timeline.durationSeconds,
+    endTimeSeconds: composition.durationSeconds,
   });
   const viewportDuration = viewport.endTimeSeconds - viewport.startTimeSeconds;
   const playheadStyle = {
@@ -32,7 +38,7 @@ export function Timeline() {
     const x = e.clientX - rect.left; //x position within the element.
     dispatch(
       updatePlayhead({
-        currentTimeSeconds: (x / rect.width) * timeline.durationSeconds,
+        currentTimeSeconds: (x / rect.width) * composition.durationSeconds,
         source: PlaybackStateSource.timeline,
       })
     );
@@ -51,11 +57,11 @@ export function Timeline() {
 
   const clips = [];
   let durationSoFar = 0;
-  for (const clip of timeline.clips) {
+  for (const clip of composition.clips) {
     clips.push(
       <div
         key={clip.id}
-        className="h-full rounded border border-gray-400 truncate absolute"
+        className="h-full absolute"
         style={{
           width: (clip.durationSeconds / viewportDuration) * 100 + "vw",
           left:
@@ -64,7 +70,7 @@ export function Timeline() {
             "vw",
         }}
       >
-        {clip.id}
+        <ClipComponent clip={clip} viewport={viewport}></ClipComponent>
       </div>
     );
     durationSoFar += clip.durationSeconds;
@@ -80,10 +86,7 @@ export function Timeline() {
         style={playheadStyle}
         className="w-1 h-full bg-red-500 absolute "
       ></div>
-      <div className="h-1/2 w-full">
-        <InteractionLog timeline={timeline} />
-      </div>
-      <div className="h-1/2 w-full flex relative">{clips}</div>
+      <div className="h-full w-full flex relative">{clips}</div>
     </div>
   );
 }
