@@ -172,4 +172,4 @@ export const projectSlice = createSlice({
   },
 });
 
-export const { splitClip } = projectSlice.actions;
+export const { splitClip, updateClip } = projectSlice.actions;

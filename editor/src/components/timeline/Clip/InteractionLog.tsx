@@ -54,6 +54,7 @@ export function InteractionLog(props: InteractionLogProps) {
       };
       return (
         <div
+          draggable
           key={index}
           style={interactionStyle}
           className="h-full w-3 bg-green-300 absolute"

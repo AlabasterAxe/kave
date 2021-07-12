@@ -6,7 +6,8 @@ import {
   Sequence,
   TimelineViewport,
 } from "../../../../../common/model";
-import { useAppSelector } from "../../../store/hooks";
+import { useAppDispatch, useAppSelector } from "../../../store/hooks";
+import { splitClip } from "../../../store/project";
 import { selectComposition, selectProject } from "../../../store/store";
 import { scaleToScreen } from "../../../util/timeline-transformer";
 import { InteractionLog } from "./InteractionLog";
@@ -30,6 +31,7 @@ export default function ClipComponent(props: ClipProps) {
   const [clipDragState, setClipDragState] = useState<ClipDragState | null>(
     null
   );
+  const dispatch = useAppDispatch();
   const { clip, viewport } = props;
 
   const onInteractionDragStart = (time: number) => {
@@ -51,7 +53,14 @@ export default function ClipComponent(props: ClipProps) {
   };
 
   const onInteractionDragEnd = () => {
-    // actually split clip
+    if (clipDragState) {
+      dispatch(
+        splitClip({
+          compositionId: activeComposition.id,
+          splitOffsetSeconds: clipDragState.interactionTimeSeconds,
+        })
+      );
+    }
     setClipDragState(null);
   };
 
