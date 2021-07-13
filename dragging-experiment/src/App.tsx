@@ -56,10 +56,9 @@ function Comp(props: ComProps) {
   return (
     <OuterStyle style={style}>
       <DraggableCore
-        // axis="x"
         nodeRef={leftRef}
         onDrag={(e, data) => {
-          leftHandleCallback(data.deltaX);
+          leftHandleCallback(data.x);
         }}
         offsetParent={offsetParent}
       >
@@ -70,10 +69,9 @@ function Comp(props: ComProps) {
         <span>Right: {rightPosition}</span>
       </Contents>
       <DraggableCore
-        // axis="x"
         nodeRef={rightRef}
         onDrag={(e, data) => {
-          rightHandleCallback(data.deltaX);
+          rightHandleCallback(data.x);
         }}
         offsetParent={offsetParent}
       >
@@ -91,12 +89,12 @@ function App() {
     <div ref={parent} className="App">
       <Comp
         leftPosition={leftPosition}
-        leftHandleCallback={(delta: number) => {
-          setLeftPosition(leftPosition + delta);
+        leftHandleCallback={(amt: number) => {
+          setLeftPosition(amt);
         }}
         rightPosition={rightPosition}
-        rightHandleCallback={(delta: number) => {
-          setRightPosition(rightPosition + delta);
+        rightHandleCallback={(amt: number) => {
+          setRightPosition(amt);
         }}
         offsetParent={parent.current!}
       ></Comp>
