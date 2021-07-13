@@ -1,4 +1,4 @@
-import { useRef, useState } from "react";
+import { MutableRefObject, useRef, useState } from "react";
 import { DraggableCore } from "react-draggable";
 import styled from "styled-components";
 import "./App.css";
@@ -36,6 +36,7 @@ interface ComProps {
   rightPosition: number;
   leftHandleCallback: (amount: number) => void;
   rightHandleCallback: (amount: number) => void;
+  offsetParent: HTMLElement;
 }
 
 function Comp(props: ComProps) {
@@ -46,6 +47,7 @@ function Comp(props: ComProps) {
     rightPosition,
     leftHandleCallback,
     rightHandleCallback,
+    offsetParent,
   } = props;
   const style = {
     left: leftPosition,
@@ -57,8 +59,9 @@ function Comp(props: ComProps) {
         // axis="x"
         nodeRef={leftRef}
         onDrag={(e, data) => {
-          leftHandleCallback(data.x);
+          leftHandleCallback(data.deltaX);
         }}
+        offsetParent={offsetParent}
       >
         <LeftDragHandle ref={leftRef}></LeftDragHandle>
       </DraggableCore>
@@ -70,8 +73,9 @@ function Comp(props: ComProps) {
         // axis="x"
         nodeRef={rightRef}
         onDrag={(e, data) => {
-          rightHandleCallback(data.x);
+          rightHandleCallback(data.deltaX);
         }}
+        offsetParent={offsetParent}
       >
         <RightDragHandle ref={rightRef}></RightDragHandle>
       </DraggableCore>
@@ -82,17 +86,19 @@ function Comp(props: ComProps) {
 function App() {
   const [leftPosition, setLeftPosition] = useState(0);
   const [rightPosition, setRightPosition] = useState(100);
+  const parent: MutableRefObject<HTMLDivElement | null> = useRef(null);
   return (
-    <div className="App">
+    <div ref={parent} className="App">
       <Comp
         leftPosition={leftPosition}
-        leftHandleCallback={(amt: number) => {
-          setLeftPosition(amt);
+        leftHandleCallback={(delta: number) => {
+          setLeftPosition(leftPosition + delta);
         }}
         rightPosition={rightPosition}
-        rightHandleCallback={(amt: number) => {
-          setRightPosition(amt);
+        rightHandleCallback={(delta: number) => {
+          setRightPosition(rightPosition + delta);
         }}
+        offsetParent={parent.current!}
       ></Comp>
     </div>
   );
