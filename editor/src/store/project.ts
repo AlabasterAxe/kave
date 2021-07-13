@@ -7,6 +7,8 @@ function initialProject(): Project {
   const userInteractionLogId = uuidv4();
   const sequenceId = uuidv4();
   const interactionLogStartDate = new Date();
+  const clipId1 = uuidv4();
+  const clipId2 = uuidv4();
 
   return {
     id: uuidv4(),
@@ -15,16 +17,16 @@ function initialProject(): Project {
         id: "ac7c3a24-e08d-4bb6-b1fe-02960b41b870",
         clips: [
           {
-            id: uuidv4(),
+            id: clipId1,
             durationSeconds: 8,
             sourceId: sequenceId,
             sourceOffsetSeconds: 0,
           },
           {
-            id: uuidv4(),
+            id: clipId2,
             durationSeconds: 8,
-            sourceId: fileId,
-            sourceOffsetSeconds: 100,
+            sourceId: sequenceId,
+            sourceOffsetSeconds: 0,
           },
         ],
         durationSeconds: 16,

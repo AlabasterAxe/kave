@@ -1,11 +1,55 @@
-import { useState } from "react";
+import { useRef } from "react";
+import { DraggableCore } from "react-draggable";
 import {
   TimelineViewport,
+  UserInteraction,
   UserInteractionLog,
 } from "../../../../../common/model";
-import { useAppDispatch } from "../../../store/hooks";
-import { splitClip } from "../../../store/project";
 import { scaleToScreen } from "../../../util/timeline-transformer";
+
+interface InteractionHandleProps {
+  onInteractionDragStart: (time: number) => void;
+  onInteractionDragUpdate: (xLocPx: number) => void;
+  onInteractionDragEnd: () => void;
+  timelineElement: HTMLElement;
+  interactionTime: number;
+  userInteraction: UserInteraction;
+  viewport: TimelineViewport;
+}
+
+function InteractionHandle(props: InteractionHandleProps) {
+  const dragRef = useRef<HTMLDivElement | null>(null);
+  const {
+    onInteractionDragStart,
+    onInteractionDragUpdate,
+    onInteractionDragEnd,
+    timelineElement,
+    interactionTime,
+    userInteraction,
+    viewport,
+  } = props;
+  const interactionStyle = {
+    left: `${scaleToScreen(viewport, interactionTime)}vw`,
+    cursor: "grab",
+  };
+  return (
+    <DraggableCore
+      nodeRef={dragRef}
+      offsetParent={timelineElement}
+      onStart={() => onInteractionDragStart(interactionTime)}
+      onDrag={(e, data) => onInteractionDragUpdate(data.x)}
+      onStop={onInteractionDragEnd}
+    >
+      <div
+        // style={interactionStyle}
+        className="h-full w-3 bg-green-300 absolute"
+        ref={dragRef}
+      >
+        <div className="timeline-interaction-text">{userInteraction.type}</div>
+      </div>
+    </DraggableCore>
+  );
+}
 
 export interface InteractionLogProps {
   // TODO: this is kind of gross, potentially we should be passing it the whole clip or getting more
@@ -16,23 +60,23 @@ export interface InteractionLogProps {
   compositionId: string;
   clipStartTimeSeconds: number;
   clipDurationSeconds: number;
+  timelineElement: HTMLElement;
+  clipId: string;
   onInteractionDragStart: (time: number) => void;
   onInteractionDragUpdate: (delta: number) => void;
   onInteractionDragEnd: () => void;
 }
 
 export function InteractionLog(props: InteractionLogProps) {
-  const [dragState, setDragState] = useState(0);
-  const dispatch = useAppDispatch();
   const {
     userInteractionLog,
     offsetSeconds,
     viewport,
-    compositionId,
     clipDurationSeconds,
     onInteractionDragStart,
     onInteractionDragUpdate,
     onInteractionDragEnd,
+    timelineElement,
   } = props;
   const log = userInteractionLog.log;
   const startTime = log[0].timestampMillis / 1000;
@@ -45,32 +89,24 @@ export function InteractionLog(props: InteractionLogProps) {
     .map((interaction, index) => {
       const interactionTime =
         interaction.timestampMillis / 1000 - startTime + offsetSeconds;
-      const interactionStyle = {
-        transform: `translate(${scaleToScreen(
-          viewport,
-          interactionTime
-        )}vw, 0)`,
-        cursor: "grab",
-      };
+
       return (
-        <div
-          draggable
-          key={index}
-          style={interactionStyle}
-          className="h-full w-3 bg-green-300 absolute"
-          onDragStart={(e) => {
-            onInteractionDragStart(interactionTime);
-            setDragState(e.clientX);
-          }}
-          onDrag={(e) => {
-            onInteractionDragUpdate(e.clientX - dragState);
-          }}
-          onDragEnd={(e) => {
-            onInteractionDragEnd();
-          }}
-        >
-          <div className="timeline-interaction-text">{interaction.type}</div>
-        </div>
+        // <div
+        //   key={interaction.timestampMillis}
+        //   style={interactionStyle}
+        //   className="h-full w-3 bg-green-300 absolute"
+        // >
+        <InteractionHandle
+          key={`${interaction.timestampMillis}-${interaction.timestampMillis}`}
+          interactionTime={interactionTime}
+          onInteractionDragEnd={onInteractionDragEnd}
+          onInteractionDragStart={onInteractionDragStart}
+          onInteractionDragUpdate={onInteractionDragUpdate}
+          timelineElement={timelineElement}
+          userInteraction={interaction}
+          viewport={viewport}
+        />
+        // </div>
       );
     });
   return (

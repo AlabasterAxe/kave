@@ -1,4 +1,3 @@
-import { useState } from "react";
 import {
   Clip,
   File,
@@ -6,10 +5,8 @@ import {
   Sequence,
   TimelineViewport,
 } from "../../../../../common/model";
-import { useAppDispatch, useAppSelector } from "../../../store/hooks";
-import { splitClip } from "../../../store/project";
+import { useAppSelector } from "../../../store/hooks";
 import { selectComposition, selectProject } from "../../../store/store";
-import { scaleToScreen } from "../../../util/timeline-transformer";
 import { InteractionLog } from "./InteractionLog";
 import { VideoClip } from "./VideoClip";
 
@@ -17,52 +14,23 @@ interface ClipProps {
   clip: Clip;
   viewport: TimelineViewport;
   clipStartTime: number;
-}
-
-interface ClipDragState {
-  interactionTimeSeconds: number;
-  dragAmountSeconds: number;
+  timelineElement: HTMLElement;
+  onInteractionDragStart: (time: number) => void;
+  onInteractionDragUpdate: (delta: number) => void;
+  onInteractionDragEnd: () => void;
 }
 
 // this is a pretty "smart" component that is responsible for rendering a clip and any possible sub-clips
 export default function ClipComponent(props: ClipProps) {
   const project = useAppSelector(selectProject);
   const activeComposition = useAppSelector(selectComposition);
-  const [clipDragState, setClipDragState] = useState<ClipDragState | null>(
-    null
-  );
-  const dispatch = useAppDispatch();
-  const { clip, viewport } = props;
-
-  const onInteractionDragStart = (time: number) => {
-    setClipDragState({
-      interactionTimeSeconds: time,
-      dragAmountSeconds: 0,
-    });
-  };
-
-  const onInteractionDragUpdate = (delta: number) => {
-    const dragState = clipDragState;
-    if (dragState) {
-      // update the duration of the clip
-      setClipDragState({
-        interactionTimeSeconds: dragState.interactionTimeSeconds,
-        dragAmountSeconds: delta,
-      });
-    }
-  };
-
-  const onInteractionDragEnd = () => {
-    if (clipDragState) {
-      dispatch(
-        splitClip({
-          compositionId: activeComposition.id,
-          splitOffsetSeconds: clipDragState.interactionTimeSeconds,
-        })
-      );
-    }
-    setClipDragState(null);
-  };
+  const {
+    clip,
+    viewport,
+    onInteractionDragStart,
+    onInteractionDragUpdate,
+    onInteractionDragEnd,
+  } = props;
 
   let file = project.files.find((f: File) => f.id === clip.sourceId);
   if (file) {
@@ -86,39 +54,7 @@ export default function ClipComponent(props: ClipProps) {
 
     switch (trackFile.type) {
       case FileType.video:
-        if (clipDragState) {
-          videoTrack = (
-            <div className="flex h-full">
-              <div
-                className="h-full"
-                style={{
-                  width:
-                    scaleToScreen(
-                      viewport,
-                      clipDragState.interactionTimeSeconds
-                    ) + "vw",
-                }}
-              >
-                <VideoClip clip={clip} />
-              </div>
-              <div
-                className="h-full"
-                style={{
-                  width:
-                    scaleToScreen(
-                      viewport,
-                      clip.durationSeconds -
-                        clipDragState.interactionTimeSeconds
-                    ) + "vw",
-                }}
-              >
-                <VideoClip clip={clip} />
-              </div>
-            </div>
-          );
-        } else {
-          videoTrack = <VideoClip clip={clip} />;
-        }
+        videoTrack = <VideoClip clip={clip} />;
         break;
       case FileType.interaction_log:
         interactionTrack = (
@@ -129,9 +65,11 @@ export default function ClipComponent(props: ClipProps) {
             viewport={viewport}
             clipStartTimeSeconds={props.clipStartTime}
             clipDurationSeconds={clip.durationSeconds}
+            timelineElement={props.timelineElement}
             onInteractionDragStart={onInteractionDragStart}
             onInteractionDragUpdate={onInteractionDragUpdate}
             onInteractionDragEnd={onInteractionDragEnd}
+            clipId={clip.id}
           />
         );
     }
