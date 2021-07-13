@@ -1,7 +1,12 @@
-import { configureStore, ConfigureStoreOptions } from "@reduxjs/toolkit";
+import {
+  AnyAction,
+  configureStore,
+  ConfigureStoreOptions,
+} from "@reduxjs/toolkit";
 import { playbackSlice } from "./playback";
 import { compositionSlice } from "./composition";
 import { projectSlice } from "./project";
+import thunk, { ThunkDispatch } from "redux-thunk";
 
 export const selectComposition = (state: RootState) => state.composition;
 export const selectPlayback = (state: RootState) => state.playback;
@@ -14,7 +19,8 @@ export const store = configureStore({
     playback: playbackSlice.reducer,
     project: projectSlice.reducer,
   },
+  middleware: [thunk],
 } as ConfigureStoreOptions);
 
-export type AppDispatch = typeof store.dispatch;
+export type AppDispatch = ThunkDispatch<any, any, AnyAction>;
 export type RootState = ReturnType<typeof store.getState>;

@@ -41,7 +41,7 @@ function InteractionHandle(props: InteractionHandleProps) {
       onStop={onInteractionDragEnd}
     >
       <div
-        // style={interactionStyle}
+        style={interactionStyle}
         className="h-full w-3 bg-green-300 absolute"
         ref={dragRef}
       >
@@ -77,6 +77,7 @@ export function InteractionLog(props: InteractionLogProps) {
     onInteractionDragUpdate,
     onInteractionDragEnd,
     timelineElement,
+    clipId,
   } = props;
   const log = userInteractionLog.log;
   const startTime = log[0].timestampMillis / 1000;
@@ -91,13 +92,8 @@ export function InteractionLog(props: InteractionLogProps) {
         interaction.timestampMillis / 1000 - startTime + offsetSeconds;
 
       return (
-        // <div
-        //   key={interaction.timestampMillis}
-        //   style={interactionStyle}
-        //   className="h-full w-3 bg-green-300 absolute"
-        // >
         <InteractionHandle
-          key={`${interaction.timestampMillis}-${interaction.timestampMillis}`}
+          key={`${clipId}-${interaction.timestampMillis}`}
           interactionTime={interactionTime}
           onInteractionDragEnd={onInteractionDragEnd}
           onInteractionDragStart={onInteractionDragStart}
@@ -106,7 +102,6 @@ export function InteractionLog(props: InteractionLogProps) {
           userInteraction={interaction}
           viewport={viewport}
         />
-        // </div>
       );
     });
   return (

@@ -1,7 +1,7 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 
 export interface ActiveComposition {
-  id: string | null;
+  id: string;
 }
 
 function initialComposition(): ActiveComposition {

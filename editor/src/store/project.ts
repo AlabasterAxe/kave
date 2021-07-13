@@ -1,6 +1,13 @@
-import { createSlice, PayloadAction } from "@reduxjs/toolkit";
+import {
+  AnyAction,
+  createSlice,
+  PayloadAction,
+  ThunkAction,
+} from "@reduxjs/toolkit";
 import { Clip, FileType, Project } from "../../../common/model";
 import { v4 as uuidv4 } from "uuid";
+import { batch } from "react-redux";
+import { RootState } from "./store";
 
 function initialProject(): Project {
   const fileId = uuidv4();
@@ -93,6 +100,30 @@ export interface SplitClipPayload {
 export interface UpdateClipPayload {
   compositionId: string;
   clip: Clip;
+}
+
+export function interactionDrag(
+  compositionId: string,
+  splitOffsetSeconds: number,
+  priorClip: Clip
+): ThunkAction<void, RootState, unknown, AnyAction> {
+  return (dispatch: (action: any) => void) => {
+    // should only result in one combined re-render, not two
+    batch(() => {
+      dispatch(
+        splitClip({
+          compositionId: compositionId,
+          splitOffsetSeconds: splitOffsetSeconds,
+        })
+      );
+      dispatch(
+        updateClip({
+          compositionId: compositionId,
+          clip: priorClip,
+        })
+      );
+    });
+  };
 }
 
 export const projectSlice = createSlice({

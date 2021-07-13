@@ -1,9 +1,9 @@
 import { useRef, useState } from "react";
-import { Composition, TimelineViewport } from "../../../../common/model";
+import { Clip, Composition, TimelineViewport } from "../../../../common/model";
 import { ActiveComposition } from "../../store/composition";
 import { useAppDispatch, useAppSelector } from "../../store/hooks";
 import { PlaybackStateSource, updatePlayhead } from "../../store/playback";
-import { splitClip } from "../../store/project";
+import { interactionDrag } from "../../store/project";
 import {
   selectComposition,
   selectPlayback,
@@ -39,13 +39,11 @@ export function Timeline() {
     endTimeSeconds: composition!.durationSeconds,
   });
   const timelineRef = useRef<HTMLDivElement | null>(null);
-  const viewportDuration = viewport.endTimeSeconds - viewport.startTimeSeconds;
   const playheadStyle = {
-    transform: `translate(${
-      ((playback.currentTimeSeconds - viewport.startTimeSeconds) /
-        viewportDuration) *
-      100
-    }vw, 0)`,
+    transform: `translate(${transformToScreen(
+      viewport,
+      playback.currentTimeSeconds
+    )}vw, 0)`,
   };
 
   const scrubHandler = (e: any) => {
@@ -99,10 +97,14 @@ export function Timeline() {
     console.log("onInteractionDragEnd");
     // apply the drag operation to the composition
     if (activeComposition && dragOperation) {
+      const priorClip = composition.clips.find(
+        (c: Clip) => c.id === dragOperation.clipId
+      );
       dispatch(
-        splitClip({
-          compositionId: activeComposition.id!,
-          splitOffsetSeconds: dragOperation.splitTimeSeconds,
+        interactionDrag(activeComposition.id, dragOperation.splitTimeSeconds, {
+          ...priorClip,
+          durationSeconds:
+            dragOperation.splitTimeSeconds + dragOperation.dragAmountSeconds,
         })
       );
     }
@@ -125,7 +127,11 @@ export function Timeline() {
           }}
         >
           <ClipComponent
-            clip={{ ...clip, durationSeconds: clip1Width }}
+            clip={{
+              ...clip,
+              id: `${clip.id}-new`,
+              durationSeconds: clip1Width,
+            }}
             viewport={viewport}
             clipStartTime={durationSoFar}
             timelineElement={timelineRef.current!}
