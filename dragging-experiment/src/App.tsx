@@ -1,46 +1,97 @@
 import { useRef, useState } from "react";
-import Draggable from "react-draggable";
-import "./App.css";
+import { DraggableCore } from "react-draggable";
 import styled from "styled-components";
+import "./App.css";
 
-const CompStyle = styled.div`
+const OuterStyle = styled.div`
   background-color: green;
-  height: 100px;
-  width: 100px;
   color: white;
+  height: 100px;
+  display: flex;
+  position: relative;
+`;
+
+const DragHandle = styled.div`
+  background-color: red;
+  height: 100%;
+  width: 10px;
+  position: absolute;
+`;
+
+const LeftDragHandle = styled(DragHandle)`
+  left: 0;
+`;
+
+const RightDragHandle = styled(DragHandle)`
+  right: 0;
+`;
+
+const Contents = styled.div`
+  display: flex;
+  flex-direction: column;
 `;
 
 interface ComProps {
-  dragAmount?: number;
-  dragCallback: (amount: number) => void;
+  leftPosition: number;
+  rightPosition: number;
+  leftHandleCallback: (amount: number) => void;
+  rightHandleCallback: (amount: number) => void;
 }
 
 function Comp(props: ComProps) {
-  const ref = useRef(null);
-  const { dragAmount, dragCallback } = props;
+  const leftRef = useRef(null);
+  const rightRef = useRef(null);
+  const {
+    leftPosition,
+    rightPosition,
+    leftHandleCallback,
+    rightHandleCallback,
+  } = props;
+  const style = {
+    left: leftPosition,
+    width: rightPosition - leftPosition,
+  };
   return (
-    <Draggable
-      // axis="x"
-      nodeRef={ref}
-      onDrag={(e, data) => {
-        dragCallback(data.x);
-      }}
-    >
-      <CompStyle ref={ref} className="Comp">
-        {dragAmount && dragAmount}
-      </CompStyle>
-    </Draggable>
+    <OuterStyle style={style}>
+      <DraggableCore
+        // axis="x"
+        nodeRef={leftRef}
+        onDrag={(e, data) => {
+          leftHandleCallback(data.x);
+        }}
+      >
+        <LeftDragHandle ref={leftRef}></LeftDragHandle>
+      </DraggableCore>
+      <Contents>
+        <span>Left: {leftPosition}</span>
+        <span>Right: {rightPosition}</span>
+      </Contents>
+      <DraggableCore
+        // axis="x"
+        nodeRef={rightRef}
+        onDrag={(e, data) => {
+          rightHandleCallback(data.x);
+        }}
+      >
+        <RightDragHandle ref={rightRef}></RightDragHandle>
+      </DraggableCore>
+    </OuterStyle>
   );
 }
 
 function App() {
-  const [dragDeets, setDragDeets] = useState(0);
+  const [leftPosition, setLeftPosition] = useState(0);
+  const [rightPosition, setRightPosition] = useState(100);
   return (
     <div className="App">
       <Comp
-        dragAmount={dragDeets}
-        dragCallback={(amt: number) => {
-          setDragDeets(amt);
+        leftPosition={leftPosition}
+        leftHandleCallback={(amt: number) => {
+          setLeftPosition(amt);
+        }}
+        rightPosition={rightPosition}
+        rightHandleCallback={(amt: number) => {
+          setRightPosition(amt);
         }}
       ></Comp>
     </div>
