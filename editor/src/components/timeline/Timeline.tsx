@@ -22,6 +22,8 @@ export interface DragOperation {
   dragAmountSeconds: number;
 }
 
+const CLIP_SPLIT_THRESHOLD = 0.05;
+
 export function Timeline() {
   const activeComposition: ActiveComposition =
     useAppSelector(selectComposition);
@@ -99,7 +101,11 @@ export function Timeline() {
   const onInteractionDragEnd = () => {
     console.log("onInteractionDragEnd");
     // apply the drag operation to the composition
-    if (activeComposition && dragOperation) {
+    if (
+      activeComposition &&
+      dragOperation &&
+      Math.abs(dragOperation.dragAmountSeconds) > CLIP_SPLIT_THRESHOLD
+    ) {
       const priorClip = composition.clips.find(
         (c: Clip) => c.id === dragOperation.clipId
       );
@@ -116,8 +122,46 @@ export function Timeline() {
 
   const clips = [];
   let durationSoFar = 0;
-  for (const clip of composition!.clips) {
-    if (dragOperation && clip.id === dragOperation.clipId) {
+  for (let i = 0; i < composition!.clips.length; i++) {
+    const clip = composition!.clips[i];
+    if (
+      dragOperation &&
+      dragOperation.splitTimeSeconds < 0.1 &&
+      i + 1 < composition!.clips.length &&
+      composition!.clips[i + 1].id === dragOperation.clipId
+    ) {
+      const newClipDuration =
+        clip.durationSeconds + dragOperation.dragAmountSeconds;
+      clips.push(
+        <div
+          key={clip.id}
+          className="h-full absolute"
+          style={{
+            left: transformToScreen(viewport, durationSoFar) + "vw",
+            width: scaleToScreen(viewport, newClipDuration) + "vw",
+          }}
+        >
+          <ClipComponent
+            clip={{ ...clip, durationSeconds: newClipDuration }}
+            viewport={viewport}
+            clipStartTime={durationSoFar}
+            timelineElement={timelineRef.current!}
+            onInteractionDragStart={(time: number) =>
+              onInteractionDragStart(clip.id, time)
+            }
+            onInteractionDragUpdate={(delta: number) =>
+              onInteractionDragUpdate(clip.id, delta)
+            }
+            onInteractionDragEnd={() => onInteractionDragEnd()}
+          ></ClipComponent>
+        </div>
+      );
+      durationSoFar += clip.durationSeconds;
+    } else if (
+      dragOperation &&
+      clip.id === dragOperation.clipId &&
+      Math.abs(dragOperation.dragAmountSeconds) > CLIP_SPLIT_THRESHOLD
+    ) {
       const clip1Width =
         dragOperation.splitTimeSeconds + dragOperation.dragAmountSeconds;
       clips.push(
@@ -164,7 +208,7 @@ export function Timeline() {
           <ClipComponent
             clip={{
               ...clip,
-              sourceOffsetSeconds: clip.sourceOffsetSeconds + clip1Width,
+              sourceOffsetSeconds: dragOperation.splitTimeSeconds,
             }}
             timelineElement={timelineRef.current!}
             viewport={viewport}

@@ -110,12 +110,14 @@ export function interactionDrag(
   return (dispatch: (action: any) => void) => {
     // should only result in one combined re-render, not two
     batch(() => {
-      dispatch(
-        splitClip({
-          compositionId: compositionId,
-          splitOffsetSeconds: splitOffsetSeconds,
-        })
-      );
+      if (splitOffsetSeconds > 0) {
+        dispatch(
+          splitClip({
+            compositionId: compositionId,
+            splitOffsetSeconds: splitOffsetSeconds,
+          })
+        );
+      }
       dispatch(
         updateClip({
           compositionId: compositionId,
