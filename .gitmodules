@@ -1,9 +1,0 @@
-[submodule "digital-paper-edit-electron"]
-	path = digital-paper-edit-electron
-	url = https://github.com/AlabasterAxe/digital-paper-edit-electron.git
-[submodule "digital-paper-edit-client"]
-	path = digital-paper-edit-client
-	url = https://github.com/AlabasterAxe/digital-paper-edit-client.git
-[submodule "digital-paper-edit-api"]
-	path = digital-paper-edit-api
-	url = https://github.com/AlabasterAxe/digital-paper-edit-api.git
