@@ -2,10 +2,8 @@ import { useEffect, useRef } from "react";
 import { DraggableCore } from "react-draggable";
 import {
   InteractionLogFile,
-  KaveFile,
   TimelineViewport,
   UserInteraction,
-  UserInteractionLog,
 } from "../../../../../common/model";
 import { parseLog } from "../../../../../common/parse-log";
 import { useAppDispatch } from "../../../store/hooks";
@@ -37,6 +35,15 @@ function InteractionHandle(props: InteractionHandleProps) {
     left: `${scaleToScreen(viewport, interactionTime)}vw`,
     cursor: "grab",
   };
+  let displayText = userInteraction.type;
+  switch (displayText) {
+    case "BACKSPACE":
+      displayText = "⌫";
+      break;
+    case "SPACE":
+      displayText = " ";
+      break;
+  }
   return (
     <DraggableCore
       nodeRef={dragRef}
@@ -50,7 +57,7 @@ function InteractionHandle(props: InteractionHandleProps) {
         className="h-full w-3 bg-green-300 absolute"
         ref={dragRef}
       >
-        <div className="timeline-interaction-text">{userInteraction.type}</div>
+        <div className="timeline-interaction-text">{displayText}</div>
       </div>
     </DraggableCore>
   );
@@ -100,7 +107,7 @@ export function InteractionLog(props: InteractionLogProps) {
           );
         });
     }
-  }, [dispatch]);
+  }, [dispatch, file]);
 
   if (!file.userInteractionLog) {
     return <>Loading...</>;

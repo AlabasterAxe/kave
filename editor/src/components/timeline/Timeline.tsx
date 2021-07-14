@@ -17,6 +17,7 @@ import {
 import ClipComponent from "./Clip/Clip";
 
 const CLIP_SPLIT_THRESHOLD = 0.05;
+const MIN_VIEWPORT_SPAN = 0.05;
 
 export interface DragOperation {
   clipId: string;
@@ -67,9 +68,24 @@ export function Timeline() {
 
   const zoomHandler = (e: any) => {
     if (!e.ctrlKey) {
+      const viewportSpan = Math.max(
+        viewport.endTimeSeconds - viewport.startTimeSeconds,
+        MIN_VIEWPORT_SPAN
+      );
+      const scrollUnit = viewportSpan / 200;
+      const startTimeSeconds =
+        viewport.startTimeSeconds -
+        e.deltaY * scrollUnit +
+        e.deltaX * scrollUnit;
+      let endTimeSeconds =
+        viewport.endTimeSeconds + e.deltaY * scrollUnit + e.deltaX * scrollUnit;
+
+      if (endTimeSeconds - startTimeSeconds < MIN_VIEWPORT_SPAN) {
+        endTimeSeconds = startTimeSeconds + MIN_VIEWPORT_SPAN;
+      }
       setViewport({
-        startTimeSeconds: viewport.startTimeSeconds - e.deltaY + e.deltaX / 10,
-        endTimeSeconds: viewport.endTimeSeconds + e.deltaY + e.deltaX / 10,
+        startTimeSeconds,
+        endTimeSeconds,
       });
     }
   };
