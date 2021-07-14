@@ -117,7 +117,6 @@ export function Timeline() {
       );
       const localTimelineLocationSeconds =
         globalTimelineLocationSeconds - clipStartTime;
-      console.log("dragLocSeconds: " + globalTimelineLocationSeconds);
       setDragOperation({
         clipId: clipId,
         relativeSplitTimeSeconds: dragOperation.relativeSplitTimeSeconds,
@@ -221,7 +220,9 @@ export function Timeline() {
           renderClip(
             {
               ...clip,
-              sourceOffsetSeconds: dragOperation.relativeSplitTimeSeconds,
+              sourceOffsetSeconds:
+                clip.sourceOffsetSeconds +
+                dragOperation.relativeSplitTimeSeconds,
             },
             durationSoFar,
             newClipWidth
