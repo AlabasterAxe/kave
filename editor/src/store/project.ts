@@ -43,8 +43,7 @@ function initialProject(): Project {
       {
         id: fileId,
         type: FileType.video,
-        fileUri:
-          "http://commondatastorage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4",
+        fileUri: "test_video.m4v",
       },
       {
         id: userInteractionLogId,

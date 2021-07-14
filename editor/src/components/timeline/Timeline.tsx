@@ -195,8 +195,13 @@ export function Timeline() {
 
   const clips = [];
   let durationSoFar = 0;
+
   for (const clip of composition!.clips) {
-    if (dragOperation && dragOperation.clipId === clip.id) {
+    if (
+      dragOperation &&
+      dragOperation.clipId === clip.id &&
+      Math.abs(dragOperation.dragAmountSeconds) > CLIP_SPLIT_THRESHOLD
+    ) {
       const shorteningClipWidth = dragOperation.relativeSplitTimeSeconds
         ? dragOperation.relativeSplitTimeSeconds +
           dragOperation.dragAmountSeconds
@@ -240,7 +245,7 @@ export function Timeline() {
     <div
       ref={timelineRef}
       className="w-full h-full bg-yellow-200 relative flex flex-col"
-      onClick={scrubHandler}
+      // onClick={scrubHandler}
       onWheel={zoomHandler}
     >
       <div
