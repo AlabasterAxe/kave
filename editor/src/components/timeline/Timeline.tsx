@@ -156,10 +156,11 @@ export function Timeline() {
           ></ClipComponent>
         </div>
       );
-      durationSoFar += clip.durationSeconds;
+      durationSoFar += newClipDuration;
     } else if (
       dragOperation &&
       clip.id === dragOperation.clipId &&
+      dragOperation.splitTimeSeconds > 0 &&
       Math.abs(dragOperation.dragAmountSeconds) > CLIP_SPLIT_THRESHOLD
     ) {
       const clip1Width =
