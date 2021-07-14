@@ -16,13 +16,16 @@ import {
 } from "../../util/timeline-transformer";
 import ClipComponent from "./Clip/Clip";
 
+const CLIP_SPLIT_THRESHOLD = 0.05;
+
 export interface DragOperation {
   clipId: string;
-  splitTimeSeconds: number;
+  // this is the point in the original clip that the user started dragging on
+  // e.g. if the user clicks on an interaction that occurred 2 seconds into the clip, this value will be 2
+  // this can be null if the drags an interaction that is aligned to the start of the clip
+  relativeSplitTimeSeconds: number;
   dragAmountSeconds: number;
 }
-
-const CLIP_SPLIT_THRESHOLD = 0.05;
 
 export function Timeline() {
   const activeComposition: ActiveComposition =
@@ -71,27 +74,55 @@ export function Timeline() {
     }
   };
 
-  const onInteractionDragStart = (clipId: string, time: number) => {
-    console.log(`onInteractionDragStart: ${time}`);
-    setDragOperation({
-      clipId: clipId,
-      splitTimeSeconds: time,
-      dragAmountSeconds: 0,
-    });
+  const getClipStartTimeSeconds = (clipId: string): number => {
+    let clipStartTimeSeconds = 0;
+    for (const clip of composition!.clips) {
+      if (clip.id === clipId) {
+        break;
+      }
+      clipStartTimeSeconds += clip.durationSeconds;
+    }
+    return clipStartTimeSeconds;
   };
 
-  const onInteractionDragUpdate = (clipId: string, location: number) => {
-    console.log(`onInteractionDragUpdate: ${location}`);
-    if (dragOperation) {
-      const dragLocSeconds = transformToTimeline(
-        viewport,
-        location / window.innerWidth
-      );
+  const onInteractionDragStart = (
+    clipId: string,
+    relativeHandleTimeSeconds: number
+  ) => {
+    // this means the user is dragging an interaction that is aligned to the start of the clip
+    if (relativeHandleTimeSeconds <= 0) {
+      const clips = composition!.clips;
+      const prevClipId =
+        clips[clips.findIndex((c: Clip) => c.id === clipId) - 1].id;
+      setDragOperation({
+        clipId: prevClipId,
+        relativeSplitTimeSeconds: 0,
+        dragAmountSeconds: 0,
+      });
+    } else {
       setDragOperation({
         clipId: clipId,
-        splitTimeSeconds: dragOperation.splitTimeSeconds,
+        relativeSplitTimeSeconds: relativeHandleTimeSeconds,
+        dragAmountSeconds: 0,
+      });
+    }
+  };
+
+  const onInteractionDragUpdate = (clipId: string, dragLocPx: number) => {
+    const clipStartTime = getClipStartTimeSeconds(clipId);
+    if (dragOperation) {
+      const globalTimelineLocationSeconds = transformToTimeline(
+        viewport,
+        dragLocPx / window.innerWidth
+      );
+      const localTimelineLocationSeconds =
+        globalTimelineLocationSeconds - clipStartTime;
+      console.log("dragLocSeconds: " + globalTimelineLocationSeconds);
+      setDragOperation({
+        clipId: clipId,
+        relativeSplitTimeSeconds: dragOperation.relativeSplitTimeSeconds,
         dragAmountSeconds: Math.min(
-          dragLocSeconds - dragOperation.splitTimeSeconds,
+          localTimelineLocationSeconds - dragOperation.relativeSplitTimeSeconds,
           0
         ),
       });
@@ -99,8 +130,6 @@ export function Timeline() {
   };
 
   const onInteractionDragEnd = () => {
-    console.log("onInteractionDragEnd");
-    // apply the drag operation to the composition
     if (
       activeComposition &&
       dragOperation &&
@@ -109,147 +138,99 @@ export function Timeline() {
       const priorClip = composition.clips.find(
         (c: Clip) => c.id === dragOperation.clipId
       );
+      const clipStartTime = getClipStartTimeSeconds(dragOperation.clipId);
       dispatch(
-        interactionDrag(activeComposition.id, dragOperation.splitTimeSeconds, {
-          ...priorClip,
-          durationSeconds:
-            dragOperation.splitTimeSeconds + dragOperation.dragAmountSeconds,
-        })
+        interactionDrag(
+          activeComposition.id,
+          clipStartTime + dragOperation.relativeSplitTimeSeconds,
+          {
+            ...priorClip,
+            durationSeconds:
+              dragOperation.relativeSplitTimeSeconds +
+              dragOperation.dragAmountSeconds,
+          }
+        )
       );
     }
     setDragOperation(null);
   };
 
+  // this method renders a clip with an optional clip duration override
+  const renderClip = (
+    clip: Clip,
+    clipStartTimeSeconds: number,
+    clipDurationSeconds?: number
+  ) => {
+    return (
+      <div
+        key={clip.id}
+        className="h-full absolute"
+        style={{
+          width:
+            scaleToScreen(
+              viewport,
+              clipDurationSeconds ?? clip.durationSeconds
+            ) + "vw",
+          left: transformToScreen(viewport, clipStartTimeSeconds) + "vw",
+        }}
+      >
+        <ClipComponent
+          clip={{
+            ...clip,
+            durationSeconds: clipDurationSeconds ?? clip.durationSeconds,
+          }}
+          viewport={viewport}
+          clipStartTime={clipStartTimeSeconds}
+          timelineElement={timelineRef.current!}
+          onInteractionDragStart={(time: number) =>
+            onInteractionDragStart(clip.id, time)
+          }
+          onInteractionDragUpdate={(delta: number) =>
+            onInteractionDragUpdate(clip.id, delta)
+          }
+          onInteractionDragEnd={() => onInteractionDragEnd()}
+        ></ClipComponent>
+      </div>
+    );
+  };
+
   const clips = [];
   let durationSoFar = 0;
-  for (let i = 0; i < composition!.clips.length; i++) {
-    const clip = composition!.clips[i];
-    if (
-      dragOperation &&
-      dragOperation.splitTimeSeconds < 0.1 &&
-      i + 1 < composition!.clips.length &&
-      composition!.clips[i + 1].id === dragOperation.clipId
-    ) {
-      const newClipDuration =
-        clip.durationSeconds + dragOperation.dragAmountSeconds;
+  for (const clip of composition!.clips) {
+    if (dragOperation && dragOperation.clipId === clip.id) {
+      const shorteningClipWidth = dragOperation.relativeSplitTimeSeconds
+        ? dragOperation.relativeSplitTimeSeconds +
+          dragOperation.dragAmountSeconds
+        : clip.durationSeconds + dragOperation.dragAmountSeconds;
       clips.push(
-        <div
-          key={clip.id}
-          className="h-full absolute"
-          style={{
-            left: transformToScreen(viewport, durationSoFar) + "vw",
-            width: scaleToScreen(viewport, newClipDuration) + "vw",
-          }}
-        >
-          <ClipComponent
-            clip={{ ...clip, durationSeconds: newClipDuration }}
-            viewport={viewport}
-            clipStartTime={durationSoFar}
-            timelineElement={timelineRef.current!}
-            onInteractionDragStart={(time: number) =>
-              onInteractionDragStart(clip.id, time)
-            }
-            onInteractionDragUpdate={(delta: number) =>
-              onInteractionDragUpdate(clip.id, delta)
-            }
-            onInteractionDragEnd={() => onInteractionDragEnd()}
-          ></ClipComponent>
-        </div>
+        renderClip(
+          {
+            ...clip,
+            id: clip.id + "-new",
+          },
+          durationSoFar,
+          shorteningClipWidth
+        )
       );
-      durationSoFar += newClipDuration;
-    } else if (
-      dragOperation &&
-      clip.id === dragOperation.clipId &&
-      dragOperation.splitTimeSeconds > 0 &&
-      Math.abs(dragOperation.dragAmountSeconds) > CLIP_SPLIT_THRESHOLD
-    ) {
-      const clip1Width =
-        dragOperation.splitTimeSeconds + dragOperation.dragAmountSeconds;
-      clips.push(
-        <div
-          key={`${clip.id}-new`}
-          className="h-full absolute"
-          style={{
-            width: scaleToScreen(viewport, clip1Width) + "vw",
-            left: transformToScreen(viewport, durationSoFar) + "vw",
-          }}
-        >
-          <ClipComponent
-            clip={{
-              ...clip,
-              id: `${clip.id}-new`,
-              durationSeconds: clip1Width,
-            }}
-            viewport={viewport}
-            clipStartTime={durationSoFar}
-            timelineElement={timelineRef.current!}
-            onInteractionDragStart={(time: number) =>
-              onInteractionDragStart(clip.id, time)
-            }
-            onInteractionDragUpdate={(delta: number) =>
-              onInteractionDragUpdate(clip.id, delta)
-            }
-            onInteractionDragEnd={() => onInteractionDragEnd()}
-          ></ClipComponent>
-        </div>
-      );
+      durationSoFar += shorteningClipWidth;
+      if (dragOperation.relativeSplitTimeSeconds) {
+        const newClipWidth =
+          clip.durationSeconds - dragOperation.relativeSplitTimeSeconds;
 
-      durationSoFar += clip1Width;
-      const clip2Width = clip.durationSeconds - dragOperation.splitTimeSeconds;
-      console.log(clip2Width);
-      clips.push(
-        <div
-          key={clip.id}
-          className="h-full absolute"
-          style={{
-            width: scaleToScreen(viewport, clip2Width) + "vw",
-            left: transformToScreen(viewport, durationSoFar) + "vw",
-          }}
-        >
-          <ClipComponent
-            clip={{
+        clips.push(
+          renderClip(
+            {
               ...clip,
-              sourceOffsetSeconds: dragOperation.splitTimeSeconds,
-            }}
-            timelineElement={timelineRef.current!}
-            viewport={viewport}
-            clipStartTime={durationSoFar}
-            onInteractionDragStart={(time: number) =>
-              onInteractionDragStart(clip.id, time)
-            }
-            onInteractionDragUpdate={(delta: number) =>
-              onInteractionDragUpdate(clip.id, delta)
-            }
-            onInteractionDragEnd={() => onInteractionDragEnd()}
-          ></ClipComponent>
-        </div>
-      );
-      durationSoFar += clip2Width;
+              sourceOffsetSeconds: dragOperation.relativeSplitTimeSeconds,
+            },
+            durationSoFar,
+            newClipWidth
+          )
+        );
+        durationSoFar += newClipWidth;
+      }
     } else {
-      clips.push(
-        <div
-          key={clip.id}
-          className="h-full absolute"
-          style={{
-            width: scaleToScreen(viewport, clip.durationSeconds) + "vw",
-            left: transformToScreen(viewport, durationSoFar) + "vw",
-          }}
-        >
-          <ClipComponent
-            clip={clip}
-            viewport={viewport}
-            clipStartTime={durationSoFar}
-            timelineElement={timelineRef.current!}
-            onInteractionDragStart={(time: number) =>
-              onInteractionDragStart(clip.id, time)
-            }
-            onInteractionDragUpdate={(delta: number) =>
-              onInteractionDragUpdate(clip.id, delta)
-            }
-            onInteractionDragEnd={() => onInteractionDragEnd()}
-          ></ClipComponent>
-        </div>
-      );
+      clips.push(renderClip(clip, durationSoFar));
       durationSoFar += clip.durationSeconds;
     }
   }
