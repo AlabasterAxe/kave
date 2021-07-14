@@ -5,10 +5,7 @@ import {
   UserInteraction,
   UserInteractionLog,
 } from "../../../../../common/model";
-import {
-  scaleToScreen,
-  transformToTimeline,
-} from "../../../util/timeline-transformer";
+import { scaleToScreen } from "../../../util/timeline-transformer";
 
 interface InteractionHandleProps {
   onInteractionDragStart: (time: number) => void;
@@ -81,7 +78,6 @@ export function InteractionLog(props: InteractionLogProps) {
     onInteractionDragEnd,
     timelineElement,
     clipId,
-    clipStartTimeSeconds,
   } = props;
   const log = userInteractionLog.log;
   const startTime = log[0].timestampMillis / 1000;
@@ -91,7 +87,7 @@ export function InteractionLog(props: InteractionLogProps) {
         interaction.timestampMillis / 1000 - startTime + offsetSeconds;
       return interactionTime >= 0 && interactionTime < clipDurationSeconds;
     })
-    .map((interaction, index) => {
+    .map((interaction) => {
       const interactionTime =
         interaction.timestampMillis / 1000 - startTime + offsetSeconds;
 
