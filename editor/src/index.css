@@ -8,6 +8,7 @@ body {
 
   /* this is probably going to come back to bite me */
   overflow: hidden;
+  user-select: none;
 }
 
 code {

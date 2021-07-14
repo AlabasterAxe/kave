@@ -88,7 +88,10 @@ export function Timeline() {
       setDragOperation({
         clipId: clipId,
         splitTimeSeconds: dragOperation.splitTimeSeconds,
-        dragAmountSeconds: dragLocSeconds - dragOperation.splitTimeSeconds,
+        dragAmountSeconds: Math.min(
+          dragLocSeconds - dragOperation.splitTimeSeconds,
+          0
+        ),
       });
     }
   };
