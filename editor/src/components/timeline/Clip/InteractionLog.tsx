@@ -1,10 +1,15 @@
-import { useRef } from "react";
+import { useEffect, useRef } from "react";
 import { DraggableCore } from "react-draggable";
 import {
+  InteractionLogFile,
+  KaveFile,
   TimelineViewport,
   UserInteraction,
   UserInteractionLog,
 } from "../../../../../common/model";
+import { parseLog } from "../../../../../common/parse-log";
+import { useAppDispatch } from "../../../store/hooks";
+import { loadInteractionFile } from "../../../store/project";
 import { scaleToScreen } from "../../../util/timeline-transformer";
 
 interface InteractionHandleProps {
@@ -54,7 +59,6 @@ function InteractionHandle(props: InteractionHandleProps) {
 export interface InteractionLogProps {
   // TODO: this is kind of gross, potentially we should be passing it the whole clip or getting more
   // stuff from state
-  userInteractionLog: UserInteractionLog;
   offsetSeconds: number;
   viewport: TimelineViewport;
   compositionId: string;
@@ -62,6 +66,7 @@ export interface InteractionLogProps {
   clipDurationSeconds: number;
   timelineElement: HTMLElement;
   clipId: string;
+  file: InteractionLogFile;
   onInteractionDragStart: (time: number) => void;
   onInteractionDragUpdate: (delta: number) => void;
   onInteractionDragEnd: () => void;
@@ -69,7 +74,7 @@ export interface InteractionLogProps {
 
 export function InteractionLog(props: InteractionLogProps) {
   const {
-    userInteractionLog,
+    file,
     offsetSeconds,
     viewport,
     clipDurationSeconds,
@@ -79,7 +84,28 @@ export function InteractionLog(props: InteractionLogProps) {
     timelineElement,
     clipId,
   } = props;
-  const log = userInteractionLog.log;
+  const dispatch = useAppDispatch();
+  useEffect(() => {
+    if (!file.userInteractionLog) {
+      // TODO: handle the situation where the file doesn't have a uri.
+      fetch(file.fileUri!)
+        .then((response) => response.text())
+        .then((text) => {
+          const userInteractionLog = parseLog(text);
+          dispatch(
+            loadInteractionFile({
+              fileId: file.id,
+              interactionLog: { log: userInteractionLog },
+            })
+          );
+        });
+    }
+  }, [dispatch]);
+
+  if (!file.userInteractionLog) {
+    return <>Loading...</>;
+  }
+  const log = file.userInteractionLog!.log;
   const startTime = log[0].timestampMillis / 1000;
   const userInteractionDom = log
     .filter((interaction) => {

@@ -9,6 +9,7 @@ import {
   PlaybackStateSource,
   togglePlaybackState,
 } from "./store/playback";
+import { parseLog } from "../../common/parse-log";
 
 function App() {
   const dispatch = useAppDispatch();
@@ -32,6 +33,16 @@ function App() {
       }
     });
   }, [dispatch]);
+
+  useEffect(() => {
+    fetch("test_video.log")
+      .then((resp: Response) => resp.text())
+      .then((log) => {
+        parseLog(log);
+      })
+      .catch(() => {});
+  }, []);
+
   return (
     <BrowserRouter>
       <Switch>

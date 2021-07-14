@@ -1,6 +1,6 @@
 import {
   Clip,
-  File,
+  KaveFile,
   FileType,
   Sequence,
   TimelineViewport,
@@ -32,7 +32,7 @@ export default function ClipComponent(props: ClipProps) {
     onInteractionDragEnd,
   } = props;
 
-  let file = project.files.find((f: File) => f.id === clip.sourceId);
+  let file = project.files.find((f: KaveFile) => f.id === clip.sourceId);
   if (file) {
     return <VideoClip clip={clip} />;
   }
@@ -45,8 +45,8 @@ export default function ClipComponent(props: ClipProps) {
   let videoTrack = null;
   let interactionTrack = null;
   for (const track of seq.tracks) {
-    const trackFile: File = project.files.find(
-      (f: File) => f.id === track.fileId
+    const trackFile: KaveFile = project.files.find(
+      (f: KaveFile) => f.id === track.fileId
     );
     if (!trackFile) {
       return <div>Invalid Track</div>;
@@ -59,7 +59,7 @@ export default function ClipComponent(props: ClipProps) {
       case FileType.interaction_log:
         interactionTrack = (
           <InteractionLog
-            userInteractionLog={trackFile.userInteractionLog}
+            file={trackFile}
             compositionId={activeComposition.id}
             offsetSeconds={track.alignmentSeconds - clip.sourceOffsetSeconds}
             viewport={viewport}

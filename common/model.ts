@@ -12,7 +12,6 @@ export interface UserInteraction {
 }
 
 export interface UserInteractionLog {
-  id: string;
   log: UserInteraction[];
 }
 
@@ -33,16 +32,17 @@ export interface VideoFile extends FileBase {
 
 export interface InteractionLogFile extends FileBase {
   type: FileType.interaction_log;
-  userInteractionLog: UserInteractionLog;
+  userInteractionLog?: UserInteractionLog;
+  fileUri?: string;
 }
 
-export type File = VideoFile | InteractionLogFile;
+export type KaveFile = VideoFile | InteractionLogFile;
 
 export interface Track {
   id: string;
   fileId: string;
 
-  // the alignment of this file relative to the sequence, must be positive.
+  // The alignment of this file relative to the sequence, must be positive.
   alignmentSeconds: number;
 }
 
@@ -70,7 +70,7 @@ export interface Composition {
 
 export interface Project {
   id: string;
-  files: File[];
+  files: KaveFile[];
   sequences: Sequence[];
   compositions: Composition[];
 }

@@ -245,7 +245,7 @@ export function Timeline() {
     <div
       ref={timelineRef}
       className="w-full h-full bg-yellow-200 relative flex flex-col"
-      // onClick={scrubHandler}
+      onClick={scrubHandler}
       onWheel={zoomHandler}
     >
       <div

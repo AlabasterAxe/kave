@@ -4,7 +4,12 @@ import {
   PayloadAction,
   ThunkAction,
 } from "@reduxjs/toolkit";
-import { Clip, FileType, Project } from "../../../common/model";
+import {
+  Clip,
+  FileType,
+  Project,
+  UserInteractionLog,
+} from "../../../common/model";
 import { v4 as uuidv4 } from "uuid";
 import { batch } from "react-redux";
 import { RootState } from "./store";
@@ -25,13 +30,7 @@ function initialProject(): Project {
         clips: [
           {
             id: clipId1,
-            durationSeconds: 8,
-            sourceId: sequenceId,
-            sourceOffsetSeconds: 0,
-          },
-          {
-            id: clipId2,
-            durationSeconds: 8,
+            durationSeconds: 60,
             sourceId: sequenceId,
             sourceOffsetSeconds: 0,
           },
@@ -48,27 +47,7 @@ function initialProject(): Project {
       {
         id: userInteractionLogId,
         type: FileType.interaction_log,
-        userInteractionLog: {
-          id: uuidv4(),
-          log: [
-            {
-              timestampMillis: interactionLogStartDate.getTime(),
-              type: "A",
-            },
-            {
-              timestampMillis: interactionLogStartDate.getTime() + 1000,
-              type: "B",
-            },
-            {
-              timestampMillis: interactionLogStartDate.getTime() + 2000,
-              type: "C",
-            },
-            {
-              timestampMillis: interactionLogStartDate.getTime() + 6000,
-              type: "D",
-            },
-          ],
-        },
+        fileUri: "test_video.log",
       },
     ],
     sequences: [
@@ -82,7 +61,7 @@ function initialProject(): Project {
           },
           {
             id: uuidv4(),
-            alignmentSeconds: 1,
+            alignmentSeconds: 5.5,
             fileId: userInteractionLogId,
           },
         ],
@@ -99,6 +78,11 @@ export interface SplitClipPayload {
 export interface UpdateClipPayload {
   compositionId: string;
   clip: Clip;
+}
+
+export interface LoadInteractionFilePayload {
+  fileId: string;
+  interactionLog: UserInteractionLog;
 }
 
 export function interactionDrag(
@@ -137,6 +121,7 @@ export const projectSlice = createSlice({
       );
 
       if (!composition) {
+        console.warn("non-existent composition referenced in action payload");
         return state;
       }
 
@@ -185,6 +170,7 @@ export const projectSlice = createSlice({
         (composition) => composition.id === action.payload.compositionId
       );
       if (!composition) {
+        console.warn("non-existent composition referenced in action payload");
         return state;
       }
       const newClips = [];
@@ -203,7 +189,21 @@ export const projectSlice = createSlice({
       newCompositions.push(composition);
       state.compositions = newCompositions;
     },
+    loadInteractionFile: (
+      state,
+      action: PayloadAction<LoadInteractionFilePayload>
+    ) => {
+      const newFiles = state.files.map((file) => {
+        if (file.id === action.payload.fileId) {
+          return { ...file, userInteractionLog: action.payload.interactionLog };
+        } else {
+          return file;
+        }
+      });
+      state.files = newFiles;
+    },
   },
 });
 
-export const { splitClip, updateClip } = projectSlice.actions;
+export const { splitClip, updateClip, loadInteractionFile } =
+  projectSlice.actions;
