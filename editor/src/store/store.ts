@@ -5,9 +5,10 @@ import {
 } from "@reduxjs/toolkit";
 import { playbackSlice } from "./playback";
 import { compositionSlice } from "./composition";
-import { projectSlice } from "./project";
-import thunk, { ThunkDispatch } from "redux-thunk";
-import { selectionSlice } from "./selection";
+import { deleteSection, projectSlice } from "./project";
+import thunk, { ThunkAction, ThunkDispatch } from "redux-thunk";
+import { selectionSlice, setSelection } from "./selection";
+import { batch } from "react-redux";
 
 export const selectComposition = (state: RootState) => state.composition;
 export const selectPlayback = (state: RootState) => state.playback;
@@ -24,6 +25,30 @@ export const store = configureStore({
   },
   middleware: [thunk],
 } as ConfigureStoreOptions);
+
+export function deleteSelection({
+  compositionId,
+  startTimeSeconds,
+  endTimeSeconds,
+}: {
+  compositionId: string;
+  startTimeSeconds: number;
+  endTimeSeconds: number;
+}): ThunkAction<void, RootState, unknown, AnyAction> {
+  return (dispatch: (action: any) => void) => {
+    // should only result in one combined re-render, not two
+    batch(() => {
+      dispatch(
+        deleteSection({
+          compositionId: compositionId,
+          startTimeSeconds: startTimeSeconds,
+          endTimeSeconds: endTimeSeconds,
+        })
+      );
+      dispatch(setSelection(null));
+    });
+  };
+}
 
 export type AppDispatch = ThunkDispatch<any, any, AnyAction>;
 export type RootState = ReturnType<typeof store.getState>;

@@ -14,7 +14,10 @@ export const selectionSlice = createSlice({
   name: "selection",
   initialState: { selection: null },
   reducers: {
-    setSelection: (state: SelectionState, action: PayloadAction<Selection>) => {
+    setSelection: (
+      state: SelectionState,
+      action: PayloadAction<Selection | null>
+    ) => {
       state.selection = action.payload;
     },
   },

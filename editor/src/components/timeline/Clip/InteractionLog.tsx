@@ -28,6 +28,7 @@ interface InteractionHandleProps {
 }
 
 const COALESCING_THRESHOLD = 1; // if two interactions are within 3 vws of one another, merge them into one
+const MIN_INTERACTION_DURATION_SECONDS = 0.1;
 
 function InteractionHandle(props: InteractionHandleProps) {
   const dragRef = useRef<HTMLDivElement | null>(null);
@@ -49,7 +50,7 @@ function InteractionHandle(props: InteractionHandleProps) {
     width: `calc(${scaleToScreen(
       viewport,
       interactionEndTime - interactionStartTime
-    )}vw + 0.75rem)`,
+    )}vw)`,
   };
   let displayText = "";
 
@@ -204,11 +205,13 @@ export function InteractionLog(props: InteractionLogProps) {
         startTime +
         offsetSeconds;
 
-      const interactionEndTime =
+      const interactionEndTime = Math.max(
         interactionCluster[interactionCluster.length - 1].timestampMillis /
           1000 -
-        startTime +
-        offsetSeconds;
+          startTime +
+          offsetSeconds,
+        interactionStartTime + MIN_INTERACTION_DURATION_SECONDS
+      );
 
       return (
         <InteractionHandle

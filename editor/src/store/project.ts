@@ -108,6 +108,12 @@ export function interactionDrag(
   };
 }
 
+interface DeleteSectionPayload {
+  compositionId: string;
+  startTimeSeconds: number;
+  endTimeSeconds: number;
+}
+
 export const projectSlice = createSlice({
   name: "playback",
   initialState: initialProject(),
@@ -186,6 +192,75 @@ export const projectSlice = createSlice({
       newCompositions.push(composition);
       state.compositions = newCompositions;
     },
+    deleteSection: (state, action: PayloadAction<DeleteSectionPayload>) => {
+      const composition = state.compositions.find(
+        (composition) => composition.id === action.payload.compositionId
+      );
+      if (!composition) {
+        console.warn("non-existent composition referenced in action payload");
+        return state;
+      }
+      const newClips = [];
+      let nextStartTime = 0;
+      for (const clip of composition.clips) {
+        const clipEndTime = nextStartTime + clip.durationSeconds;
+        // the clip is completely outside of the selection
+        if (
+          (nextStartTime < action.payload.startTimeSeconds &&
+            clipEndTime < action.payload.endTimeSeconds) ||
+          (nextStartTime > action.payload.startTimeSeconds &&
+            clipEndTime > action.payload.endTimeSeconds)
+        ) {
+          newClips.push(clip);
+          nextStartTime = clipEndTime;
+        } else if (
+          // the clip is completely within the selection so we don't even add the clip.
+          nextStartTime > action.payload.startTimeSeconds &&
+          clipEndTime < action.payload.endTimeSeconds
+        ) {
+          continue;
+        } else {
+          // things get hairy, either the selection is completely within the clip (cutting it in two) or the selection cuts off part of the clip.
+          let durationToAdd = 0;
+          if (
+            action.payload.startTimeSeconds > nextStartTime &&
+            action.payload.startTimeSeconds < clipEndTime
+          ) {
+            const newClipDuration =
+              action.payload.startTimeSeconds - nextStartTime;
+            newClips.push({
+              ...clip,
+              durationSeconds: action.payload.startTimeSeconds - nextStartTime,
+            });
+            durationToAdd += newClipDuration;
+          }
+          if (
+            action.payload.endTimeSeconds > nextStartTime &&
+            action.payload.endTimeSeconds < clipEndTime
+          ) {
+            const newClipDuration = clipEndTime - action.payload.endTimeSeconds;
+            newClips.push({
+              ...clip,
+              id: uuidv4(),
+              durationSeconds: newClipDuration,
+              sourceOffsetSeconds:
+                clip.sourceOffsetSeconds +
+                action.payload.endTimeSeconds -
+                nextStartTime,
+            });
+            durationToAdd += newClipDuration;
+          }
+          nextStartTime += durationToAdd;
+        }
+      }
+
+      composition.clips = newClips;
+      const newCompositions = state.compositions.filter(
+        (c) => c.id !== composition.id
+      );
+      newCompositions.push(composition);
+      state.compositions = newCompositions;
+    },
     loadInteractionFile: (
       state,
       action: PayloadAction<LoadInteractionFilePayload>
@@ -202,5 +277,5 @@ export const projectSlice = createSlice({
   },
 });
 
-export const { splitClip, updateClip, loadInteractionFile } =
+export const { splitClip, updateClip, loadInteractionFile, deleteSection } =
   projectSlice.actions;

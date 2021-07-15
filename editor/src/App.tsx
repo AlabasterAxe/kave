@@ -1,21 +1,27 @@
-import React, { useEffect } from "react";
+import React, { useCallback, useEffect } from "react";
+import { BrowserRouter, Route, Switch } from "react-router-dom";
 import "./App.css";
-import { BrowserRouter, Switch, Route } from "react-router-dom";
-import EditorView from "./views/EditorView";
-import { useAppDispatch } from "./store/hooks";
+import { useAppDispatch, useAppSelector } from "./store/hooks";
 import {
   nudgeBackward,
   nudgeForward,
   PlaybackStateSource,
   togglePlaybackState,
 } from "./store/playback";
-import { parseLog } from "../../common/parse-log";
+import {
+  deleteSelection,
+  selectComposition,
+  selectSelection,
+} from "./store/store";
+import EditorView from "./views/EditorView";
 
 function App() {
   const dispatch = useAppDispatch();
+  const selection = useAppSelector(selectSelection);
+  const activeComposition = useAppSelector(selectComposition);
 
-  useEffect(() => {
-    document.addEventListener("keyup", (e) => {
+  const handleKeyboardEvent = useCallback(
+    (e) => {
       switch (e.code) {
         case "Space":
           dispatch(
@@ -28,20 +34,26 @@ function App() {
         case "ArrowRight":
           dispatch(nudgeForward({ source: PlaybackStateSource.keyboard }));
           break;
+        case "Delete":
+          if (selection) {
+            dispatch(
+              deleteSelection({
+                compositionId: activeComposition.id,
+                startTimeSeconds: selection.startTimeSeconds,
+                endTimeSeconds: selection.endTimeSeconds,
+              })
+            );
+          }
+          break;
       }
-      if (e.code === "Space") {
-      }
-    });
-  }, [dispatch]);
+    },
+    [dispatch, selection, activeComposition]
+  );
 
   useEffect(() => {
-    fetch("test_video.log")
-      .then((resp: Response) => resp.text())
-      .then((log) => {
-        parseLog(log);
-      })
-      .catch(() => {});
-  }, []);
+    document.addEventListener("keyup", handleKeyboardEvent);
+    return () => document.removeEventListener("keyup", handleKeyboardEvent);
+  }, [handleKeyboardEvent]);
 
   return (
     <BrowserRouter>
