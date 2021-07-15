@@ -1,4 +1,4 @@
-import { useEffect, useRef } from "react";
+import { useEffect, useRef, useState } from "react";
 import { DraggableCore } from "react-draggable";
 import {
   InteractionLogFile,
@@ -6,65 +6,109 @@ import {
   UserInteraction,
 } from "../../../../../common/model";
 import { parseLog } from "../../../../../common/parse-log";
-import { useAppDispatch } from "../../../store/hooks";
+import { useAppDispatch, useAppSelector } from "../../../store/hooks";
 import { loadInteractionFile } from "../../../store/project";
-import { scaleToScreen } from "../../../util/timeline-transformer";
+import { setSelection } from "../../../store/selection";
+import { selectSelection } from "../../../store/store";
+import {
+  scaleToScreen,
+  transformToScreen,
+} from "../../../util/timeline-transformer";
 
 interface InteractionHandleProps {
-  onInteractionDragStart: (time: number) => void;
-  onInteractionDragUpdate: (xLocPx: number) => void;
-  onInteractionDragEnd: () => void;
+  onDragStart: (time: number) => void;
+  onDragUpdate: (xLocPx: number) => void;
+  onDragEnd: () => void;
+  onClick: (e: any) => void;
   timelineElement: HTMLElement;
-  interactionTime: number;
-  userInteraction: UserInteraction;
+  interactionStartTime: number;
+  interactionEndTime: number;
+  userInteractions: UserInteraction[];
   viewport: TimelineViewport;
 }
 
+const COALESCING_THRESHOLD = 1; // if two interactions are within 3 vws of one another, merge them into one
+
 function InteractionHandle(props: InteractionHandleProps) {
   const dragRef = useRef<HTMLDivElement | null>(null);
+  const [dragging, setDragging] = useState(false);
   const {
-    onInteractionDragStart,
-    onInteractionDragUpdate,
-    onInteractionDragEnd,
+    onDragStart,
+    onDragUpdate,
+    onDragEnd,
+    onClick,
     timelineElement,
-    interactionTime,
-    userInteraction,
+    interactionStartTime,
+    interactionEndTime,
+    userInteractions,
     viewport,
   } = props;
   const interactionStyle = {
-    left: `${scaleToScreen(viewport, interactionTime)}vw`,
+    left: `${scaleToScreen(viewport, interactionStartTime)}vw`,
     cursor: "grab",
+    width: `calc(${scaleToScreen(
+      viewport,
+      interactionEndTime - interactionStartTime
+    )}vw + 0.75rem)`,
   };
-  let displayText = userInteraction.type;
-  switch (displayText) {
-    case "BACKSPACE":
-      displayText = "⌫";
-      break;
-    case "SPACE":
-      displayText = " ";
-      break;
+  let displayText = "";
+
+  for (const userInteraction of userInteractions) {
+    switch (userInteraction.type) {
+      case "BACKSPACE":
+        displayText += "‹";
+        break;
+      case "SPACE":
+        displayText += "•";
+        break;
+      case "SHIFT":
+        displayText += "⇧";
+        break;
+      default:
+        displayText += userInteraction.type;
+    }
   }
+
   return (
     <DraggableCore
       nodeRef={dragRef}
       offsetParent={timelineElement}
-      onStart={() => onInteractionDragStart(interactionTime)}
-      onDrag={(e, data) => onInteractionDragUpdate(data.x)}
-      onStop={onInteractionDragEnd}
+      onStart={() => onDragStart(interactionStartTime)}
+      onDrag={(e, data) => {
+        onDragUpdate(data.x);
+        setDragging(true);
+      }}
+      onStop={(e) => {
+        if (dragging) {
+          onDragEnd();
+          setDragging(false);
+        } else {
+          onClick(e);
+        }
+      }}
     >
       <div
         style={interactionStyle}
-        className="h-full w-3 bg-green-300 absolute"
+        className={[
+          "h-full",
+          "rounded-t-lg",
+          "border",
+          "border-b-0",
+          "border-gray-400",
+          "bg-white",
+          "absolute",
+        ].join(" ")}
         ref={dragRef}
+        title={displayText}
       >
-        <div className="timeline-interaction-text">{displayText}</div>
+        <div className="truncate">{displayText}</div>
       </div>
     </DraggableCore>
   );
 }
 
 export interface InteractionLogProps {
-  // TODO: this is kind of gross, potentially we should be passing it the whole clip or getting more
+  // TODO: it's kind of gross how many props we need to pass into this component, potentially we should be passing it the whole clip or getting more
   // stuff from state
   offsetSeconds: number;
   viewport: TimelineViewport;
@@ -80,6 +124,7 @@ export interface InteractionLogProps {
 }
 
 export function InteractionLog(props: InteractionLogProps) {
+  const selection = useAppSelector(selectSelection);
   const {
     file,
     offsetSeconds,
@@ -90,6 +135,7 @@ export function InteractionLog(props: InteractionLogProps) {
     onInteractionDragEnd,
     timelineElement,
     clipId,
+    clipStartTimeSeconds,
   } = props;
   const dispatch = useAppDispatch();
   useEffect(() => {
@@ -114,29 +160,94 @@ export function InteractionLog(props: InteractionLogProps) {
   }
   const log = file.userInteractionLog!.log;
   const startTime = log[0].timestampMillis / 1000;
-  const userInteractionDom = log
-    .filter((interaction) => {
-      const interactionTime =
-        interaction.timestampMillis / 1000 - startTime + offsetSeconds;
-      return interactionTime >= 0 && interactionTime < clipDurationSeconds;
-    })
-    .map((interaction) => {
-      const interactionTime =
-        interaction.timestampMillis / 1000 - startTime + offsetSeconds;
+  const visibleUserInteractions = log.filter((interaction) => {
+    const interactionTime =
+      interaction.timestampMillis / 1000 - startTime + offsetSeconds;
+    return (
+      interactionTime >= 0 &&
+      interactionTime < clipDurationSeconds &&
+      clipStartTimeSeconds + interactionTime > viewport.startTimeSeconds &&
+      clipStartTimeSeconds + interactionTime < viewport.endTimeSeconds
+    );
+  });
+
+  const coalescedInteractions: UserInteraction[][] = [];
+  let currentCluster: UserInteraction[] = [];
+  let prevInteractionScreenPosition = null;
+  for (const interaction of visibleUserInteractions) {
+    const interactionTime =
+      interaction.timestampMillis / 1000 - startTime + offsetSeconds;
+    const interactionScreenPosition = transformToScreen(
+      viewport,
+      interactionTime
+    );
+    if (
+      !prevInteractionScreenPosition ||
+      interactionScreenPosition - prevInteractionScreenPosition <
+        COALESCING_THRESHOLD
+    ) {
+      currentCluster.push(interaction);
+    } else {
+      coalescedInteractions.push(currentCluster);
+      currentCluster = [interaction];
+    }
+    prevInteractionScreenPosition = interactionScreenPosition;
+  }
+  if (currentCluster.length) {
+    coalescedInteractions.push(currentCluster);
+  }
+
+  const userInteractionDom = coalescedInteractions.map(
+    (interactionCluster: UserInteraction[]) => {
+      const interactionStartTime =
+        interactionCluster[0].timestampMillis / 1000 -
+        startTime +
+        offsetSeconds;
+
+      const interactionEndTime =
+        interactionCluster[interactionCluster.length - 1].timestampMillis /
+          1000 -
+        startTime +
+        offsetSeconds;
 
       return (
         <InteractionHandle
-          key={`${clipId}-${interaction.timestampMillis}`}
-          interactionTime={interactionTime}
-          onInteractionDragEnd={onInteractionDragEnd}
-          onInteractionDragStart={onInteractionDragStart}
-          onInteractionDragUpdate={onInteractionDragUpdate}
+          key={`${clipId}-${interactionCluster[0].timestampMillis}`}
+          interactionStartTime={interactionStartTime}
+          interactionEndTime={interactionEndTime}
+          onDragEnd={onInteractionDragEnd}
+          onDragStart={onInteractionDragStart}
+          onDragUpdate={onInteractionDragUpdate}
+          onClick={(e) => {
+            if (e.shiftKey && selection) {
+              dispatch(
+                setSelection({
+                  startTimeSeconds: Math.min(
+                    selection.startTimeSeconds,
+                    clipStartTimeSeconds + interactionStartTime
+                  ),
+                  endTimeSeconds: Math.max(
+                    selection.endTimeSeconds,
+                    clipStartTimeSeconds + interactionEndTime
+                  ),
+                })
+              );
+            } else {
+              dispatch(
+                setSelection({
+                  startTimeSeconds: clipStartTimeSeconds + interactionStartTime,
+                  endTimeSeconds: clipStartTimeSeconds + interactionEndTime,
+                })
+              );
+            }
+          }}
           timelineElement={timelineElement}
-          userInteraction={interaction}
+          userInteractions={interactionCluster}
           viewport={viewport}
         />
       );
-    });
+    }
+  );
   return (
     <div className="h-full w-full flex relative">{userInteractionDom}</div>
   );

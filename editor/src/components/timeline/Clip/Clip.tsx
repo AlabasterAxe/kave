@@ -76,8 +76,8 @@ export default function ClipComponent(props: ClipProps) {
   }
   return (
     <>
-      <div className="h-1/2">{interactionTrack}</div>
-      <div className="h-1/2">{videoTrack}</div>
+      <div className="h-1/3">{interactionTrack}</div>
+      <div className="h-2/3">{videoTrack}</div>
     </>
   );
 }

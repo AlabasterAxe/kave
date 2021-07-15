@@ -65,7 +65,6 @@ export interface Clip {
 export interface Composition {
   id: string;
   clips: Clip[];
-  durationSeconds: number;
 }
 
 export interface Project {

@@ -28,12 +28,11 @@ function initialProject(): Project {
         clips: [
           {
             id: clipId1,
-            durationSeconds: 7.5,
+            durationSeconds: 60,
             sourceId: sequenceId,
             sourceOffsetSeconds: 0,
           },
         ],
-        durationSeconds: 7.5,
       },
     ],
     files: [

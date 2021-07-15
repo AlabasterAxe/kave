@@ -8,6 +8,7 @@ import {
   selectComposition,
   selectPlayback,
   selectProject,
+  selectSelection,
 } from "../../store/store";
 import {
   scaleToScreen,
@@ -33,23 +34,45 @@ export function Timeline() {
     useAppSelector(selectComposition);
   const playback = useAppSelector(selectPlayback);
   const project = useAppSelector(selectProject);
+  const selection = useAppSelector(selectSelection);
   const [dragOperation, setDragOperation] = useState<DragOperation | null>(
     null
   );
   const composition = project.compositions.find(
     (c: Composition) => c.id === activeComposition.id
   );
+  const compositionDurationSeconds: number = composition!.clips.reduce(
+    (acc: number, clip: Clip) => clip.durationSeconds + acc,
+    0
+  );
   const dispatch = useAppDispatch();
   const [viewport, setViewport] = useState<TimelineViewport>({
     startTimeSeconds: 0,
-    endTimeSeconds: composition!.durationSeconds,
+    endTimeSeconds: compositionDurationSeconds,
   });
   const timelineRef = useRef<HTMLDivElement | null>(null);
   const playheadStyle = {
-    transform: `translate(${transformToScreen(
+    transform: `translateX(${transformToScreen(
       viewport,
       playback.currentTimeSeconds
-    )}vw, 0)`,
+    )}vw)`,
+  };
+
+  const selectionStyle = {
+    left: selection
+      ? `${transformToScreen(viewport, selection.startTimeSeconds)}vw`
+      : 0,
+    width: selection
+      ? `${scaleToScreen(
+          viewport,
+          selection.endTimeSeconds - selection.startTimeSeconds
+        )}vw`
+      : 0,
+  };
+
+  const timelineStyle = {
+    left: `${transformToScreen(viewport, 0)}vw`,
+    width: `${scaleToScreen(viewport, compositionDurationSeconds)}vw`,
   };
 
   const scrubHandler = (e: any) => {
@@ -59,7 +82,7 @@ export function Timeline() {
       updatePlayhead({
         currentTimeSeconds: Math.min(
           Math.max(0, transformToTimeline(viewport, x / rect.width)),
-          composition!.durationSeconds
+          compositionDurationSeconds
         ),
         source: PlaybackStateSource.timeline,
       })
@@ -260,15 +283,22 @@ export function Timeline() {
   return (
     <div
       ref={timelineRef}
-      className="w-full h-full bg-yellow-200 relative flex flex-col"
+      className="w-full h-full bg-gray-200 relative flex flex-col"
       onClick={scrubHandler}
       onWheel={zoomHandler}
     >
+      <div style={timelineStyle} className="h-full absolute bg-gray-100"></div>
+      <div className="h-full w-full flex relative">{clips}</div>
+      {selection && (
+        <div
+          style={selectionStyle}
+          className="h-full absolute bg-blue-400 bg-opacity-30"
+        ></div>
+      )}
       <div
         style={playheadStyle}
-        className="w-1 h-full bg-red-500 absolute "
+        className="w-0.5 h-full bg-red-500 absolute"
       ></div>
-      <div className="h-full w-full flex relative">{clips}</div>
     </div>
   );
 }
