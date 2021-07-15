@@ -66,9 +66,9 @@ export default function ClipComponent(props: ClipProps) {
             clipStartTimeSeconds={props.clipStartTime}
             clipDurationSeconds={clip.durationSeconds}
             timelineElement={props.timelineElement}
-            onInteractionDragStart={onInteractionDragStart}
-            onInteractionDragUpdate={onInteractionDragUpdate}
-            onInteractionDragEnd={onInteractionDragEnd}
+            onDragStart={onInteractionDragStart}
+            onDragUpdate={onInteractionDragUpdate}
+            onDragEnd={onInteractionDragEnd}
             clipId={clip.id}
           />
         );

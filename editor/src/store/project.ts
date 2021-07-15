@@ -207,8 +207,8 @@ export const projectSlice = createSlice({
         // the clip is completely outside of the selection
         if (
           (nextStartTime < action.payload.startTimeSeconds &&
-            clipEndTime < action.payload.endTimeSeconds) ||
-          (nextStartTime > action.payload.startTimeSeconds &&
+            clipEndTime < action.payload.startTimeSeconds) ||
+          (nextStartTime > action.payload.endTimeSeconds &&
             clipEndTime > action.payload.endTimeSeconds)
         ) {
           newClips.push(clip);

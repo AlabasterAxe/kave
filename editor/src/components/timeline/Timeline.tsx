@@ -157,7 +157,7 @@ export function Timeline() {
       const localTimelineLocationSeconds =
         globalTimelineLocationSeconds - clipStartTime;
       setDragOperation({
-        clipId: clipId,
+        clipId: dragOperation.clipId,
         relativeSplitTimeSeconds: dragOperation.relativeSplitTimeSeconds,
         dragAmountSeconds: Math.min(
           localTimelineLocationSeconds - dragOperation.relativeSplitTimeSeconds,
@@ -184,8 +184,8 @@ export function Timeline() {
           {
             ...priorClip,
             durationSeconds:
-              dragOperation.relativeSplitTimeSeconds +
-              dragOperation.dragAmountSeconds,
+              (dragOperation.relativeSplitTimeSeconds ||
+                priorClip.durationSeconds) + dragOperation.dragAmountSeconds,
           }
         )
       );

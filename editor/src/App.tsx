@@ -8,6 +8,7 @@ import {
   PlaybackStateSource,
   togglePlaybackState,
 } from "./store/playback";
+import { setSelection } from "./store/selection";
 import {
   deleteSelection,
   selectComposition,
@@ -33,6 +34,9 @@ function App() {
           break;
         case "ArrowRight":
           dispatch(nudgeForward({ source: PlaybackStateSource.keyboard }));
+          break;
+        case "Escape":
+          dispatch(setSelection(null));
           break;
         case "Delete":
           if (selection) {

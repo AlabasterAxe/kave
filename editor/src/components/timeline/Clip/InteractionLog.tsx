@@ -95,7 +95,7 @@ function InteractionHandle(props: InteractionHandleProps) {
           "rounded-t-lg",
           "border",
           "border-b-0",
-          "border-gray-400",
+          "border-gray-300",
           "bg-white",
           "absolute",
         ].join(" ")}
@@ -119,9 +119,9 @@ export interface InteractionLogProps {
   timelineElement: HTMLElement;
   clipId: string;
   file: InteractionLogFile;
-  onInteractionDragStart: (time: number) => void;
-  onInteractionDragUpdate: (delta: number) => void;
-  onInteractionDragEnd: () => void;
+  onDragStart: (time: number) => void;
+  onDragUpdate: (delta: number) => void;
+  onDragEnd: () => void;
 }
 
 export function InteractionLog(props: InteractionLogProps) {
@@ -131,9 +131,9 @@ export function InteractionLog(props: InteractionLogProps) {
     offsetSeconds,
     viewport,
     clipDurationSeconds,
-    onInteractionDragStart,
-    onInteractionDragUpdate,
-    onInteractionDragEnd,
+    onDragStart,
+    onDragUpdate,
+    onDragEnd,
     timelineElement,
     clipId,
     clipStartTimeSeconds,
@@ -218,9 +218,9 @@ export function InteractionLog(props: InteractionLogProps) {
           key={`${clipId}-${interactionCluster[0].timestampMillis}`}
           interactionStartTime={interactionStartTime}
           interactionEndTime={interactionEndTime}
-          onDragEnd={onInteractionDragEnd}
-          onDragStart={onInteractionDragStart}
-          onDragUpdate={onInteractionDragUpdate}
+          onDragEnd={onDragEnd}
+          onDragStart={onDragStart}
+          onDragUpdate={onDragUpdate}
           onClick={(e) => {
             if (e.shiftKey && selection) {
               dispatch(
