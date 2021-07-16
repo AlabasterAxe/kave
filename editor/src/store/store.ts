@@ -9,10 +9,11 @@ import { deleteSection, projectSlice, tightenSection } from "./project";
 import thunk, { ThunkAction, ThunkDispatch } from "redux-thunk";
 import { selectionSlice, setSelection } from "./selection";
 import { batch } from "react-redux";
+import undoable from "redux-undo";
 
 export const selectComposition = (state: RootState) => state.composition;
 export const selectPlayback = (state: RootState) => state.playback;
-export const selectProject = (state: RootState) => state.project;
+export const selectProject = (state: RootState) => state.project.present;
 export const selectSelection = (state: RootState) => state.selection.selection;
 
 // TODO: figure out how to get better typings for the store slices
@@ -20,7 +21,7 @@ export const store = configureStore({
   reducer: {
     composition: compositionSlice.reducer,
     playback: playbackSlice.reducer,
-    project: projectSlice.reducer,
+    project: undoable(projectSlice.reducer),
     selection: selectionSlice.reducer,
   },
   middleware: [thunk],

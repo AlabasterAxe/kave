@@ -16,6 +16,7 @@ import {
   tightenSelection,
 } from "./store/store";
 import EditorView from "./views/EditorView";
+import { ActionCreators } from "redux-undo";
 
 function App() {
   const dispatch = useAppDispatch();
@@ -60,6 +61,11 @@ function App() {
               endTimeSeconds: selection.endTimeSeconds,
             })
           );
+          break;
+        case "z":
+          if (e.ctrlKey) {
+            dispatch(ActionCreators.undo());
+          }
       }
     },
     [dispatch, selection, activeComposition]
