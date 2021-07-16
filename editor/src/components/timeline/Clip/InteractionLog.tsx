@@ -25,6 +25,7 @@ interface InteractionHandleProps {
   interactionEndTime: number;
   userInteractions: UserInteraction[];
   viewport: TimelineViewport;
+  clipStartTimeSeconds: number;
 }
 
 const COALESCING_THRESHOLD = 1; // if two interactions are within 3 vws of one another, merge them into one
@@ -51,6 +52,7 @@ function InteractionHandle(props: InteractionHandleProps) {
       viewport,
       interactionEndTime - interactionStartTime
     )}vw)`,
+    height: "33.333%",
   };
   let displayText = "";
 
@@ -247,11 +249,10 @@ export function InteractionLog(props: InteractionLogProps) {
           timelineElement={timelineElement}
           userInteractions={interactionCluster}
           viewport={viewport}
+          clipStartTimeSeconds={clipStartTimeSeconds}
         />
       );
     }
   );
-  return (
-    <div className="h-full w-full flex relative">{userInteractionDom}</div>
-  );
+  return <>{userInteractionDom}</>;
 }
