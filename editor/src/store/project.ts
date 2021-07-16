@@ -7,12 +7,16 @@ import {
 import {
   Clip,
   FileType,
+  KaveFile,
   Project,
+  Sequence,
   UserInteractionLog,
 } from "../../../common/model";
 import { v4 as uuidv4 } from "uuid";
 import { batch } from "react-redux";
 import { RootState } from "./store";
+
+const INTERACTION_DURATION_SECONDS = 0.1;
 
 function initialProject(): Project {
   const fileId = uuidv4();
@@ -113,6 +117,94 @@ interface DeleteSectionPayload {
   startTimeSeconds: number;
   endTimeSeconds: number;
 }
+
+interface TightenSectionPayload {
+  compositionId: string;
+  startTimeSeconds: number;
+  endTimeSeconds: number;
+}
+
+interface ClipTighteningResult {
+  clips: Clip[];
+  nextClipStartSeconds: number;
+}
+
+const getTightenedClips = (
+  clip: Clip,
+  interactionLog: UserInteractionLog,
+  interactionLogAlignmentSeconds: number,
+  startTimeSeconds?: number,
+  endTimeSeconds?: number
+): ClipTighteningResult => {
+  const tightenedClips: Clip[] = [];
+  let durationSoFar = 0;
+  if (startTimeSeconds) {
+    tightenedClips.push({ ...clip, durationSeconds: startTimeSeconds });
+    durationSoFar = startTimeSeconds;
+  }
+  const startTime = interactionLog.log[0].timestampMillis;
+  const interactionLogOffset =
+    interactionLogAlignmentSeconds - clip.sourceOffsetSeconds;
+
+  let interactionLogIndex = 0;
+  let interactionLogTime = interactionLogOffset;
+  while (interactionLogTime < durationSoFar) {
+    interactionLogIndex++;
+    interactionLogTime =
+      (interactionLog.log[interactionLogIndex].timestampMillis - startTime) /
+        1000 +
+      interactionLogOffset;
+  }
+
+  while (interactionLogTime < clip.durationSeconds) {
+    if (endTimeSeconds && interactionLogTime >= endTimeSeconds) {
+      tightenedClips.push({
+        ...clip,
+        id: uuidv4(),
+        durationSeconds: clip.durationSeconds - endTimeSeconds,
+        sourceOffsetSeconds: clip.sourceOffsetSeconds + endTimeSeconds,
+      });
+      break;
+    }
+
+    interactionLogTime =
+      (interactionLog.log[interactionLogIndex].timestampMillis - startTime) /
+        1000 +
+      interactionLogOffset;
+    let newInteractionClipEndTime = interactionLogTime;
+    let nextInteractionGap = 0;
+    while (
+      (!endTimeSeconds || newInteractionClipEndTime < endTimeSeconds) &&
+      interactionLogIndex <= interactionLog.log.length - 1 &&
+      nextInteractionGap < INTERACTION_DURATION_SECONDS
+    ) {
+      const currentInteractionTime =
+        (interactionLog.log[interactionLogIndex].timestampMillis - startTime) /
+          1000 +
+        interactionLogOffset;
+      newInteractionClipEndTime =
+        currentInteractionTime + INTERACTION_DURATION_SECONDS;
+      interactionLogIndex++;
+      if (interactionLogIndex <= interactionLog.log.length - 1) {
+        const nextInteractionTime =
+          (interactionLog.log[interactionLogIndex].timestampMillis -
+            startTime) /
+            1000 +
+          interactionLogOffset;
+        nextInteractionGap = nextInteractionTime - currentInteractionTime;
+      }
+    }
+
+    tightenedClips.push({
+      ...clip,
+      id: uuidv4(),
+      durationSeconds: newInteractionClipEndTime - interactionLogTime,
+      sourceOffsetSeconds: interactionLogTime,
+    });
+    durationSoFar += newInteractionClipEndTime - interactionLogTime;
+  }
+  return { clips: tightenedClips, nextClipStartSeconds: durationSoFar };
+};
 
 export const projectSlice = createSlice({
   name: "playback",
@@ -261,6 +353,102 @@ export const projectSlice = createSlice({
       newCompositions.push(composition);
       state.compositions = newCompositions;
     },
+    tightenSection: (state, action: PayloadAction<TightenSectionPayload>) => {
+      const composition = state.compositions.find(
+        (composition) => composition.id === action.payload.compositionId
+      );
+      if (!composition) {
+        console.warn("non-existent composition referenced in action payload");
+        return state;
+      }
+      let newClips: Clip[] = [];
+      let nextStartTime = 0;
+      for (const clip of composition.clips) {
+        const clipEndTime = nextStartTime + clip.durationSeconds;
+        let file = state.files.find((f: KaveFile) => f.id === clip.sourceId);
+        if (file) {
+          newClips.push(clip);
+          continue;
+        }
+
+        const seq = state.sequences.find(
+          (s: Sequence) => s.id === clip.sourceId
+        );
+        if (!seq) {
+          continue;
+        }
+
+        let userInteractionLog: UserInteractionLog | null = null;
+        let userInteractionLogAlignment: number | null = null;
+        for (const track of seq.tracks) {
+          const trackFile: KaveFile | undefined = state.files.find(
+            (f: KaveFile) => f.id === track.fileId
+          );
+          if (!trackFile) {
+            continue;
+          }
+          if (trackFile.type === FileType.interaction_log) {
+            userInteractionLog = trackFile.userInteractionLog!;
+            userInteractionLogAlignment = track.alignmentSeconds;
+            break;
+          }
+        }
+
+        // the clip is completely outside of the selection
+        if (
+          (nextStartTime < action.payload.startTimeSeconds &&
+            clipEndTime < action.payload.startTimeSeconds) ||
+          (nextStartTime > action.payload.endTimeSeconds &&
+            clipEndTime > action.payload.endTimeSeconds)
+        ) {
+          newClips.push(clip);
+          nextStartTime = clipEndTime;
+        } else if (
+          nextStartTime > action.payload.startTimeSeconds &&
+          clipEndTime < action.payload.endTimeSeconds
+        ) {
+          const result = getTightenedClips(
+            clip,
+            userInteractionLog!,
+            userInteractionLogAlignment!
+          );
+          newClips = newClips.concat(result.clips);
+          nextStartTime = result.nextClipStartSeconds;
+        } else {
+          // things get hairy, either the selection is completely within the clip (cutting it in two) or the selection cuts off part of the clip.
+          let startTimeSeconds: number | undefined;
+          let endTimeSeconds: number | undefined;
+          if (
+            action.payload.startTimeSeconds > nextStartTime &&
+            action.payload.startTimeSeconds < clipEndTime
+          ) {
+            startTimeSeconds = action.payload.startTimeSeconds;
+          }
+          if (
+            action.payload.endTimeSeconds > nextStartTime &&
+            action.payload.endTimeSeconds < clipEndTime
+          ) {
+            endTimeSeconds = action.payload.endTimeSeconds;
+          }
+          const result = getTightenedClips(
+            clip,
+            userInteractionLog!,
+            userInteractionLogAlignment!,
+            startTimeSeconds,
+            endTimeSeconds
+          );
+          newClips = newClips.concat(result.clips);
+          nextStartTime = result.nextClipStartSeconds;
+        }
+      }
+
+      composition.clips = newClips;
+      const newCompositions = state.compositions.filter(
+        (c) => c.id !== composition.id
+      );
+      newCompositions.push(composition);
+      state.compositions = newCompositions;
+    },
     loadInteractionFile: (
       state,
       action: PayloadAction<LoadInteractionFilePayload>
@@ -277,5 +465,10 @@ export const projectSlice = createSlice({
   },
 });
 
-export const { splitClip, updateClip, loadInteractionFile, deleteSection } =
-  projectSlice.actions;
+export const {
+  splitClip,
+  updateClip,
+  loadInteractionFile,
+  deleteSection,
+  tightenSection,
+} = projectSlice.actions;

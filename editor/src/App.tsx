@@ -13,6 +13,7 @@ import {
   deleteSelection,
   selectComposition,
   selectSelection,
+  tightenSelection,
 } from "./store/store";
 import EditorView from "./views/EditorView";
 
@@ -49,6 +50,16 @@ function App() {
             );
           }
           break;
+      }
+      switch (e.key) {
+        case "t":
+          dispatch(
+            tightenSelection({
+              compositionId: activeComposition.id,
+              startTimeSeconds: selection.startTimeSeconds,
+              endTimeSeconds: selection.endTimeSeconds,
+            })
+          );
       }
     },
     [dispatch, selection, activeComposition]

@@ -5,7 +5,7 @@ import {
 } from "@reduxjs/toolkit";
 import { playbackSlice } from "./playback";
 import { compositionSlice } from "./composition";
-import { deleteSection, projectSlice } from "./project";
+import { deleteSection, projectSlice, tightenSection } from "./project";
 import thunk, { ThunkAction, ThunkDispatch } from "redux-thunk";
 import { selectionSlice, setSelection } from "./selection";
 import { batch } from "react-redux";
@@ -40,6 +40,30 @@ export function deleteSelection({
     batch(() => {
       dispatch(
         deleteSection({
+          compositionId: compositionId,
+          startTimeSeconds: startTimeSeconds,
+          endTimeSeconds: endTimeSeconds,
+        })
+      );
+      dispatch(setSelection(null));
+    });
+  };
+}
+
+export function tightenSelection({
+  compositionId,
+  startTimeSeconds,
+  endTimeSeconds,
+}: {
+  compositionId: string;
+  startTimeSeconds: number;
+  endTimeSeconds: number;
+}): ThunkAction<void, RootState, unknown, AnyAction> {
+  return (dispatch: (action: any) => void) => {
+    // should only result in one combined re-render, not two
+    batch(() => {
+      dispatch(
+        tightenSection({
           compositionId: compositionId,
           startTimeSeconds: startTimeSeconds,
           endTimeSeconds: endTimeSeconds,
