@@ -54,7 +54,7 @@ export default function ClipComponent(props: ClipProps) {
 
     switch (trackFile.type) {
       case FileType.video:
-        videoTrack = <VideoClip clip={clip} />;
+        videoTrack = <VideoClip clip={clip} interaction />;
         break;
       case FileType.interaction_log:
         interactionTrack = (
@@ -76,8 +76,8 @@ export default function ClipComponent(props: ClipProps) {
   }
   return (
     <>
-      <div className="h-1/3">{interactionTrack}</div>
-      <div className="h-2/3">{videoTrack}</div>
+      {interactionTrack}
+      {videoTrack}
     </>
   );
 }

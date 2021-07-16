@@ -59,9 +59,12 @@ export function Timeline() {
   };
 
   const selectionStyle = {
-    left: selection
-      ? `${transformToScreen(viewport, selection.startTimeSeconds)}vw`
-      : 0,
+    transform: selection
+      ? `translateX(${transformToScreen(
+          viewport,
+          selection.startTimeSeconds
+        )}vw)`
+      : `translateX(0px)`,
     width: selection
       ? `${scaleToScreen(
           viewport,
@@ -71,7 +74,7 @@ export function Timeline() {
   };
 
   const timelineStyle = {
-    left: `${transformToScreen(viewport, 0)}vw`,
+    transform: `translateX(${transformToScreen(viewport, 0)}vw)`,
     width: `${scaleToScreen(viewport, compositionDurationSeconds)}vw`,
   };
 
@@ -209,7 +212,10 @@ export function Timeline() {
               viewport,
               clipDurationSeconds ?? clip.durationSeconds
             ) + "vw",
-          left: transformToScreen(viewport, clipStartTimeSeconds) + "vw",
+          transform: `translateX(${transformToScreen(
+            viewport,
+            clipStartTimeSeconds
+          )}vw)`,
         }}
       >
         <ClipComponent

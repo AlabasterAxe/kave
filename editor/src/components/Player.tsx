@@ -1,4 +1,10 @@
-import { MutableRefObject, useEffect, useRef, useState } from "react";
+import {
+  MutableRefObject,
+  useCallback,
+  useEffect,
+  useRef,
+  useState,
+} from "react";
 import VideoContext from "videocontext";
 import { Composition, FileType, Project } from "../../../common/model";
 import { useAppDispatch, useAppSelector } from "../store/hooks";
@@ -71,6 +77,13 @@ function Player() {
   );
   const dispatch = useAppDispatch();
 
+  const resizeCallback = useCallback(() => {
+    if (canvasRef.current) {
+      canvasRef.current.width = canvasRef.current.clientWidth;
+      canvasRef.current.height = canvasRef.current.clientHeight;
+    }
+  }, [canvasRef]);
+
   useEffect(() => {
     const context = canvasRef.current?.getContext("webgl");
 
@@ -123,15 +136,16 @@ function Player() {
     }
   }, [ctx, playback]);
 
+  useEffect(() => {
+    window.addEventListener("resize", resizeCallback);
+    return () => window.removeEventListener("resize", resizeCallback);
+  }, [resizeCallback]);
+
   return (
-    <>
-      <canvas
-        className="m-auto"
-        ref={canvasRef}
-        width="1000"
-        height="562"
-      ></canvas>
-    </>
+    <canvas
+      className="m-auto h-full aspect-w-16 aspect-h-9"
+      ref={canvasRef}
+    ></canvas>
   );
 }
 

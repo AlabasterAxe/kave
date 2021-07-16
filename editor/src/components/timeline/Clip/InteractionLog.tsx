@@ -46,7 +46,7 @@ function InteractionHandle(props: InteractionHandleProps) {
     viewport,
   } = props;
   const interactionStyle = {
-    left: `${scaleToScreen(viewport, interactionStartTime)}vw`,
+    transform: `translateX(${scaleToScreen(viewport, interactionStartTime)}vw)`,
     cursor: "grab",
     width: `calc(${scaleToScreen(
       viewport,
