@@ -3,7 +3,7 @@ import { Clip, Composition, TimelineViewport } from "../../../../common/model";
 import { ActiveComposition } from "../../store/composition";
 import { useAppDispatch, useAppSelector } from "../../store/hooks";
 import { PlaybackStateSource, updatePlayhead } from "../../store/playback";
-import { interactionDrag } from "../../store/project";
+import { deleteSection, deleteSectionFromClips } from "../../store/project";
 import {
   selectComposition,
   selectPlayback,
@@ -21,12 +21,11 @@ const CLIP_SPLIT_THRESHOLD = 0.05;
 const MIN_VIEWPORT_SPAN = 0.05;
 
 export interface DragOperation {
-  clipId: string;
   // this is the point in the original clip that the user started dragging on
   // e.g. if the user clicks on an interaction that occurred 2 seconds into the clip, this value will be 2
   // this can be null if the drags an interaction that is aligned to the start of the clip
-  relativeSplitTimeSeconds: number;
-  dragAmountSeconds: number;
+  dragStartTimeSeconds: number;
+  currentDragTimeSeconds: number;
 }
 
 export function Timeline() {
@@ -116,55 +115,25 @@ export function Timeline() {
     }
   };
 
-  const getClipStartTimeSeconds = (clipId: string): number => {
-    let clipStartTimeSeconds = 0;
-    for (const clip of composition!.clips) {
-      if (clip.id === clipId) {
-        break;
-      }
-      clipStartTimeSeconds += clip.durationSeconds;
-    }
-    return clipStartTimeSeconds;
-  };
-
-  const onInteractionDragStart = (
-    clipId: string,
-    relativeHandleTimeSeconds: number
-  ) => {
+  const onInteractionDragStart = (dragStartSeconds: number) => {
     // this means the user is dragging an interaction that is aligned to the start of the clip
-    if (relativeHandleTimeSeconds <= 0) {
-      const clips = composition!.clips;
-      const prevClipId =
-        clips[clips.findIndex((c: Clip) => c.id === clipId) - 1].id;
-      setDragOperation({
-        clipId: prevClipId,
-        relativeSplitTimeSeconds: 0,
-        dragAmountSeconds: 0,
-      });
-    } else {
-      setDragOperation({
-        clipId: clipId,
-        relativeSplitTimeSeconds: relativeHandleTimeSeconds,
-        dragAmountSeconds: 0,
-      });
-    }
+    setDragOperation({
+      dragStartTimeSeconds: dragStartSeconds,
+      currentDragTimeSeconds: 0,
+    });
   };
 
-  const onInteractionDragUpdate = (clipId: string, dragLocPx: number) => {
-    const clipStartTime = getClipStartTimeSeconds(clipId);
+  const onInteractionDragUpdate = (dragLocPx: number) => {
     if (dragOperation) {
       const globalTimelineLocationSeconds = transformToTimeline(
         viewport,
         dragLocPx / window.innerWidth
       );
-      const localTimelineLocationSeconds =
-        globalTimelineLocationSeconds - clipStartTime;
       setDragOperation({
-        clipId: dragOperation.clipId,
-        relativeSplitTimeSeconds: dragOperation.relativeSplitTimeSeconds,
-        dragAmountSeconds: Math.min(
-          localTimelineLocationSeconds - dragOperation.relativeSplitTimeSeconds,
-          0
+        dragStartTimeSeconds: dragOperation.dragStartTimeSeconds,
+        currentDragTimeSeconds: Math.max(
+          globalTimelineLocationSeconds,
+          dragOperation.dragStartTimeSeconds
         ),
       });
     }
@@ -174,23 +143,16 @@ export function Timeline() {
     if (
       activeComposition &&
       dragOperation &&
-      Math.abs(dragOperation.dragAmountSeconds) > CLIP_SPLIT_THRESHOLD
+      dragOperation.dragStartTimeSeconds -
+        dragOperation.currentDragTimeSeconds >
+        CLIP_SPLIT_THRESHOLD
     ) {
-      const priorClip = composition.clips.find(
-        (c: Clip) => c.id === dragOperation.clipId
-      );
-      const clipStartTime = getClipStartTimeSeconds(dragOperation.clipId);
       dispatch(
-        interactionDrag(
-          activeComposition.id,
-          clipStartTime + dragOperation.relativeSplitTimeSeconds,
-          {
-            ...priorClip,
-            durationSeconds:
-              (dragOperation.relativeSplitTimeSeconds ||
-                priorClip.durationSeconds) + dragOperation.dragAmountSeconds,
-          }
-        )
+        deleteSection({
+          compositionId: activeComposition.id,
+          startTimeSeconds: dragOperation.currentDragTimeSeconds,
+          endTimeSeconds: dragOperation.dragStartTimeSeconds,
+        })
       );
     }
     setDragOperation(null);
@@ -227,10 +189,10 @@ export function Timeline() {
           clipStartTime={clipStartTimeSeconds}
           timelineElement={timelineRef.current!}
           onInteractionDragStart={(time: number) =>
-            onInteractionDragStart(clip.id, time)
+            onInteractionDragStart(time)
           }
-          onInteractionDragUpdate={(delta: number) =>
-            onInteractionDragUpdate(clip.id, delta)
+          onInteractionDragUpdate={(dragLocPx: number) =>
+            onInteractionDragUpdate(dragLocPx)
           }
           onInteractionDragEnd={() => onInteractionDragEnd()}
         ></ClipComponent>
@@ -240,50 +202,16 @@ export function Timeline() {
 
   const clips = [];
   let durationSoFar = 0;
-
-  for (const clip of composition!.clips) {
-    if (
-      dragOperation &&
-      dragOperation.clipId === clip.id &&
-      Math.abs(dragOperation.dragAmountSeconds) > CLIP_SPLIT_THRESHOLD
-    ) {
-      const shorteningClipWidth = dragOperation.relativeSplitTimeSeconds
-        ? dragOperation.relativeSplitTimeSeconds +
-          dragOperation.dragAmountSeconds
-        : clip.durationSeconds + dragOperation.dragAmountSeconds;
-      clips.push(
-        renderClip(
-          {
-            ...clip,
-            id: clip.id + "-new",
-          },
-          durationSoFar,
-          shorteningClipWidth
-        )
-      );
-      durationSoFar += shorteningClipWidth;
-      if (dragOperation.relativeSplitTimeSeconds) {
-        const newClipWidth =
-          clip.durationSeconds - dragOperation.relativeSplitTimeSeconds;
-
-        clips.push(
-          renderClip(
-            {
-              ...clip,
-              sourceOffsetSeconds:
-                clip.sourceOffsetSeconds +
-                dragOperation.relativeSplitTimeSeconds,
-            },
-            durationSoFar,
-            newClipWidth
-          )
-        );
-        durationSoFar += newClipWidth;
-      }
-    } else {
-      clips.push(renderClip(clip, durationSoFar));
-      durationSoFar += clip.durationSeconds;
-    }
+  const timelineClips = dragOperation
+    ? deleteSectionFromClips(
+        composition!.clips,
+        dragOperation.currentDragTimeSeconds,
+        dragOperation.dragStartTimeSeconds
+      )
+    : composition!.clips;
+  for (const clip of timelineClips) {
+    clips.push(renderClip(clip, durationSoFar));
+    durationSoFar += clip.durationSeconds;
   }
 
   return (

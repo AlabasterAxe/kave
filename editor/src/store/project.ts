@@ -129,6 +129,56 @@ interface ClipTighteningResult {
   nextClipStartSeconds: number;
 }
 
+export const deleteSectionFromClips = (
+  clips: Clip[],
+  startTimeSeconds: number,
+  endTimeSeconds: number
+): Clip[] => {
+  const newClips = [];
+  let nextStartTime = 0;
+  for (const clip of clips) {
+    const clipEndTime = nextStartTime + clip.durationSeconds;
+    // the clip is completely outside of the selection
+    if (
+      (nextStartTime < startTimeSeconds && clipEndTime < startTimeSeconds) ||
+      (nextStartTime > endTimeSeconds && clipEndTime > endTimeSeconds)
+    ) {
+      newClips.push(clip);
+      nextStartTime = clipEndTime;
+    } else if (
+      // the clip is completely within the selection so we don't even add the clip.
+      nextStartTime > startTimeSeconds &&
+      clipEndTime < endTimeSeconds
+    ) {
+      continue;
+    } else {
+      // things get hairy, either the selection is completely within the clip (cutting it in two) or the selection cuts off part of the clip.
+      let durationToAdd = 0;
+      if (startTimeSeconds > nextStartTime && startTimeSeconds < clipEndTime) {
+        const newClipDuration = startTimeSeconds - nextStartTime;
+        newClips.push({
+          ...clip,
+          durationSeconds: startTimeSeconds - nextStartTime,
+        });
+        durationToAdd += newClipDuration;
+      }
+      if (endTimeSeconds > nextStartTime && endTimeSeconds < clipEndTime) {
+        const newClipDuration = clipEndTime - endTimeSeconds;
+        newClips.push({
+          ...clip,
+          id: uuidv4(),
+          durationSeconds: newClipDuration,
+          sourceOffsetSeconds:
+            clip.sourceOffsetSeconds + endTimeSeconds - nextStartTime,
+        });
+        durationToAdd += newClipDuration;
+      }
+      nextStartTime += durationToAdd;
+    }
+  }
+  return newClips;
+};
+
 const getTightenedClips = (
   clip: Clip,
   interactionLog: UserInteractionLog,
@@ -292,61 +342,12 @@ export const projectSlice = createSlice({
         console.warn("non-existent composition referenced in action payload");
         return state;
       }
-      const newClips = [];
-      let nextStartTime = 0;
-      for (const clip of composition.clips) {
-        const clipEndTime = nextStartTime + clip.durationSeconds;
-        // the clip is completely outside of the selection
-        if (
-          (nextStartTime < action.payload.startTimeSeconds &&
-            clipEndTime < action.payload.startTimeSeconds) ||
-          (nextStartTime > action.payload.endTimeSeconds &&
-            clipEndTime > action.payload.endTimeSeconds)
-        ) {
-          newClips.push(clip);
-          nextStartTime = clipEndTime;
-        } else if (
-          // the clip is completely within the selection so we don't even add the clip.
-          nextStartTime > action.payload.startTimeSeconds &&
-          clipEndTime < action.payload.endTimeSeconds
-        ) {
-          continue;
-        } else {
-          // things get hairy, either the selection is completely within the clip (cutting it in two) or the selection cuts off part of the clip.
-          let durationToAdd = 0;
-          if (
-            action.payload.startTimeSeconds > nextStartTime &&
-            action.payload.startTimeSeconds < clipEndTime
-          ) {
-            const newClipDuration =
-              action.payload.startTimeSeconds - nextStartTime;
-            newClips.push({
-              ...clip,
-              durationSeconds: action.payload.startTimeSeconds - nextStartTime,
-            });
-            durationToAdd += newClipDuration;
-          }
-          if (
-            action.payload.endTimeSeconds > nextStartTime &&
-            action.payload.endTimeSeconds < clipEndTime
-          ) {
-            const newClipDuration = clipEndTime - action.payload.endTimeSeconds;
-            newClips.push({
-              ...clip,
-              id: uuidv4(),
-              durationSeconds: newClipDuration,
-              sourceOffsetSeconds:
-                clip.sourceOffsetSeconds +
-                action.payload.endTimeSeconds -
-                nextStartTime,
-            });
-            durationToAdd += newClipDuration;
-          }
-          nextStartTime += durationToAdd;
-        }
-      }
 
-      composition.clips = newClips;
+      composition.clips = deleteSectionFromClips(
+        composition.clips,
+        action.payload.startTimeSeconds,
+        action.payload.endTimeSeconds
+      );
       const newCompositions = state.compositions.filter(
         (c) => c.id !== composition.id
       );
@@ -397,8 +398,8 @@ export const projectSlice = createSlice({
         // the clip is completely outside of the selection
         if (
           (nextStartTime < action.payload.startTimeSeconds &&
-            clipEndTime < action.payload.startTimeSeconds) ||
-          (nextStartTime > action.payload.endTimeSeconds &&
+            clipEndTime <= action.payload.startTimeSeconds) ||
+          (nextStartTime >= action.payload.endTimeSeconds &&
             clipEndTime > action.payload.endTimeSeconds)
         ) {
           newClips.push(clip);

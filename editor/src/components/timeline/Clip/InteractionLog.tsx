@@ -44,6 +44,7 @@ function InteractionHandle(props: InteractionHandleProps) {
     interactionEndTime,
     userInteractions,
     viewport,
+    clipStartTimeSeconds,
   } = props;
   const interactionStyle = {
     transform: `translateX(${scaleToScreen(viewport, interactionStartTime)}vw)`,
@@ -76,7 +77,7 @@ function InteractionHandle(props: InteractionHandleProps) {
     <DraggableCore
       nodeRef={dragRef}
       offsetParent={timelineElement}
-      onStart={() => onDragStart(interactionStartTime)}
+      onStart={() => onDragStart(clipStartTimeSeconds + interactionStartTime)}
       onDrag={(e, data) => {
         onDragUpdate(data.x);
         setDragging(true);
