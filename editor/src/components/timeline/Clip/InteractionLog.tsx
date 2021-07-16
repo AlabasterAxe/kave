@@ -201,18 +201,33 @@ export function InteractionLog(props: InteractionLogProps) {
   }
 
   const userInteractionDom = coalescedInteractions.map(
-    (interactionCluster: UserInteraction[]) => {
+    (interactionCluster: UserInteraction[], index: number) => {
       const interactionStartTime =
         interactionCluster[0].timestampMillis / 1000 -
         startTime +
         offsetSeconds;
 
-      const interactionEndTime = Math.max(
-        interactionCluster[interactionCluster.length - 1].timestampMillis /
-          1000 -
-          startTime +
-          offsetSeconds,
-        interactionStartTime + MIN_INTERACTION_DURATION_SECONDS
+      const minEndTime =
+        interactionStartTime + MIN_INTERACTION_DURATION_SECONDS;
+
+      // if the next interaction of the is close than MIN_INTERACTION_DURATION_SECONDS
+      // we make it as wide as the gap between the interaction time and the next interaction.
+      const nextStartTime =
+        index === coalescedInteractions.length - 1
+          ? Infinity
+          : coalescedInteractions[index + 1][0].timestampMillis / 1000 -
+            startTime +
+            offsetSeconds;
+
+      const interactionEndTime = Math.min(
+        Math.max(
+          interactionCluster[interactionCluster.length - 1].timestampMillis /
+            1000 -
+            startTime +
+            offsetSeconds,
+          minEndTime
+        ),
+        nextStartTime
       );
 
       return (

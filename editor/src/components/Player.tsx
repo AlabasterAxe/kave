@@ -141,6 +141,8 @@ function Player() {
     return () => window.removeEventListener("resize", resizeCallback);
   }, [resizeCallback]);
 
+  useEffect(resizeCallback, [resizeCallback]);
+
   return (
     <canvas
       className="m-auto h-full aspect-w-16 aspect-h-9"
