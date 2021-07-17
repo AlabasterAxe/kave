@@ -1,9 +1,5 @@
-import {
-  AnyAction,
-  createSlice,
-  PayloadAction,
-  ThunkAction,
-} from "@reduxjs/toolkit";
+import { createSlice, PayloadAction } from "@reduxjs/toolkit";
+import { v4 as uuidv4 } from "uuid";
 import {
   Clip,
   FileType,
@@ -12,9 +8,6 @@ import {
   Sequence,
   UserInteractionLog,
 } from "../../../common/model";
-import { v4 as uuidv4 } from "uuid";
-import { batch } from "react-redux";
-import { RootState } from "./store";
 
 const INTERACTION_DURATION_SECONDS = 0.1;
 
@@ -84,32 +77,6 @@ export interface UpdateClipPayload {
 export interface LoadInteractionFilePayload {
   fileId: string;
   interactionLog: UserInteractionLog;
-}
-
-export function interactionDrag(
-  compositionId: string,
-  splitOffsetSeconds: number,
-  priorClip: Clip
-): ThunkAction<void, RootState, unknown, AnyAction> {
-  return (dispatch: (action: any) => void) => {
-    // should only result in one combined re-render, not two
-    batch(() => {
-      if (splitOffsetSeconds > 0) {
-        dispatch(
-          splitClip({
-            compositionId: compositionId,
-            splitOffsetSeconds: splitOffsetSeconds,
-          })
-        );
-      }
-      dispatch(
-        updateClip({
-          compositionId: compositionId,
-          clip: priorClip,
-        })
-      );
-    });
-  };
 }
 
 interface DeleteSectionPayload {
