@@ -18,7 +18,7 @@ export function VideoClip(props: VideoClipProps) {
       style={style}
       className="h-full w-full bg-white rounded-lg border border-gray-300 truncate absolute"
     >
-      {clip.id},
+      {clip.id}
     </div>
   );
 }

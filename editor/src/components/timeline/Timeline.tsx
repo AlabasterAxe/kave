@@ -28,6 +28,16 @@ export interface DragOperation {
   currentDragTimeSeconds: number;
 }
 
+function validDragOperation(
+  operation: DragOperation | null
+): operation is DragOperation {
+  return (
+    !!operation &&
+    operation.dragStartTimeSeconds - operation.currentDragTimeSeconds >
+      CLIP_SPLIT_THRESHOLD
+  );
+}
+
 export function Timeline() {
   const activeComposition: ActiveComposition =
     useAppSelector(selectComposition);
@@ -70,11 +80,6 @@ export function Timeline() {
           selection.endTimeSeconds - selection.startTimeSeconds
         )}vw`
       : 0,
-  };
-
-  const timelineStyle = {
-    transform: `translateX(${transformToScreen(viewport, 0)}vw)`,
-    width: `${scaleToScreen(viewport, compositionDurationSeconds)}vw`,
   };
 
   const scrubHandler = (e: any) => {
@@ -202,7 +207,7 @@ export function Timeline() {
 
   const clips = [];
   let durationSoFar = 0;
-  const timelineClips = dragOperation
+  const timelineClips = validDragOperation(dragOperation)
     ? deleteSectionFromClips(
         composition!.clips,
         dragOperation.currentDragTimeSeconds,
@@ -213,6 +218,16 @@ export function Timeline() {
     clips.push(renderClip(clip, durationSoFar));
     durationSoFar += clip.durationSeconds;
   }
+
+  const timelineDuration = timelineClips.reduce(
+    (acc: number, clip: Clip) => clip.durationSeconds + acc,
+    0
+  );
+
+  const timelineStyle = {
+    transform: `translateX(${transformToScreen(viewport, 0)}vw)`,
+    width: `${scaleToScreen(viewport, timelineDuration)}vw`,
+  };
 
   return (
     <div
@@ -226,7 +241,7 @@ export function Timeline() {
       {selection && (
         <div
           style={selectionStyle}
-          className="h-full absolute bg-blue-400 bg-opacity-30"
+          className="h-full absolute bg-blue-400 bg-opacity-30 pointer-events-none"
         ></div>
       )}
       <div

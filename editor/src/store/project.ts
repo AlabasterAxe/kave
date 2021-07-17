@@ -131,50 +131,54 @@ interface ClipTighteningResult {
 
 export const deleteSectionFromClips = (
   clips: Clip[],
-  startTimeSeconds: number,
-  endTimeSeconds: number
+  deletionStartTimeSeconds: number,
+  deletionEndTimeSeconds: number
 ): Clip[] => {
   const newClips = [];
-  let nextStartTime = 0;
+  let clipStartTime = 0;
   for (const clip of clips) {
-    const clipEndTime = nextStartTime + clip.durationSeconds;
+    const clipEndTime = clipStartTime + clip.durationSeconds;
     // the clip is completely outside of the selection
     if (
-      (nextStartTime < startTimeSeconds && clipEndTime < startTimeSeconds) ||
-      (nextStartTime > endTimeSeconds && clipEndTime > endTimeSeconds)
+      (clipStartTime <= deletionStartTimeSeconds &&
+        clipEndTime <= deletionStartTimeSeconds) ||
+      (clipStartTime >= deletionEndTimeSeconds &&
+        clipEndTime >= deletionEndTimeSeconds)
     ) {
       newClips.push(clip);
-      nextStartTime = clipEndTime;
     } else if (
       // the clip is completely within the selection so we don't even add the clip.
-      nextStartTime > startTimeSeconds &&
-      clipEndTime < endTimeSeconds
+      clipStartTime > deletionStartTimeSeconds &&
+      clipEndTime < deletionEndTimeSeconds
     ) {
       continue;
     } else {
       // things get hairy, either the selection is completely within the clip (cutting it in two) or the selection cuts off part of the clip.
-      let durationToAdd = 0;
-      if (startTimeSeconds > nextStartTime && startTimeSeconds < clipEndTime) {
-        const newClipDuration = startTimeSeconds - nextStartTime;
+      if (
+        deletionStartTimeSeconds > clipStartTime &&
+        deletionStartTimeSeconds < clipEndTime
+      ) {
+        const newClipDuration = deletionStartTimeSeconds - clipStartTime;
         newClips.push({
           ...clip,
           id: uuidv4(),
-          durationSeconds: startTimeSeconds - nextStartTime,
+          durationSeconds: newClipDuration,
         });
-        durationToAdd += newClipDuration;
       }
-      if (endTimeSeconds > nextStartTime && endTimeSeconds < clipEndTime) {
-        const newClipDuration = clipEndTime - endTimeSeconds;
+      if (
+        deletionEndTimeSeconds > clipStartTime &&
+        deletionEndTimeSeconds < clipEndTime
+      ) {
+        const newClipDuration = clipEndTime - deletionEndTimeSeconds;
         newClips.push({
           ...clip,
           durationSeconds: newClipDuration,
           sourceOffsetSeconds:
-            clip.sourceOffsetSeconds + endTimeSeconds - nextStartTime,
+            clip.sourceOffsetSeconds + deletionEndTimeSeconds - clipStartTime,
         });
-        durationToAdd += newClipDuration;
       }
-      nextStartTime += durationToAdd;
     }
+    clipStartTime = clipEndTime;
   }
   return newClips;
 };
@@ -397,10 +401,10 @@ export const projectSlice = createSlice({
 
         // the clip is completely outside of the selection
         if (
-          (nextStartTime < action.payload.startTimeSeconds &&
+          (nextStartTime <= action.payload.startTimeSeconds &&
             clipEndTime <= action.payload.startTimeSeconds) ||
           (nextStartTime >= action.payload.endTimeSeconds &&
-            clipEndTime > action.payload.endTimeSeconds)
+            clipEndTime >= action.payload.endTimeSeconds)
         ) {
           newClips.push(clip);
           nextStartTime = clipEndTime;
