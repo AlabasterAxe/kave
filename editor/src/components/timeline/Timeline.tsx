@@ -3,6 +3,7 @@ import { Clip, Composition, TimelineViewport } from "../../../../common/model";
 import { ActiveComposition } from "../../store/composition";
 import { useAppDispatch, useAppSelector } from "../../store/hooks";
 import { PlaybackStateSource, updatePlayhead } from "../../store/playback";
+import { Selection } from "../../store/selection";
 import { deleteSection, deleteSectionFromClips } from "../../store/project";
 import {
   selectComposition,
@@ -60,27 +61,6 @@ export function Timeline() {
     endTimeSeconds: compositionDurationSeconds,
   });
   const timelineRef = useRef<HTMLDivElement | null>(null);
-  const playheadStyle = {
-    transform: `translateX(${transformToScreen(
-      viewport,
-      playback.currentTimeSeconds
-    )}vw)`,
-  };
-
-  const selectionStyle = {
-    transform: selection
-      ? `translateX(${transformToScreen(
-          viewport,
-          selection.startTimeSeconds
-        )}vw)`
-      : `translateX(0px)`,
-    width: selection
-      ? `${scaleToScreen(
-          viewport,
-          selection.endTimeSeconds - selection.startTimeSeconds
-        )}vw`
-      : 0,
-  };
 
   const scrubHandler = (e: any) => {
     const rect = e.currentTarget.getBoundingClientRect();
@@ -163,6 +143,61 @@ export function Timeline() {
     setDragOperation(null);
   };
 
+  const renderTimeline = (viewport: TimelineViewport, clips: Clip[]) => {
+    const timelineDuration = clips.reduce(
+      (acc: number, clip: Clip) => clip.durationSeconds + acc,
+      0
+    );
+
+    const timelineStyle = {
+      transform: `translateX(${transformToScreen(viewport, 0)}vw)`,
+      width: `${scaleToScreen(viewport, timelineDuration)}vw`,
+    };
+    return (
+      <div style={timelineStyle} className="h-full absolute bg-gray-100"></div>
+    );
+  };
+
+  const renderPlayhead = (viewport: TimelineViewport, timeSeconds: number) => {
+    const playheadStyle = {
+      transform: `translateX(${transformToScreen(viewport, timeSeconds)}vw)`,
+    };
+    return (
+      <div
+        style={playheadStyle}
+        className="w-0.5 h-full bg-red-500 absolute"
+      ></div>
+    );
+  };
+
+  const renderSelection = (
+    viewport: TimelineViewport,
+    selection: Selection
+  ) => {
+    const selectionStyle = {
+      transform: selection
+        ? `translateX(${transformToScreen(
+            viewport,
+            selection.startTimeSeconds
+          )}vw)`
+        : `translateX(0px)`,
+      width: selection
+        ? `${scaleToScreen(
+            viewport,
+            selection.endTimeSeconds - selection.startTimeSeconds
+          )}vw`
+        : 0,
+    };
+    return (
+      selection && (
+        <div
+          style={selectionStyle}
+          className="h-full absolute bg-blue-400 bg-opacity-30 pointer-events-none"
+        ></div>
+      )
+    );
+  };
+
   // this method renders a clip with an optional clip duration override
   const renderClip = (
     clip: Clip,
@@ -219,16 +254,6 @@ export function Timeline() {
     durationSoFar += clip.durationSeconds;
   }
 
-  const timelineDuration = timelineClips.reduce(
-    (acc: number, clip: Clip) => clip.durationSeconds + acc,
-    0
-  );
-
-  const timelineStyle = {
-    transform: `translateX(${transformToScreen(viewport, 0)}vw)`,
-    width: `${scaleToScreen(viewport, timelineDuration)}vw`,
-  };
-
   return (
     <div
       ref={timelineRef}
@@ -236,18 +261,10 @@ export function Timeline() {
       onClick={scrubHandler}
       onWheel={zoomHandler}
     >
-      <div style={timelineStyle} className="h-full absolute bg-gray-100"></div>
+      {renderTimeline(viewport, timelineClips)}
       <div className="h-full w-full flex relative">{clips}</div>
-      {selection && (
-        <div
-          style={selectionStyle}
-          className="h-full absolute bg-blue-400 bg-opacity-30 pointer-events-none"
-        ></div>
-      )}
-      <div
-        style={playheadStyle}
-        className="w-0.5 h-full bg-red-500 absolute"
-      ></div>
+      {renderSelection(viewport, selection)}
+      {renderPlayhead(viewport, playback.currentTimeSeconds)}
     </div>
   );
 }
