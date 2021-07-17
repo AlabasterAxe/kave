@@ -158,6 +158,7 @@ export const deleteSectionFromClips = (
         const newClipDuration = startTimeSeconds - nextStartTime;
         newClips.push({
           ...clip,
+          id: uuidv4(),
           durationSeconds: startTimeSeconds - nextStartTime,
         });
         durationToAdd += newClipDuration;
@@ -166,7 +167,6 @@ export const deleteSectionFromClips = (
         const newClipDuration = clipEndTime - endTimeSeconds;
         newClips.push({
           ...clip,
-          id: uuidv4(),
           durationSeconds: newClipDuration,
           sourceOffsetSeconds:
             clip.sourceOffsetSeconds + endTimeSeconds - nextStartTime,

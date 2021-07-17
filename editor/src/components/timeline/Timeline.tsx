@@ -131,7 +131,7 @@ export function Timeline() {
       );
       setDragOperation({
         dragStartTimeSeconds: dragOperation.dragStartTimeSeconds,
-        currentDragTimeSeconds: Math.max(
+        currentDragTimeSeconds: Math.min(
           globalTimelineLocationSeconds,
           dragOperation.dragStartTimeSeconds
         ),
