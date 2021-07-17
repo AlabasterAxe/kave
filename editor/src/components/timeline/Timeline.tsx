@@ -119,7 +119,7 @@ export function Timeline() {
     // this means the user is dragging an interaction that is aligned to the start of the clip
     setDragOperation({
       dragStartTimeSeconds: dragStartSeconds,
-      currentDragTimeSeconds: 0,
+      currentDragTimeSeconds: dragStartSeconds,
     });
   };
 
