@@ -143,12 +143,7 @@ function Player() {
 
   useEffect(resizeCallback, [resizeCallback]);
 
-  return (
-    <canvas
-      className="m-auto h-full aspect-w-16 aspect-h-9"
-      ref={canvasRef}
-    ></canvas>
-  );
+  return <canvas className="h-full w-full player" ref={canvasRef}></canvas>;
 }
 
 export default Player;
