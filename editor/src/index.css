@@ -16,9 +16,9 @@ code {
     monospace;
 }
 
-.player {
+/* .player {
   aspect-ratio: 16 / 9;
-}
+} */
 
 @tailwind base;
 @tailwind components;

@@ -19,6 +19,11 @@ import {
   selectProject,
 } from "../store/store";
 
+/**
+ * This function is responsible for accepting the composition and setting up the VideoContext
+ * object. We create the nodes for the videocontext anew every time the composition changes.
+ * but we might be able to store the nodes with the clips and update them when the composition changes.
+ */
 function setUpTimeline(
   videoContext: VideoContext,
   composition: Composition,
@@ -66,12 +71,21 @@ function setUpTimeline(
   }
 }
 
+interface PlayerViewportState {
+  zoom: number;
+  offset: { x: number; y: number };
+}
+
 function Player() {
   const canvasRef: MutableRefObject<HTMLCanvasElement | null> = useRef(null);
   const [ctx, setContext] = useState<VideoContext | null>(null);
   const activeComposition = useAppSelector(selectComposition);
   const playback = useAppSelector(selectPlayback);
   const project = useAppSelector(selectProject);
+  const [playerViewport, setPlayerViewport] = useState<PlayerViewportState>({
+    zoom: 1,
+    offset: { x: 0, y: 0 },
+  });
   const composition = project.compositions.find(
     (c: Composition) => c.id === activeComposition.id
   );
@@ -126,15 +140,21 @@ function Player() {
   }, [dispatch, composition, ctx, project]);
 
   useEffect(() => {
-    if (playback.source !== PlaybackStateSource.player && ctx) {
-      ctx.currentTime = playback.currentTimeSeconds;
-      if (playback.state === PlayingState.playing) {
-        ctx.play();
-      } else {
-        ctx.pause();
+    // To avoid an infinite loop during playback we only update the current time when
+    // the source of the playback change is not the player itself.
+    if (ctx) {
+      if (playback.source !== PlaybackStateSource.player) {
+        ctx.currentTime = playback.currentTimeSeconds;
+        if (playback.state === PlayingState.playing) {
+          ctx.play();
+        } else {
+          ctx.pause();
+        }
       }
+      ctx.destination._zoom = playerViewport.zoom;
+      ctx.destination._offset = playerViewport.offset;
     }
-  }, [ctx, playback]);
+  }, [ctx, playback, playerViewport]);
 
   useEffect(() => {
     window.addEventListener("resize", resizeCallback);
@@ -143,7 +163,31 @@ function Player() {
 
   useEffect(resizeCallback, [resizeCallback]);
 
-  return <canvas className="h-full w-full player" ref={canvasRef}></canvas>;
+  const zoomHandler = (e: any) => {
+    if (e.ctrlKey) {
+      const zoomUnit = playerViewport.zoom / 100;
+      setPlayerViewport({
+        zoom: Math.max(playerViewport.zoom - e.deltaY * zoomUnit, 0.1),
+        offset: playerViewport.offset,
+      });
+    } else {
+      setPlayerViewport({
+        zoom: playerViewport.zoom,
+        offset: {
+          x: playerViewport.offset.x - e.deltaX / playerViewport.zoom,
+          y: playerViewport.offset.y + e.deltaY / playerViewport.zoom,
+        },
+      });
+    }
+  };
+
+  return (
+    <canvas
+      onWheel={zoomHandler}
+      className="h-full w-full player"
+      ref={canvasRef}
+    ></canvas>
+  );
 }
 
 export default Player;

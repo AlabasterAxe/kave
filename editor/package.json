@@ -23,7 +23,7 @@
     "redux-undo": "^1.0.1",
     "typescript": "^4.1.2",
     "uuid": "^8.3.2",
-    "videocontext": "^0.54.0",
+    "videocontext": "../VideoContext",
     "web-vitals": "^1.0.1"
   },
   "scripts": {

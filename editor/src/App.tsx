@@ -72,6 +72,16 @@ function App() {
   );
 
   useEffect(() => {
+    const cancelWheel = (event: any) => event.preventDefault();
+
+    document.body.addEventListener("wheel", cancelWheel, { passive: false });
+
+    return () => {
+      document.body.removeEventListener("wheel", cancelWheel);
+    };
+  }, []);
+
+  useEffect(() => {
     document.addEventListener("keyup", handleKeyboardEvent);
     return () => document.removeEventListener("keyup", handleKeyboardEvent);
   }, [handleKeyboardEvent]);
