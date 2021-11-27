@@ -5,18 +5,28 @@ import {
 } from "@reduxjs/toolkit";
 import { playbackSlice } from "./playback";
 import { compositionSlice } from "./composition";
-import { deleteSection, projectSlice, tightenSection } from "./project";
+import {
+  deleteSection,
+  projectSlice,
+  tightenSection,
+  replaceProject,
+} from "./project";
 import thunk, { ThunkAction, ThunkDispatch } from "redux-thunk";
 import { selectionSlice, setSelection } from "./selection";
 import { batch } from "react-redux";
 import undoable from "redux-undo";
+import { Trimerger } from "../persistence/trimerge-sync";
+import { create } from "jsondiffpatch";
 
 export const selectComposition = (state: RootState) => state.composition;
 export const selectPlayback = (state: RootState) => state.playback;
 export const selectProject = (state: RootState) => state.project.present;
 export const selectSelection = (state: RootState) => state.selection.selection;
 
-// TODO: figure out how to get better typings for the store slices
+const diffPatcher = create({ textDiff: { minLength: 20 } });
+
+const trimerger = new Trimerger(diffPatcher);
+
 export const store = configureStore({
   reducer: {
     composition: compositionSlice.reducer,
@@ -24,8 +34,14 @@ export const store = configureStore({
     project: undoable(projectSlice.reducer),
     selection: selectionSlice.reducer,
   },
-  middleware: [thunk],
+  middleware: [thunk, trimerger.middleware],
 } as ConfigureStoreOptions);
+
+trimerger.client.subscribeState((project) => {
+  if (project) {
+    store.dispatch(replaceProject({ project }));
+  }
+});
 
 export function deleteSelection({
   compositionId,

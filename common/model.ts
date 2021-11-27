@@ -51,7 +51,7 @@ export interface Sequence {
   tracks: Track[];
 }
 
-export interface Clip {
+export type Clip = Readonly<{
   id: string;
   durationSeconds: number;
 
@@ -60,19 +60,19 @@ export interface Clip {
 
   // This is how many seconds from the start of the file that the timeline element starts.
   sourceOffsetSeconds: number;
-}
+}>;
 
-export interface Composition {
+export type Composition = Readonly<{
   id: string;
   clips: Clip[];
-}
+}>;
 
-export interface Project {
+export type Project = Readonly<{
   id: string;
   files: KaveFile[];
   sequences: Sequence[];
   compositions: Composition[];
-}
+}>;
 
 export interface TimelineViewport {
   startTimeSeconds: number;

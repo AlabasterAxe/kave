@@ -69,6 +69,10 @@ export interface SplitClipPayload {
   splitOffsetSeconds: number;
 }
 
+export interface ReplaceProjectPayload {
+  project: Project;
+}
+
 export interface UpdateClipPayload {
   compositionId: string;
   clip: Clip;
@@ -231,6 +235,9 @@ export const projectSlice = createSlice({
   name: "playback",
   initialState: initialProject(),
   reducers: {
+    replaceProject: (_, action: PayloadAction<ReplaceProjectPayload>) => {
+      return action.payload.project;
+    },
     splitClip: (state, action: PayloadAction<SplitClipPayload>) => {
       const composition = state.compositions.find(
         (composition) => composition.id === action.payload.compositionId
@@ -443,4 +450,5 @@ export const {
   loadInteractionFile,
   deleteSection,
   tightenSection,
+  replaceProject,
 } = projectSlice.actions;
