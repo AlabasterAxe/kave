@@ -6,7 +6,7 @@ import {
   useState,
 } from "react";
 import VideoContext from "videocontext";
-import { Composition, FileType, Project } from "../../../common/model";
+import { Composition, FileType, Project } from "kave-common";
 import { useAppDispatch, useAppSelector } from "../store/hooks";
 import {
   PlaybackStateSource,

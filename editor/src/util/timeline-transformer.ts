@@ -1,4 +1,4 @@
-import { TimelineViewport } from "../../../common/model";
+import { TimelineViewport } from "kave-common";
 
 // this method assumes that the timeline will cover the whole viewport
 // it emits a number that can be used in vws to position / size as element

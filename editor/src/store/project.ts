@@ -7,7 +7,7 @@ import {
   Project,
   Sequence,
   UserInteractionLog,
-} from "../../../common/model";
+} from "kave-common";
 
 const INTERACTION_DURATION_SECONDS = 0.1;
 

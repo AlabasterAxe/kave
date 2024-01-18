@@ -1,5 +1,5 @@
 import { MergeStateFn, NodeState, TrimergeClient } from "trimerge-sync";
-import { Project } from "../../../common/model";
+import { Project } from "kave-common";
 import { createIndexedDbBackendFactory } from "trimerge-sync-indexed-db";
 import { v4 as uuidv4, v5 as uuidv5 } from "uuid";
 import { produce } from "immer";

@@ -11,7 +11,7 @@ import {
   tightenSection,
   replaceProject,
 } from "./project";
-import thunk, { ThunkAction, ThunkDispatch } from "redux-thunk";
+import { thunk, ThunkAction, ThunkDispatch } from "redux-thunk";
 import { selectionSlice, setSelection } from "./selection";
 import { batch } from "react-redux";
 import undoable from "redux-undo";

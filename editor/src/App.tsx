@@ -1,5 +1,5 @@
 import React, { useCallback, useEffect } from "react";
-import { BrowserRouter, Route, Switch } from "react-router-dom";
+import { BrowserRouter, Route, Routes } from "react-router-dom";
 import "./App.css";
 import { useAppDispatch, useAppSelector } from "./store/hooks";
 import {
@@ -24,7 +24,7 @@ function App() {
   const activeComposition = useAppSelector(selectComposition);
 
   const handleKeyboardEvent = useCallback(
-    (e) => {
+    (e: any) => {
       switch (e.code) {
         case "Space":
           dispatch(
@@ -88,9 +88,9 @@ function App() {
 
   return (
     <BrowserRouter>
-      <Switch>
-        <Route path="/" component={EditorView}></Route>
-      </Switch>
+      <Routes>
+        <Route path="/" element={<EditorView />}></Route>
+      </Routes>
     </BrowserRouter>
   );
 }

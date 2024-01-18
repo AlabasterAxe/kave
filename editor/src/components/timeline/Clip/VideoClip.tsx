@@ -1,4 +1,4 @@
-import { Clip } from "../../../../../common/model";
+import { Clip } from "kave-common";
 
 interface VideoClipProps {
   clip: Clip;

@@ -1,5 +1,5 @@
 import { useRef, useState } from "react";
-import { Clip, Composition, TimelineViewport } from "../../../../common/model";
+import { Clip, Composition, TimelineViewport } from "kave-common";
 import { ActiveComposition } from "../../store/composition";
 import { useAppDispatch, useAppSelector } from "../../store/hooks";
 import { PlaybackStateSource, updatePlayhead } from "../../store/playback";

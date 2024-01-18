@@ -4,8 +4,8 @@ import {
   InteractionLogFile,
   TimelineViewport,
   UserInteraction,
-} from "../../../../../common/model";
-import { parseLog } from "../../../../../common/parse-log";
+} from "kave-common";
+import { parseLog } from "kave-common";
 import { useAppDispatch, useAppSelector } from "../../../store/hooks";
 import { loadInteractionFile } from "../../../store/project";
 import { setSelection } from "../../../store/selection";
