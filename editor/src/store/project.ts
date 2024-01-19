@@ -2,11 +2,11 @@ import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 import { v4 as uuidv4 } from "uuid";
 import {
   Clip,
-  FileType,
   KaveFile,
   Project,
   Sequence,
   UserInteractionLog,
+  FileType,
 } from "kave-common";
 
 const INTERACTION_DURATION_SECONDS = 0.1;
@@ -42,6 +42,59 @@ function initialProject(): Project {
         id: userInteractionLogId,
         type: FileType.interaction_log,
         fileUri: "test_video.log",
+      },
+    ],
+    sequences: [
+      {
+        id: sequenceId,
+        tracks: [
+          {
+            id: uuidv4(),
+            alignmentSeconds: 0,
+            fileId: fileId,
+          },
+          {
+            id: uuidv4(),
+            alignmentSeconds: 5.5,
+            fileId: userInteractionLogId,
+          },
+        ],
+      },
+    ],
+  };
+}
+
+function newProject(): Project {
+  const fileId = uuidv4();
+  const userInteractionLogId = uuidv4();
+  const sequenceId = uuidv4();
+  const clipId1 = uuidv4();
+
+  return {
+    id: uuidv4(),
+    compositions: [
+      {
+        id: "ac7c3a24-e08d-4bb6-b1fe-02960b41b870",
+        clips: [
+          {
+            id: clipId1,
+            durationSeconds: 60,
+            sourceId: sequenceId,
+            sourceOffsetSeconds: 0,
+          },
+        ],
+      },
+    ],
+    files: [
+      {
+        id: fileId,
+        type: FileType.video,
+        fileUri: "screen_recording.mp4",
+      },
+      {
+        id: userInteractionLogId,
+        type: FileType.interaction_log,
+        fileUri: "interaction_events.json",
       },
     ],
     sequences: [
@@ -167,7 +220,7 @@ const getTightenedClips = (
     tightenedClips.push({ ...clip, durationSeconds: startTimeSeconds });
     durationSoFar = startTimeSeconds;
   }
-  const startTime = interactionLog.log[0].timestampMillis;
+  const startTime = interactionLog.log[0].time;
   const interactionLogOffset =
     interactionLogAlignmentSeconds - clip.sourceOffsetSeconds;
 
@@ -176,7 +229,7 @@ const getTightenedClips = (
   while (interactionLogTime < durationSoFar) {
     interactionLogIndex++;
     interactionLogTime =
-      (interactionLog.log[interactionLogIndex].timestampMillis - startTime) /
+      (interactionLog.log[interactionLogIndex].time- startTime) /
         1000 +
       interactionLogOffset;
   }
@@ -193,7 +246,7 @@ const getTightenedClips = (
     }
 
     interactionLogTime =
-      (interactionLog.log[interactionLogIndex].timestampMillis - startTime) /
+      (interactionLog.log[interactionLogIndex].time- startTime) /
         1000 +
       interactionLogOffset;
     let newInteractionClipEndTime = interactionLogTime;
@@ -204,7 +257,7 @@ const getTightenedClips = (
       nextInteractionGap < INTERACTION_DURATION_SECONDS
     ) {
       const currentInteractionTime =
-        (interactionLog.log[interactionLogIndex].timestampMillis - startTime) /
+        (interactionLog.log[interactionLogIndex].time- startTime) /
           1000 +
         interactionLogOffset;
       newInteractionClipEndTime =
@@ -212,7 +265,7 @@ const getTightenedClips = (
       interactionLogIndex++;
       if (interactionLogIndex <= interactionLog.log.length - 1) {
         const nextInteractionTime =
-          (interactionLog.log[interactionLogIndex].timestampMillis -
+          (interactionLog.log[interactionLogIndex].time-
             startTime) /
             1000 +
           interactionLogOffset;
@@ -233,7 +286,7 @@ const getTightenedClips = (
 
 export const projectSlice = createSlice({
   name: "playback",
-  initialState: initialProject(),
+  initialState: newProject(),
   reducers: {
     replaceProject: (_, action: PayloadAction<ReplaceProjectPayload>) => {
       return action.payload.project;

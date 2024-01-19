@@ -7,7 +7,7 @@ import {
 } from "kave-common";
 import { useAppSelector } from "../../../store/hooks";
 import { selectComposition, selectProject } from "../../../store/store";
-import { InteractionLog } from "./InteractionLog";
+import { InteractionLog, MultiTrackInteractionLog } from "./InteractionLog";
 import { VideoClip } from "./VideoClip";
 
 interface ClipProps {
@@ -58,7 +58,7 @@ export default function ClipComponent(props: ClipProps) {
         break;
       case FileType.interaction_log:
         interactionTrack = (
-          <InteractionLog
+          <MultiTrackInteractionLog
             file={trackFile}
             compositionId={activeComposition.id}
             offsetSeconds={track.alignmentSeconds - clip.sourceOffsetSeconds}

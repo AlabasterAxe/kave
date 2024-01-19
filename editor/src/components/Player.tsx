@@ -164,7 +164,7 @@ function Player() {
   useEffect(resizeCallback, [resizeCallback]);
 
   const zoomHandler = (e: any) => {
-    if (e.ctrlKey) {
+    if (e.ctrlKey || e.metaKey) {
       const zoomUnit = playerViewport.zoom / 100;
       setPlayerViewport({
         zoom: Math.max(playerViewport.zoom - e.deltaY * zoomUnit, 0.1),

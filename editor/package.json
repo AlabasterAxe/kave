@@ -30,7 +30,7 @@
     "uuid": "^8.3.2",
     "videocontext": "../VideoContext",
     "web-vitals": "^1.0.1",
-    "kave-common": "../common"
+    "kave-common": "file:../common"
   },
   "scripts": {
     "start": "react-scripts start",

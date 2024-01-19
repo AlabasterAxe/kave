@@ -6,9 +6,17 @@ export enum FileType {
   interaction_log,
 }
 
+export interface KeyEventPayload {
+  key: string;
+  code: string;
+}
+
 export interface UserInteraction {
-  timestampMillis: number;
+  time: number;
   type: string;
+  x?: number;
+  y?: number;
+  payload?: KeyEventPayload;
 }
 
 export interface UserInteractionLog {

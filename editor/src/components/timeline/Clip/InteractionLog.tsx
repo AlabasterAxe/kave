@@ -5,7 +5,6 @@ import {
   TimelineViewport,
   UserInteraction,
 } from "kave-common";
-import { parseLog } from "kave-common";
 import { useAppDispatch, useAppSelector } from "../../../store/hooks";
 import { loadInteractionFile } from "../../../store/project";
 import { setSelection } from "../../../store/selection";
@@ -58,18 +57,20 @@ function InteractionHandle(props: InteractionHandleProps) {
   let displayText = "";
 
   for (const userInteraction of userInteractions) {
-    switch (userInteraction.type) {
-      case "BACKSPACE":
-        displayText += "‹";
-        break;
-      case "SPACE":
-        displayText += "•";
-        break;
-      case "SHIFT":
-        displayText += "⇧";
-        break;
-      default:
-        displayText += userInteraction.type;
+    if (userInteraction.payload?.key) {
+      switch (userInteraction.payload.key) {
+        case "Backspace":
+          displayText += "‹";
+          break;
+        case "Space":
+          displayText += "•";
+          break;
+        case "Shift":
+          displayText += "⇧";
+          break;
+        default:
+          displayText += userInteraction.payload.key;
+      }
     }
   }
 
@@ -127,6 +128,10 @@ export interface InteractionLogProps {
   onDragEnd: () => void;
 }
 
+export function MultiTrackInteractionLog(props: InteractionLogProps) {
+  return (<InteractionLog {...props}/>);
+}
+
 export function InteractionLog(props: InteractionLogProps) {
   const selection = useAppSelector(selectSelection);
   const {
@@ -148,7 +153,7 @@ export function InteractionLog(props: InteractionLogProps) {
       fetch(file.fileUri!)
         .then((response) => response.text())
         .then((text) => {
-          const userInteractionLog = parseLog(text);
+          const userInteractionLog = JSON.parse(text);
           dispatch(
             loadInteractionFile({
               fileId: file.id,
@@ -163,11 +168,11 @@ export function InteractionLog(props: InteractionLogProps) {
     return <>Loading...</>;
   }
   const log = file.userInteractionLog!.log;
-  const startTime = log[0].timestampMillis / 1000;
+  const startTime = log[0].time / 1000;
   const visibleUserInteractions = log.filter((interaction) => {
-    const interactionTime =
-      interaction.timestampMillis / 1000 - startTime + offsetSeconds;
+    const interactionTime = interaction.time / 1000 - startTime + offsetSeconds;
     return (
+      interaction.type === "keyup" &&
       interactionTime >= 0 &&
       interactionTime < clipDurationSeconds &&
       clipStartTimeSeconds + interactionTime > viewport.startTimeSeconds &&
@@ -179,8 +184,7 @@ export function InteractionLog(props: InteractionLogProps) {
   let currentCluster: UserInteraction[] = [];
   let prevInteractionScreenPosition = null;
   for (const interaction of visibleUserInteractions) {
-    const interactionTime =
-      interaction.timestampMillis / 1000 - startTime + offsetSeconds;
+    const interactionTime = interaction.time / 1000 - startTime + offsetSeconds;
     const interactionScreenPosition = transformToScreen(
       viewport,
       interactionTime
@@ -204,9 +208,7 @@ export function InteractionLog(props: InteractionLogProps) {
   const userInteractionDom = coalescedInteractions.map(
     (interactionCluster: UserInteraction[], index: number) => {
       const interactionStartTime =
-        interactionCluster[0].timestampMillis / 1000 -
-        startTime +
-        offsetSeconds;
+        interactionCluster[0].time / 1000 - startTime + offsetSeconds;
 
       const minEndTime =
         interactionStartTime + MIN_INTERACTION_DURATION_SECONDS;
@@ -216,14 +218,13 @@ export function InteractionLog(props: InteractionLogProps) {
       const nextStartTime =
         index === coalescedInteractions.length - 1
           ? Infinity
-          : coalescedInteractions[index + 1][0].timestampMillis / 1000 -
+          : coalescedInteractions[index + 1][0].time / 1000 -
             startTime +
             offsetSeconds;
 
       const interactionEndTime = Math.min(
         Math.max(
-          interactionCluster[interactionCluster.length - 1].timestampMillis /
-            1000 -
+          interactionCluster[interactionCluster.length - 1].time / 1000 -
             startTime +
             offsetSeconds,
           minEndTime
@@ -233,7 +234,7 @@ export function InteractionLog(props: InteractionLogProps) {
 
       return (
         <InteractionHandle
-          key={`${clipId}-${interactionCluster[0].timestampMillis}`}
+          key={`${clipId}-${interactionCluster[0].time}`}
           interactionStartTime={interactionStartTime}
           interactionEndTime={interactionEndTime}
           onDragEnd={onDragEnd}
