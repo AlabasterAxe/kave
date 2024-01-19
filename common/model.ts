@@ -73,6 +73,7 @@ export type Clip = Readonly<{
 export type Composition = Readonly<{
   id: string;
   clips: Clip[];
+  aspectRatio: number;
 }>;
 
 export type Project = Readonly<{

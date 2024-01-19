@@ -7,7 +7,7 @@ import {
 } from "kave-common";
 import { useAppSelector } from "../../../store/hooks";
 import { selectComposition, selectProject } from "../../../store/store";
-import { InteractionLog, MultiTrackInteractionLog } from "./InteractionLog";
+import { MultiTrackInteractionLog } from "./InteractionLog";
 import { VideoClip } from "./VideoClip";
 
 interface ClipProps {

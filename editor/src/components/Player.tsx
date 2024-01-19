@@ -18,6 +18,7 @@ import {
   selectPlayback,
   selectProject,
 } from "../store/store";
+import { normalizedVideoPointToScreen, videoPointToScreen } from "../util/canvas-transformer";
 
 /**
  * This function is responsible for accepting the composition and setting up the VideoContext
@@ -43,6 +44,7 @@ function setUpTimeline(
         const trackFile = project.files.find((f) => f.id === track.fileId);
         if (trackFile?.type === FileType.video) {
           // TODO: this can potentially cause issues if the track alignment causes a gap in the video.
+
           const videoNode = videoContext.video(
             trackFile.fileUri,
             clip.sourceOffsetSeconds - track.alignmentSeconds,
@@ -104,11 +106,14 @@ function Player() {
     if (canvasRef.current && context) {
       let videoContext = ctx;
       if (!videoContext) {
-        videoContext = new VideoContext(canvasRef.current, (err: any) =>
-          console.error(
-            "There was a problem instantiating the Video Context.",
-            err
-          )
+        videoContext = new VideoContext(
+          canvasRef.current,
+          (err: any) =>
+            console.error(
+              "There was a problem instantiating the Video Context.",
+              err
+            ),
+          { aspectRatio: 1.77777 }
         );
       }
       setUpTimeline(videoContext, composition, project);
@@ -180,13 +185,25 @@ function Player() {
       });
     }
   };
+  
+  const upperLeft = normalizedVideoPointToScreen({ offset: playerViewport.offset, zoom: playerViewport.zoom, viewportSize: {x: canvasRef.current?.clientWidth!, y: canvasRef.current?.clientHeight!}, videoSize: {x: 1920, y: 1080}, }, {x: 0, y: 0})
+  const upperRight = normalizedVideoPointToScreen({ offset: playerViewport.offset, zoom: playerViewport.zoom, viewportSize: {x: canvasRef.current?.clientWidth!, y: canvasRef.current?.clientHeight!}, videoSize: {x: 1920, y: 1080}, }, {x: 1, y: 0})
+  const lowerRight = normalizedVideoPointToScreen({ offset: playerViewport.offset, zoom: playerViewport.zoom, viewportSize: {x: canvasRef.current?.clientWidth!, y: canvasRef.current?.clientHeight!}, videoSize: {x: 1920, y: 1080}, }, {x: 1, y: 1})
+  const lowerLeft = normalizedVideoPointToScreen({ offset: playerViewport.offset, zoom: playerViewport.zoom, viewportSize: {x: canvasRef.current?.clientWidth!, y: canvasRef.current?.clientHeight!}, videoSize: {x: 1920, y: 1080}, }, {x: 0, y: 1})
 
   return (
-    <canvas
-      onWheel={zoomHandler}
-      className="h-full w-full player"
-      ref={canvasRef}
-    ></canvas>
+    <div className="h-full w-full relative" onWheel={zoomHandler}>
+      <canvas
+        className="h-full w-full player absolute top-0 left-0"
+        ref={canvasRef}
+      ></canvas>
+      <svg className="h-full w-full player absolute top-0 left-0">
+        <circle cx={upperLeft.x} cy={upperLeft.y} r={10} fill="#000000"></circle>
+        <circle cx={upperRight.x} cy={upperRight.y} r={10} fill="#000000"></circle>
+        <circle cx={lowerRight.x} cy={lowerRight.y} r={10} fill="#000000"></circle>
+        <circle cx={lowerLeft.x} cy={lowerLeft.y} r={10} fill="#000000"></circle>
+      </svg>
+    </div>
   );
 }
 

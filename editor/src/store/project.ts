@@ -30,6 +30,7 @@ function initialProject(): Project {
             sourceOffsetSeconds: 0,
           },
         ],
+        aspectRatio: 1.7777777777777777,
       },
     ],
     files: [
@@ -78,11 +79,12 @@ function newProject(): Project {
         clips: [
           {
             id: clipId1,
-            durationSeconds: 60,
+            durationSeconds: 14,
             sourceId: sequenceId,
             sourceOffsetSeconds: 0,
           },
         ],
+        aspectRatio: 1.7777777777777777,
       },
     ],
     files: [
@@ -108,7 +110,7 @@ function newProject(): Project {
           },
           {
             id: uuidv4(),
-            alignmentSeconds: 5.5,
+            alignmentSeconds: -17,
             fileId: userInteractionLogId,
           },
         ],

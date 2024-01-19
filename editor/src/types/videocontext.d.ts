@@ -1,10 +1,11 @@
 declare module "videocontext" {
   interface VideoContextOptions {
-    manualUpdate: boolean;
-    endOnLastSourceEnd: boolean;
-    useVideoElementCache: boolean;
-    videoElementCacheSize: number;
-    webglContextAttributes: any;
+    manualUpdate?: boolean;
+    endOnLastSourceEnd?: boolean;
+    useVideoElementCache?: boolean;
+    videoElementCacheSize?: number;
+    webglContextAttributes?: any;
+    aspectRatio?: number;
   }
 
   enum VideoContextEventType {

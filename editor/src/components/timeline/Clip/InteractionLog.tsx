@@ -25,6 +25,7 @@ interface InteractionHandleProps {
   userInteractions: UserInteraction[];
   viewport: TimelineViewport;
   clipStartTimeSeconds: number;
+  bottomTrack?: boolean;
 }
 
 const COALESCING_THRESHOLD = 1; // if two interactions are within 3 vws of one another, merge them into one
@@ -46,18 +47,21 @@ function InteractionHandle(props: InteractionHandleProps) {
     clipStartTimeSeconds,
   } = props;
   const interactionStyle = {
-    transform: `translateX(${scaleToScreen(viewport, interactionStartTime)}vw)`,
+    transform: `translateX(${scaleToScreen(
+      viewport,
+      interactionStartTime
+    )}vw) ${props.bottomTrack ? `translateY(100%)` : ""}`,
     cursor: "grab",
     width: `calc(${scaleToScreen(
       viewport,
       interactionEndTime - interactionStartTime
     )}vw)`,
-    height: "33.333%",
+    height: `${100 / 6}%`,
   };
   let displayText = "";
 
   for (const userInteraction of userInteractions) {
-    if (userInteraction.payload?.key) {
+    if (userInteraction.type === "keyup" && userInteraction.payload?.key) {
       switch (userInteraction.payload.key) {
         case "Backspace":
           displayText += "‹";
@@ -71,6 +75,8 @@ function InteractionHandle(props: InteractionHandleProps) {
         default:
           displayText += userInteraction.payload.key;
       }
+    } else if (userInteraction.type === "mousemove" && !displayText) {
+      displayText = "Mouse Move";
     }
   }
 
@@ -96,7 +102,6 @@ function InteractionHandle(props: InteractionHandleProps) {
         style={interactionStyle}
         className={[
           "h-full",
-          "rounded-t-lg",
           "border",
           "border-b-0",
           "border-gray-300",
@@ -129,10 +134,158 @@ export interface InteractionLogProps {
 }
 
 export function MultiTrackInteractionLog(props: InteractionLogProps) {
-  return (<InteractionLog {...props}/>);
+  return (
+    <>
+      <KeyboardInteractionLog {...props} />
+      <MouseInteractionLog {...props} />
+    </>
+  );
 }
 
-export function InteractionLog(props: InteractionLogProps) {
+function MouseInteractionLog(props: InteractionLogProps) {
+  const selection = useAppSelector(selectSelection);
+  const {
+    file,
+    offsetSeconds,
+    viewport,
+    clipDurationSeconds,
+    onDragStart,
+    onDragUpdate,
+    onDragEnd,
+    timelineElement,
+    clipId,
+    clipStartTimeSeconds,
+  } = props;
+  const dispatch = useAppDispatch();
+  useEffect(() => {
+    if (!file.userInteractionLog) {
+      // TODO: handle the situation where the file doesn't have a uri.
+      fetch(file.fileUri!)
+        .then((response) => response.text())
+        .then((text) => {
+          const userInteractionLog = JSON.parse(text);
+          dispatch(
+            loadInteractionFile({
+              fileId: file.id,
+              interactionLog: { log: userInteractionLog },
+            })
+          );
+        });
+    }
+  }, [dispatch, file]);
+
+  if (!file.userInteractionLog) {
+    return <>Loading...</>;
+  }
+  const log = file.userInteractionLog!.log;
+  const startTime = log[0].time / 1000;
+  const visibleUserInteractions = log.filter((interaction) => {
+    const interactionTime = interaction.time / 1000 - startTime + offsetSeconds;
+    return (
+      interaction.type === "mousemove" &&
+      interactionTime >= 0 &&
+      interactionTime < clipDurationSeconds &&
+      clipStartTimeSeconds + interactionTime > viewport.startTimeSeconds &&
+      clipStartTimeSeconds + interactionTime < viewport.endTimeSeconds
+    );
+  });
+
+  const coalescedInteractions: UserInteraction[][] = [];
+  let currentCluster: UserInteraction[] = [];
+  let prevInteractionScreenPosition = null;
+  for (const interaction of visibleUserInteractions) {
+    const interactionTime = interaction.time / 1000 - startTime + offsetSeconds;
+    const interactionScreenPosition = transformToScreen(
+      viewport,
+      interactionTime
+    );
+    if (
+      !prevInteractionScreenPosition ||
+      interactionScreenPosition - prevInteractionScreenPosition <
+        COALESCING_THRESHOLD
+    ) {
+      currentCluster.push(interaction);
+    } else {
+      coalescedInteractions.push(currentCluster);
+      currentCluster = [interaction];
+    }
+    prevInteractionScreenPosition = interactionScreenPosition;
+  }
+  if (currentCluster.length) {
+    coalescedInteractions.push(currentCluster);
+  }
+
+  const userInteractionDom = coalescedInteractions.map(
+    (interactionCluster: UserInteraction[], index: number) => {
+      const interactionStartTime =
+        interactionCluster[0].time / 1000 - startTime + offsetSeconds;
+
+      const minEndTime =
+        interactionStartTime + MIN_INTERACTION_DURATION_SECONDS;
+
+      // if the next interaction of the is close than MIN_INTERACTION_DURATION_SECONDS
+      // we make it as wide as the gap between the interaction time and the next interaction.
+      const nextStartTime =
+        index === coalescedInteractions.length - 1
+          ? Infinity
+          : coalescedInteractions[index + 1][0].time / 1000 -
+            startTime +
+            offsetSeconds;
+
+      const interactionEndTime = Math.min(
+        Math.max(
+          interactionCluster[interactionCluster.length - 1].time / 1000 -
+            startTime +
+            offsetSeconds,
+          minEndTime
+        ),
+        nextStartTime
+      );
+
+      return (
+        <InteractionHandle
+          bottomTrack={true}
+          key={`${clipId}-${interactionCluster[0].time}`}
+          interactionStartTime={interactionStartTime}
+          interactionEndTime={interactionEndTime}
+          onDragEnd={onDragEnd}
+          onDragStart={onDragStart}
+          onDragUpdate={onDragUpdate}
+          onClick={(e) => {
+            if (e.shiftKey && selection) {
+              dispatch(
+                setSelection({
+                  startTimeSeconds: Math.min(
+                    selection.startTimeSeconds,
+                    clipStartTimeSeconds + interactionStartTime
+                  ),
+                  endTimeSeconds: Math.max(
+                    selection.endTimeSeconds,
+                    clipStartTimeSeconds + interactionEndTime
+                  ),
+                })
+              );
+            } else {
+              dispatch(
+                setSelection({
+                  startTimeSeconds: clipStartTimeSeconds + interactionStartTime,
+                  endTimeSeconds: clipStartTimeSeconds + interactionEndTime,
+                })
+              );
+            }
+          }}
+          timelineElement={timelineElement}
+          userInteractions={interactionCluster}
+          viewport={viewport}
+          clipStartTimeSeconds={clipStartTimeSeconds}
+        />
+      );
+    }
+  );
+  return <>{userInteractionDom}</>;
+}
+
+function KeyboardInteractionLog(props: InteractionLogProps) {
   const selection = useAppSelector(selectSelection);
   const {
     file,

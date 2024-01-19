@@ -50,6 +50,7 @@ export declare type Clip = Readonly<{
 export declare type Composition = Readonly<{
     id: string;
     clips: Clip[];
+    aspectRatio: number;
 }>;
 export declare type Project = Readonly<{
     id: string;
