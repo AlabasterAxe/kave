@@ -212,7 +212,7 @@ function Player() {
       const screenPoint = normalizedPointToScreen({x: interaction.x/1920/videoScaleFactor, y: interaction.y/1080/videoScaleFactor});
       return `${screenPoint.x},${screenPoint.y}`;
     }).join(' ');
-    return <path d={`M ${path} Z`} fillOpacity="0" stroke="#000000" strokeWidth="2" opacity={0.5}></path>
+    return <path d={`M ${path}`} fill="none" stroke="#000000" strokeWidth="2" opacity={0.5}></path>
   }
   
   const upperLeft = normalizedPointToScreen({x: 0, y: 0});
