@@ -26,3 +26,5 @@ export function transformToTimeline(
     screenFraction * (viewport.endTimeSeconds - viewport.startTimeSeconds)
   );
 }
+
+

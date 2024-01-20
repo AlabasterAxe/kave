@@ -45,7 +45,7 @@ export default function ClipComponent(props: ClipProps) {
   let videoTrack = null;
   let interactionTrack = null;
   for (const track of seq.tracks) {
-    const trackFile: KaveFile = project.files.find(
+    const trackFile = project.files.find(
       (f: KaveFile) => f.id === track.fileId
     );
     if (!trackFile) {

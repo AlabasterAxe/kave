@@ -259,7 +259,7 @@ export function Timeline() {
     >
       {renderTimeline(viewport, timelineClips)}
       <div className="h-full w-full flex relative">{clips}</div>
-      {renderSelection(viewport, selection)}
+      {selection && renderSelection(viewport, selection)}
       {renderPlayhead(viewport, playback.currentTimeSeconds)}
     </div>
   );

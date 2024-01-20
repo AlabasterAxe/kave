@@ -38,7 +38,7 @@ function App() {
           dispatch(nudgeForward({ source: PlaybackStateSource.keyboard }));
           break;
         case "Escape":
-          dispatch(setSelection(null));
+          dispatch(setSelection(undefined));
           break;
         case "Delete":
           if (selection) {
@@ -54,13 +54,16 @@ function App() {
       }
       switch (e.key) {
         case "t":
-          dispatch(
-            tightenSelection({
-              compositionId: activeComposition.id,
-              startTimeSeconds: selection.startTimeSeconds,
-              endTimeSeconds: selection.endTimeSeconds,
-            })
-          );
+          if (selection) {
+            dispatch(
+              tightenSelection({
+                compositionId: activeComposition.id,
+                startTimeSeconds: selection.startTimeSeconds,
+                endTimeSeconds: selection.endTimeSeconds,
+              })
+            );
+          }
+          
           break;
         case "z":
           if (e.ctrlKey) {

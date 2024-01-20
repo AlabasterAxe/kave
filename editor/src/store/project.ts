@@ -7,6 +7,7 @@ import {
   Sequence,
   UserInteractionLog,
   FileType,
+  InteractionLogFile,
 } from "kave-common";
 
 const INTERACTION_DURATION_SECONDS = 0.1;
@@ -110,7 +111,7 @@ function newProject(): Project {
           },
           {
             id: uuidv4(),
-            alignmentSeconds: -17,
+            alignmentSeconds: -17.1,
             fileId: userInteractionLogId,
           },
         ],
@@ -208,6 +209,45 @@ export const deleteSectionFromClips = (
   }
   return newClips;
 };
+
+export function getInteractionLogForSourceId(state: Project, sourceId: string): {file: InteractionLogFile, offset: number} | undefined {
+  const sequence = state.sequences.find((f) => f.id === sourceId);
+
+  if (!sequence) {
+    return undefined;
+  }
+
+  let interactionLogFile: InteractionLogFile | undefined;
+  const track = sequence.tracks.find((t)=>{
+    const file = state.files.find((f) => f.id === t.fileId);
+    if (file?.type === FileType.interaction_log) {
+      interactionLogFile = file;
+      return true;
+    }
+    return false;
+  })
+
+  if (!interactionLogFile || !track) {
+    return undefined;
+  }
+  
+  return {file: interactionLogFile, offset: track.alignmentSeconds};
+}
+
+export function getClipForTime(project: Project, compositionId: string, time: number): {clip: Clip, offset: number} | undefined{
+  const comp = project.compositions.find((c) => c.id === compositionId);
+  if (!comp) {
+    return undefined;
+  }
+  let curTime = 0;
+  for (const clip of comp.clips) {
+    if (curTime + clip.durationSeconds > time) {
+      return {clip, offset: time - curTime};
+    }
+    curTime += clip.durationSeconds;
+  }
+  return undefined;
+}
 
 const getTightenedClips = (
   clip: Clip,
@@ -498,6 +538,7 @@ export const projectSlice = createSlice({
     },
   },
 });
+
 
 export const {
   splitClip,

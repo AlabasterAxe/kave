@@ -7,16 +7,16 @@ export interface Selection {
 }
 
 export interface SelectionState {
-  selection: Selection | null;
+  selection: Selection | undefined;
 }
 
 export const selectionSlice = createSlice({
   name: "selection",
-  initialState: { selection: null },
+  initialState: { selection: undefined },
   reducers: {
     setSelection: (
       state: SelectionState,
-      action: PayloadAction<Selection | null>
+      action: PayloadAction<Selection | undefined>
     ) => {
       state.selection = action.payload;
     },

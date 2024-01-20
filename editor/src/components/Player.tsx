@@ -15,10 +15,11 @@ import {
 } from "../store/playback";
 import {
   selectComposition,
+  selectCursorLocation,
   selectPlayback,
   selectProject,
 } from "../store/store";
-import { normalizedVideoPointToScreen, videoPointToScreen } from "../util/canvas-transformer";
+import { normalizedVideoPointToScreen } from "../util/canvas-transformer";
 
 /**
  * This function is responsible for accepting the composition and setting up the VideoContext
@@ -84,6 +85,7 @@ function Player() {
   const activeComposition = useAppSelector(selectComposition);
   const playback = useAppSelector(selectPlayback);
   const project = useAppSelector(selectProject);
+  const cursorLocation = useAppSelector(selectCursorLocation);
   const [playerViewport, setPlayerViewport] = useState<PlayerViewportState>({
     zoom: 1,
     offset: { x: 0, y: 0 },
@@ -115,6 +117,9 @@ function Player() {
             ),
           { aspectRatio: 1.77777 }
         );
+      }
+      if (!composition) {
+        return;
       }
       setUpTimeline(videoContext, composition, project);
       videoContext.registerCallback(
@@ -191,6 +196,10 @@ function Player() {
   const lowerRight = normalizedVideoPointToScreen({ offset: playerViewport.offset, zoom: playerViewport.zoom, viewportSize: {x: canvasRef.current?.clientWidth!, y: canvasRef.current?.clientHeight!}, videoSize: {x: 1920, y: 1080}, }, {x: 1, y: 1})
   const lowerLeft = normalizedVideoPointToScreen({ offset: playerViewport.offset, zoom: playerViewport.zoom, viewportSize: {x: canvasRef.current?.clientWidth!, y: canvasRef.current?.clientHeight!}, videoSize: {x: 1920, y: 1080}, }, {x: 0, y: 1})
 
+  const videoScaleFactor = 1.333;
+  
+  const canvasCursorLocation = cursorLocation ? normalizedVideoPointToScreen({ offset: playerViewport.offset, zoom: playerViewport.zoom, viewportSize: {x: canvasRef.current?.clientWidth!, y: canvasRef.current?.clientHeight!}, videoSize: {x: 1920, y: 1080}, }, {x: cursorLocation.x/1920/videoScaleFactor, y: cursorLocation.y/1080/videoScaleFactor}): undefined;
+
   return (
     <div className="h-full w-full relative" onWheel={zoomHandler}>
       <canvas
@@ -202,6 +211,7 @@ function Player() {
         <circle cx={upperRight.x} cy={upperRight.y} r={10} fill="#000000"></circle>
         <circle cx={lowerRight.x} cy={lowerRight.y} r={10} fill="#000000"></circle>
         <circle cx={lowerLeft.x} cy={lowerLeft.y} r={10} fill="#000000"></circle>
+        {canvasCursorLocation && <circle cx={canvasCursorLocation.x} cy={canvasCursorLocation.y} r={10} fill="#FF0000"></circle>}
       </svg>
     </div>
   );
