@@ -61,6 +61,50 @@ export function selectCursorLocation(state: RootState): {x: number, y: number} |
   return {x : lastInteractionLogEvent.x, y: lastInteractionLogEvent.y}
 }
 
+export function selectSelectionUserInteractions(state: RootState): UserInteraction[] {
+  const composition = selectComposition(state);
+  const project = selectProject(state);
+  const selection = selectSelection(state);
+
+  if (!selection) {
+    return []
+  }
+
+  const { clip: startClip, offset: selectionStartClipOffset} = getClipForTime(project, composition.id, selection.startTimeSeconds) ?? {};
+  const { clip: endClip, offset: selectionEndClipOffset} = getClipForTime(project, composition.id, selection.endTimeSeconds) ?? {};
+
+  // TODO: this can probably be handled better
+  if (!startClip || !endClip || !selectionStartClipOffset || !selectionEndClipOffset) {
+    return [];
+  }
+
+  // TODO: handle mismatched clips
+  if (startClip?.id !== endClip?.id || Math.abs((selectionEndClipOffset - selectionStartClipOffset) - (selection.endTimeSeconds - selection.startTimeSeconds)) > 0.1) {
+    throw new Error("mismatched clips");
+  }
+
+  const { file, offset: interactionLogSourceOffset } = getInteractionLogForSourceId(project, startClip.sourceId) ?? {};
+  if (!file?.userInteractionLog || !interactionLogSourceOffset) {
+    return [];
+  }
+
+  const sourceSelectionStartOffset = startClip.sourceOffsetSeconds + selectionStartClipOffset;
+  const sourceSelectionEndOffset = startClip.sourceOffsetSeconds + selectionEndClipOffset;
+  const interactionLogSelectionStartOffset = sourceSelectionStartOffset - interactionLogSourceOffset;
+  const interactionLogSelectionEndOffset = sourceSelectionEndOffset - interactionLogSourceOffset;
+  const result: UserInteraction[] = [];
+  for (const event of file.userInteractionLog.log) {
+    const eventTimeSeconds = event.time / 1000;
+    if (eventTimeSeconds > interactionLogSelectionStartOffset && eventTimeSeconds < interactionLogSelectionEndOffset) {
+      result.push(event);
+    } else if (eventTimeSeconds > interactionLogSelectionEndOffset) {
+      break;
+    }
+  }
+
+  return result;
+}
+
 const diffPatcher = create({ textDiff: { minLength: 20 } });
 
 const trimerger = new Trimerger(diffPatcher);

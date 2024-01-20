@@ -6,7 +6,7 @@ import {
   useState,
 } from "react";
 import VideoContext from "videocontext";
-import { Composition, FileType, Project } from "kave-common";
+import { Composition, FileType, Project, UserInteraction } from "kave-common";
 import { useAppDispatch, useAppSelector } from "../store/hooks";
 import {
   PlaybackStateSource,
@@ -18,8 +18,11 @@ import {
   selectCursorLocation,
   selectPlayback,
   selectProject,
+  selectSelection,
+  selectSelectionUserInteractions,
 } from "../store/store";
 import { normalizedVideoPointToScreen } from "../util/canvas-transformer";
+import { get } from "http";
 
 /**
  * This function is responsible for accepting the composition and setting up the VideoContext
@@ -79,6 +82,8 @@ interface PlayerViewportState {
   offset: { x: number; y: number };
 }
 
+
+
 function Player() {
   const canvasRef: MutableRefObject<HTMLCanvasElement | null> = useRef(null);
   const [ctx, setContext] = useState<VideoContext | null>(null);
@@ -86,6 +91,7 @@ function Player() {
   const playback = useAppSelector(selectPlayback);
   const project = useAppSelector(selectProject);
   const cursorLocation = useAppSelector(selectCursorLocation);
+  const selectionUserInteractions = useAppSelector(selectSelectionUserInteractions);
   const [playerViewport, setPlayerViewport] = useState<PlayerViewportState>({
     zoom: 1,
     offset: { x: 0, y: 0 },
@@ -190,15 +196,34 @@ function Player() {
       });
     }
   };
+
+  function normalizedPointToScreen(point: {x: number, y: number}) {
+    return normalizedVideoPointToScreen({ offset: playerViewport.offset, zoom: playerViewport.zoom, viewportSize: {x: canvasRef.current?.clientWidth!, y: canvasRef.current?.clientHeight!}, videoSize: {x: 1920, y: 1080}, }, point);
+  }
+
+  function getMouseCursorPathSvgElement(selectionMouseEvents: UserInteraction[]) {
+    if (selectionMouseEvents.length < 2) {
+      return null;
+    }
+    const path = selectionMouseEvents.map((interaction) => {
+      if (!interaction.x || !interaction.y) {
+        return '';
+      }
+      const screenPoint = normalizedPointToScreen({x: interaction.x/1920/videoScaleFactor, y: interaction.y/1080/videoScaleFactor});
+      return `${screenPoint.x},${screenPoint.y}`;
+    }).join(' ');
+    return <path d={`M ${path} Z`} fillOpacity="0" stroke="#000000" strokeWidth="2" opacity={0.5}></path>
+  }
   
-  const upperLeft = normalizedVideoPointToScreen({ offset: playerViewport.offset, zoom: playerViewport.zoom, viewportSize: {x: canvasRef.current?.clientWidth!, y: canvasRef.current?.clientHeight!}, videoSize: {x: 1920, y: 1080}, }, {x: 0, y: 0})
-  const upperRight = normalizedVideoPointToScreen({ offset: playerViewport.offset, zoom: playerViewport.zoom, viewportSize: {x: canvasRef.current?.clientWidth!, y: canvasRef.current?.clientHeight!}, videoSize: {x: 1920, y: 1080}, }, {x: 1, y: 0})
-  const lowerRight = normalizedVideoPointToScreen({ offset: playerViewport.offset, zoom: playerViewport.zoom, viewportSize: {x: canvasRef.current?.clientWidth!, y: canvasRef.current?.clientHeight!}, videoSize: {x: 1920, y: 1080}, }, {x: 1, y: 1})
-  const lowerLeft = normalizedVideoPointToScreen({ offset: playerViewport.offset, zoom: playerViewport.zoom, viewportSize: {x: canvasRef.current?.clientWidth!, y: canvasRef.current?.clientHeight!}, videoSize: {x: 1920, y: 1080}, }, {x: 0, y: 1})
+  const upperLeft = normalizedPointToScreen({x: 0, y: 0});
+  const upperRight = normalizedPointToScreen({x: 1, y: 0});
+  const lowerRight = normalizedPointToScreen({x: 1, y: 1});
+  const lowerLeft = normalizedPointToScreen({x: 0, y: 1});
 
   const videoScaleFactor = 1.333;
   
-  const canvasCursorLocation = cursorLocation ? normalizedVideoPointToScreen({ offset: playerViewport.offset, zoom: playerViewport.zoom, viewportSize: {x: canvasRef.current?.clientWidth!, y: canvasRef.current?.clientHeight!}, videoSize: {x: 1920, y: 1080}, }, {x: cursorLocation.x/1920/videoScaleFactor, y: cursorLocation.y/1080/videoScaleFactor}): undefined;
+  
+  const canvasCursorLocation = cursorLocation ? normalizedPointToScreen({x: cursorLocation.x/1920/videoScaleFactor, y: cursorLocation.y/1080/videoScaleFactor}): undefined;
 
   return (
     <div className="h-full w-full relative" onWheel={zoomHandler}>
@@ -211,6 +236,14 @@ function Player() {
         <circle cx={upperRight.x} cy={upperRight.y} r={10} fill="#000000"></circle>
         <circle cx={lowerRight.x} cy={lowerRight.y} r={10} fill="#000000"></circle>
         <circle cx={lowerLeft.x} cy={lowerLeft.y} r={10} fill="#000000"></circle>
+        {getMouseCursorPathSvgElement(selectionUserInteractions)}
+        {selectionUserInteractions.map((interaction) => {
+          if (interaction.x && interaction.y) {
+            const screenPoint = normalizedPointToScreen({x: interaction.x/1920/videoScaleFactor, y: interaction.y/1080/videoScaleFactor});
+            return <circle cx={screenPoint.x} cy={screenPoint.y} r={5} fill="#00FF00"></circle>
+          }
+          return null;
+        })}
         {canvasCursorLocation && <circle cx={canvasCursorLocation.x} cy={canvasCursorLocation.y} r={10} fill="#FF0000"></circle>}
       </svg>
     </div>
