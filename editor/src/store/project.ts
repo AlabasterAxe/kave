@@ -34,8 +34,8 @@ function initialProject(): Project {
           },
         ],
         resolution: {
-          x: 2558,
-          y: 1316,
+          x: 893,
+          y: 480,
         }
       },
     ],
@@ -44,6 +44,10 @@ function initialProject(): Project {
         id: fileId,
         type: FileType.video,
         fileUri: "test_video.m4v",
+        resolution: {
+          x: 893,
+          y: 480,
+        }
       },
       {
         id: userInteractionLogId,

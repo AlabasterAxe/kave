@@ -74,7 +74,7 @@ export type Clip = Readonly<{
 export type Composition = Readonly<{
   id: string;
   clips: Clip[];
-  dimensions: {x: number, y: number};
+  resolution: {x: number, y: number};
 }>;
 
 export type Project = Readonly<{
