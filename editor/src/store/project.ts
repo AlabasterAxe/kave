@@ -8,6 +8,8 @@ import {
   UserInteractionLog,
   FileType,
   InteractionLogFile,
+  UserInteraction,
+  Track,
 } from "kave-common";
 
 const INTERACTION_DURATION_SECONDS = 0.1;
@@ -118,6 +120,14 @@ function newProject(): Project {
       },
     ],
   };
+}
+
+function clipOffsetToInteractionLogOffset(
+  clip: Clip,
+  interactionLogTrack: Track,
+  clipOffsetSeconds: number,
+): number {
+  return clip.sourceOffsetSeconds + clipOffsetSeconds - interactionLogTrack.alignmentSeconds;
 }
 
 export interface SplitClipPayload {
@@ -254,6 +264,63 @@ export function getClipForTime(
     curTime += clip.durationSeconds;
   }
   return undefined;
+}
+
+export function getInteractionLogEventsForClip(
+  project: Project,
+  clip: Clip
+): UserInteraction[] {
+  const sequence = project.sequences.find((f) => f.id === clip.sourceId);
+
+  if (!sequence) {
+    return [];
+  }
+
+  let interactionLogFile: InteractionLogFile | undefined;
+  const track = sequence.tracks.find((t) => {
+    const file = project.files.find((f) => f.id === t.fileId);
+    if (file?.type === FileType.interaction_log) {
+      interactionLogFile = file;
+      return true;
+    }
+    return false;
+  });
+
+  if (!interactionLogFile || !track) {
+    return [];
+  }
+
+  const interactionLogOffset = clip.sourceOffsetSeconds - track.alignmentSeconds;
+  const interactionLogEvents = interactionLogFile.userInteractionLog?.log.filter(
+    (event) => {
+      const eventTimeSeconds = event.time / 1000;
+      return (
+        eventTimeSeconds >= interactionLogOffset &&
+        eventTimeSeconds <= interactionLogOffset + clip.durationSeconds
+      );
+    }
+  );
+
+  return interactionLogEvents ?? [];
+}
+
+/** This will replace the events in the specified range of the log file and replace them with the supplied events that occur within the specified time range.
+ *  It doesn't attempt to do anything clever with the timestamps of the incoming events so it's possible that the new events will overlap with the old ones. 
+ */
+export function replaceInteractionLogRange(file: InteractionLogFile, startTimeSeconds: number, endTimeSeconds: number, newEvents: UserInteraction[]): InteractionLogFile {
+  const logWithRemovedSection = file.userInteractionLog!.log.filter((event) => {
+    const eventTimeSeconds = event.time / 1000;
+    return eventTimeSeconds < startTimeSeconds || eventTimeSeconds > endTimeSeconds;
+  });
+
+  const eventsWithinRange = newEvents.filter((event) => {
+    const eventTimeSeconds = event.time / 1000;
+    return eventTimeSeconds >= startTimeSeconds && eventTimeSeconds <= endTimeSeconds;
+  });
+
+  logWithRemovedSection.push(...eventsWithinRange);
+  logWithRemovedSection.sort((a, b) => a.time - b.time);
+  return { ...file, userInteractionLog: { log: logWithRemovedSection } };
 }
 
 const getTightenedClips = (
@@ -525,6 +592,82 @@ export const projectSlice = createSlice({
       newCompositions.push(composition);
       state.compositions = newCompositions;
     },
+    smoothInteractions: (state, action: PayloadAction<TightenSectionPayload>) => {
+      const composition = state.compositions.find(
+        (composition) => composition.id === action.payload.compositionId
+      );
+      if (!composition) {
+        console.warn("non-existent composition referenced in action payload");
+        return state;
+      }
+      
+      let nextStartTime = 0;
+      for (const clip of composition.clips) {
+        const clipEndTime = nextStartTime + clip.durationSeconds;
+        
+        // before the selection
+        if (clipEndTime < action.payload.startTimeSeconds) {
+          nextStartTime = clipEndTime;
+          continue;
+        }
+
+        // after the selection
+        if (nextStartTime > action.payload.endTimeSeconds) {
+          break;
+        }
+
+        // this clip doesn't have an interaction log
+        let file = state.files.find((f: KaveFile) => f.id === clip.sourceId);
+        if (file) {
+          continue;
+        }
+
+        const seq = state.sequences.find(
+          (s: Sequence) => s.id === clip.sourceId
+        );
+
+        // this clip doesn't have an interaction log
+        if (!seq) {
+          continue;
+        }
+
+
+        let interactionLogTrack: Track | undefined = undefined;
+        let interactionLogFile: InteractionLogFile | undefined;
+        for (const track of seq.tracks) {
+          const trackFile: KaveFile | undefined = state.files.find(
+            (f: KaveFile) => f.id === track.fileId
+          );
+          if (!trackFile) {
+            continue;
+          }
+          if (trackFile.type === FileType.interaction_log) {
+            interactionLogTrack = track;
+            interactionLogFile = trackFile as InteractionLogFile;
+            break;
+          }
+        }
+
+        if (!interactionLogTrack || !interactionLogFile) {
+          continue;
+        }
+
+
+        const selectionStartClipOffsetSeconds = action.payload.startTimeSeconds - nextStartTime;
+        const selectionEndClipOffsetSeconds = action.payload.endTimeSeconds - nextStartTime;
+        const selectionStartInteractionOffsetSeconds = clipOffsetToInteractionLogOffset(clip, interactionLogTrack, selectionStartClipOffsetSeconds);
+        const selectionEndInteractionOffsetSeconds = clipOffsetToInteractionLogOffset(clip, interactionLogTrack, selectionEndClipOffsetSeconds);
+        const newInteractionLogFile = replaceInteractionLogRange(interactionLogFile, selectionStartInteractionOffsetSeconds, selectionEndInteractionOffsetSeconds, []);
+        
+        state.files = state.files.map((file) => {
+          if (file.id === interactionLogFile?.id) {
+            return newInteractionLogFile;
+          } else {
+            return file;
+          }
+        });
+      }
+    },
     loadInteractionFile: (
       state,
       action: PayloadAction<LoadInteractionFilePayload>
@@ -548,4 +691,5 @@ export const {
   deleteSection,
   tightenSection,
   replaceProject,
+  smoothInteractions,
 } = projectSlice.actions;

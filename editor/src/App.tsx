@@ -13,6 +13,7 @@ import {
   deleteSelection,
   selectComposition,
   selectSelection,
+  simplifySelectedMouseInteractions,
   tightenSelection,
 } from "./store/store";
 import EditorView from "./views/EditorView";
@@ -65,8 +66,20 @@ function App() {
           }
           
           break;
+        case "s":
+          if (selection) {
+            dispatch(
+              simplifySelectedMouseInteractions({
+                compositionId: activeComposition.id,
+                startTimeSeconds: selection.startTimeSeconds,
+                endTimeSeconds: selection.endTimeSeconds,
+              })
+            );
+          }
+          
+          break;
         case "z":
-          if (e.ctrlKey) {
+          if (e.ctrlKey || e.metaKey) {
             dispatch(ActionCreators.undo());
           }
       }

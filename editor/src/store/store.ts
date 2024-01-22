@@ -12,6 +12,7 @@ import {
   replaceProject,
   getClipForTime,
   getInteractionLogForSourceId,
+  smoothInteractions,
 } from "./project";
 import { thunk, ThunkAction, ThunkDispatch } from "redux-thunk";
 import { selectionSlice, SelectionState, setSelection } from "./selection";
@@ -199,39 +200,40 @@ export function tightenSelection({
 }): ThunkAction<void, RootState, unknown, AnyAction> {
   return (dispatch: (action: any) => void) => {
     // should only result in one combined re-render, not two
-    batch(() => {
-      dispatch(
-        tightenSection({
-          compositionId: compositionId,
-          startTimeSeconds: startTimeSeconds,
-          endTimeSeconds: endTimeSeconds,
-        })
-      );
-      dispatch(setSelection(undefined));
-    });
+    dispatch(
+      tightenSection({
+        compositionId: compositionId,
+        startTimeSeconds: startTimeSeconds,
+        endTimeSeconds: endTimeSeconds,
+      })
+    );
+    dispatch(setSelection(undefined));
   };
 }
 
-export function simplifySelectedMouseInteractions(): ThunkAction<
+export function simplifySelectedMouseInteractions({
+  compositionId,
+  startTimeSeconds,
+  endTimeSeconds,
+}: {
+  compositionId: string;
+  startTimeSeconds: number;
+  endTimeSeconds: number;
+}): ThunkAction<
   void,
   RootState,
   unknown,
   AnyAction
 > {
   return (dispatch: (action: any) => void, getState: () => RootState) => {
-    const state = getState();
-    const composition = selectComposition(state);
-    const project = selectProject(state);
-    const selection = selectSelection(state);
-
-    if (!selection) {
-      return;
-    }
-
-    const { clip: startClip, offset: selectionStartClipOffset } =
-      getClipForTime(project, composition.id, selection.startTimeSeconds) ?? {};
-    const { clip: endClip, offset: selectionEndClipOffset } =
-      getClipForTime(project, composition.id, selection.endTimeSeconds) ?? {};
+    dispatch(
+      smoothInteractions({
+        compositionId: compositionId,
+        startTimeSeconds: startTimeSeconds,
+        endTimeSeconds: endTimeSeconds,
+      })
+    );
+    dispatch(setSelection(undefined));
   };
 }
 
