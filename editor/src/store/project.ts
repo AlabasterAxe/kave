@@ -136,6 +136,8 @@ function newProject(): Project {
   };
 }
 
+export const ALL_PROJECTS = [initialProject(), newProject()];
+
 function clipOffsetToInteractionLogOffset(
   clip: Clip,
   interactionLogTrack: Track,

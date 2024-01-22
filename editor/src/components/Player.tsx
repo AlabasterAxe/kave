@@ -18,11 +18,9 @@ import {
   selectCursorLocation,
   selectPlayback,
   selectProject,
-  selectSelection,
   selectSelectionUserInteractions,
 } from "../store/store";
 import { normalizedVideoPointToScreen } from "../util/canvas-transformer";
-import { get } from "http";
 
 /**
  * This function is responsible for accepting the composition and setting up the VideoContext
@@ -52,7 +50,7 @@ function setUpTimeline(
           const videoNode = videoContext.video(
             trackFile.fileUri,
             clip.sourceOffsetSeconds - track.alignmentSeconds,
-            clip.durationSeconds
+            clip.durationSeconds,
           );
           videoNode.connect(videoContext.destination);
           videoNode.startAt(duration);
@@ -67,7 +65,7 @@ function setUpTimeline(
       const videoNode = videoContext.video(
         file.fileUri,
         clip.sourceOffsetSeconds,
-        clip.durationSeconds
+        clip.durationSeconds,
       );
       videoNode.connect(videoContext.destination);
       videoNode.startAt(duration);
@@ -81,8 +79,6 @@ interface PlayerViewportState {
   zoom: number;
   offset: { x: number; y: number };
 }
-
-
 
 function Player() {
   const canvasRef: MutableRefObject<HTMLCanvasElement | null> = useRef(null);
@@ -121,7 +117,7 @@ function Player() {
               "There was a problem instantiating the Video Context.",
               err
             ),
-          { aspectRatio: 1.77777 }
+          { aspectRatio: composition?.resolution ? composition?.resolution.x / composition?.resolution.y : 16/9 }
         );
       }
       if (!composition) {
@@ -198,7 +194,11 @@ function Player() {
   };
 
   function normalizedPointToScreen(point: {x: number, y: number}) {
-    return normalizedVideoPointToScreen({ offset: playerViewport.offset, zoom: playerViewport.zoom, viewportSize: {x: canvasRef.current?.clientWidth!, y: canvasRef.current?.clientHeight!}, videoSize: {x: 1920, y: 1080}, }, point);
+    return normalizedVideoPointToScreen({ offset: playerViewport.offset, zoom: playerViewport.zoom, viewportSize: {x: canvasRef.current?.clientWidth!, y: canvasRef.current?.clientHeight!}, videoSize: composition?.resolution ?? {x: 1920, y: 1080}, }, point);
+  }
+
+  function browserPointToNormalizedVideoPoint(browserPoint: {x: number, y: number}) {
+    return {x: browserPoint.x/(composition?.resolution.x ?? 1920)/videoScaleFactor, y: browserPoint.y/(composition?.resolution.y ?? 1080)/videoScaleFactor};
   }
 
   function getMouseCursorPathSvgElement(selectionMouseEvents: UserInteraction[]) {
@@ -209,7 +209,7 @@ function Player() {
       if (!interaction.x || !interaction.y) {
         return '';
       }
-      const screenPoint = normalizedPointToScreen({x: interaction.x/1920/videoScaleFactor, y: interaction.y/1080/videoScaleFactor});
+      const screenPoint = normalizedPointToScreen(browserPointToNormalizedVideoPoint(interaction as {x: number, y: number}));
       return `${screenPoint.x},${screenPoint.y}`;
     }).join(' ');
     return <path d={`M ${path}`} fill="none" stroke="#000000" strokeWidth="2" opacity={0.5}></path>
@@ -220,10 +220,10 @@ function Player() {
   const lowerRight = normalizedPointToScreen({x: 1, y: 1});
   const lowerLeft = normalizedPointToScreen({x: 0, y: 1});
 
-  const videoScaleFactor = 1.333;
+  const videoScaleFactor = 1;
   
   
-  const canvasCursorLocation = cursorLocation ? normalizedPointToScreen({x: cursorLocation.x/1920/videoScaleFactor, y: cursorLocation.y/1080/videoScaleFactor}): undefined;
+  const canvasCursorLocation = cursorLocation ? normalizedPointToScreen(browserPointToNormalizedVideoPoint(cursorLocation)): undefined;
 
   return (
     <div className="h-full w-full relative" onWheel={zoomHandler}>
@@ -239,7 +239,7 @@ function Player() {
         {getMouseCursorPathSvgElement(selectionUserInteractions)}
         {selectionUserInteractions.map((interaction) => {
           if (interaction.x && interaction.y) {
-            const screenPoint = normalizedPointToScreen({x: interaction.x/1920/videoScaleFactor, y: interaction.y/1080/videoScaleFactor});
+            const screenPoint = normalizedPointToScreen(browserPointToNormalizedVideoPoint(interaction as {x: number, y: number}));
             return <circle cx={screenPoint.x} cy={screenPoint.y} r={5} fill="#00FF00"></circle>
           }
           return null;
