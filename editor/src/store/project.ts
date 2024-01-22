@@ -210,7 +210,10 @@ export const deleteSectionFromClips = (
   return newClips;
 };
 
-export function getInteractionLogForSourceId(state: Project, sourceId: string): {file: InteractionLogFile, offset: number} | undefined {
+export function getInteractionLogForSourceId(
+  state: Project,
+  sourceId: string
+): { file: InteractionLogFile; offset: number } | undefined {
   const sequence = state.sequences.find((f) => f.id === sourceId);
 
   if (!sequence) {
@@ -218,23 +221,27 @@ export function getInteractionLogForSourceId(state: Project, sourceId: string): 
   }
 
   let interactionLogFile: InteractionLogFile | undefined;
-  const track = sequence.tracks.find((t)=>{
+  const track = sequence.tracks.find((t) => {
     const file = state.files.find((f) => f.id === t.fileId);
     if (file?.type === FileType.interaction_log) {
       interactionLogFile = file;
       return true;
     }
     return false;
-  })
+  });
 
   if (!interactionLogFile || !track) {
     return undefined;
   }
-  
-  return {file: interactionLogFile, offset: track.alignmentSeconds};
+
+  return { file: interactionLogFile, offset: track.alignmentSeconds };
 }
 
-export function getClipForTime(project: Project, compositionId: string, time: number): {clip: Clip, offset: number} | undefined{
+export function getClipForTime(
+  project: Project,
+  compositionId: string,
+  time: number
+): { clip: Clip; offset: number } | undefined {
   const comp = project.compositions.find((c) => c.id === compositionId);
   if (!comp) {
     return undefined;
@@ -242,7 +249,7 @@ export function getClipForTime(project: Project, compositionId: string, time: nu
   let curTime = 0;
   for (const clip of comp.clips) {
     if (curTime + clip.durationSeconds > time) {
-      return {clip, offset: time - curTime};
+      return { clip, offset: time - curTime };
     }
     curTime += clip.durationSeconds;
   }
@@ -271,8 +278,7 @@ const getTightenedClips = (
   while (interactionLogTime < durationSoFar) {
     interactionLogIndex++;
     interactionLogTime =
-      (interactionLog.log[interactionLogIndex].time- startTime) /
-        1000 +
+      (interactionLog.log[interactionLogIndex].time - startTime) / 1000 +
       interactionLogOffset;
   }
 
@@ -288,8 +294,7 @@ const getTightenedClips = (
     }
 
     interactionLogTime =
-      (interactionLog.log[interactionLogIndex].time- startTime) /
-        1000 +
+      (interactionLog.log[interactionLogIndex].time - startTime) / 1000 +
       interactionLogOffset;
     let newInteractionClipEndTime = interactionLogTime;
     let nextInteractionGap = 0;
@@ -299,17 +304,14 @@ const getTightenedClips = (
       nextInteractionGap < INTERACTION_DURATION_SECONDS
     ) {
       const currentInteractionTime =
-        (interactionLog.log[interactionLogIndex].time- startTime) /
-          1000 +
+        (interactionLog.log[interactionLogIndex].time - startTime) / 1000 +
         interactionLogOffset;
       newInteractionClipEndTime =
         currentInteractionTime + INTERACTION_DURATION_SECONDS;
       interactionLogIndex++;
       if (interactionLogIndex <= interactionLog.log.length - 1) {
         const nextInteractionTime =
-          (interactionLog.log[interactionLogIndex].time-
-            startTime) /
-            1000 +
+          (interactionLog.log[interactionLogIndex].time - startTime) / 1000 +
           interactionLogOffset;
         nextInteractionGap = nextInteractionTime - currentInteractionTime;
       }
@@ -538,7 +540,6 @@ export const projectSlice = createSlice({
     },
   },
 });
-
 
 export const {
   splitClip,

@@ -26,28 +26,36 @@ export const selectPlayback = (state: RootState) => state.playback;
 export const selectProject = (state: RootState) => state.project.present;
 export const selectSelection = (state: RootState) => state.selection.selection;
 
-export function selectCursorLocation(state: RootState): {x: number, y: number} | undefined {
+export function selectCursorLocation(
+  state: RootState
+): { x: number; y: number } | undefined {
   const composition = selectComposition(state);
   const playback = selectPlayback(state);
   const project = selectProject(state);
-  const { clip, offset: clipPlayheadOffset } = getClipForTime(project, composition.id, playback.currentTimeSeconds) ?? {};
+  const { clip, offset: clipPlayheadOffset } =
+    getClipForTime(project, composition.id, playback.currentTimeSeconds) ?? {};
 
   if (!clip || !clipPlayheadOffset) {
     return undefined;
   }
 
-  const { file, offset: interactionLogSourceOffset } = getInteractionLogForSourceId(project, clip.sourceId) ?? {};
+  const { file, offset: interactionLogSourceOffset } =
+    getInteractionLogForSourceId(project, clip.sourceId) ?? {};
   if (!file?.userInteractionLog || !interactionLogSourceOffset) {
     return undefined;
   }
 
   const sourcePlayheadOffset = clip.sourceOffsetSeconds + clipPlayheadOffset;
-  const interactionLogPlayheadOffset = sourcePlayheadOffset - interactionLogSourceOffset;
+  const interactionLogPlayheadOffset =
+    sourcePlayheadOffset - interactionLogSourceOffset;
   let lastInteractionLogEvent: UserInteraction | undefined;
   const MARGIN_SECONDS = 2;
   for (const event of file.userInteractionLog.log) {
     const eventTimeSeconds = event.time / 1000;
-    if (eventTimeSeconds > interactionLogPlayheadOffset - MARGIN_SECONDS && eventTimeSeconds < interactionLogPlayheadOffset) {
+    if (
+      eventTimeSeconds > interactionLogPlayheadOffset - MARGIN_SECONDS &&
+      eventTimeSeconds < interactionLogPlayheadOffset
+    ) {
       lastInteractionLogEvent = event;
     } else if (eventTimeSeconds > interactionLogPlayheadOffset) {
       break;
@@ -58,44 +66,68 @@ export function selectCursorLocation(state: RootState): {x: number, y: number} |
     return undefined;
   }
 
-  return {x : lastInteractionLogEvent.x, y: lastInteractionLogEvent.y}
+  return { x: lastInteractionLogEvent.x, y: lastInteractionLogEvent.y };
 }
 
-export function selectSelectionUserInteractions(state: RootState): UserInteraction[] {
+export function selectSelectionUserInteractions(
+  state: RootState
+): UserInteraction[] {
   const composition = selectComposition(state);
   const project = selectProject(state);
   const selection = selectSelection(state);
 
   if (!selection) {
-    return []
+    return [];
   }
 
-  const { clip: startClip, offset: selectionStartClipOffset} = getClipForTime(project, composition.id, selection.startTimeSeconds) ?? {};
-  const { clip: endClip, offset: selectionEndClipOffset} = getClipForTime(project, composition.id, selection.endTimeSeconds) ?? {};
+  const { clip: startClip, offset: selectionStartClipOffset } =
+    getClipForTime(project, composition.id, selection.startTimeSeconds) ?? {};
+  const { clip: endClip, offset: selectionEndClipOffset } =
+    getClipForTime(project, composition.id, selection.endTimeSeconds) ?? {};
 
   // TODO: this can probably be handled better
-  if (!startClip || !endClip || !selectionStartClipOffset || !selectionEndClipOffset) {
+  if (
+    !startClip ||
+    !endClip ||
+    !selectionStartClipOffset ||
+    !selectionEndClipOffset
+  ) {
     return [];
   }
 
   // TODO: handle mismatched clips
-  if (startClip?.id !== endClip?.id || Math.abs((selectionEndClipOffset - selectionStartClipOffset) - (selection.endTimeSeconds - selection.startTimeSeconds)) > 0.1) {
+  if (
+    startClip?.id !== endClip?.id ||
+    Math.abs(
+      selectionEndClipOffset -
+        selectionStartClipOffset -
+        (selection.endTimeSeconds - selection.startTimeSeconds)
+    ) > 0.1
+  ) {
     throw new Error("mismatched clips");
   }
 
-  const { file, offset: interactionLogSourceOffset } = getInteractionLogForSourceId(project, startClip.sourceId) ?? {};
+  const { file, offset: interactionLogSourceOffset } =
+    getInteractionLogForSourceId(project, startClip.sourceId) ?? {};
   if (!file?.userInteractionLog || !interactionLogSourceOffset) {
     return [];
   }
 
-  const sourceSelectionStartOffset = startClip.sourceOffsetSeconds + selectionStartClipOffset;
-  const sourceSelectionEndOffset = startClip.sourceOffsetSeconds + selectionEndClipOffset;
-  const interactionLogSelectionStartOffset = sourceSelectionStartOffset - interactionLogSourceOffset;
-  const interactionLogSelectionEndOffset = sourceSelectionEndOffset - interactionLogSourceOffset;
+  const sourceSelectionStartOffset =
+    startClip.sourceOffsetSeconds + selectionStartClipOffset;
+  const sourceSelectionEndOffset =
+    startClip.sourceOffsetSeconds + selectionEndClipOffset;
+  const interactionLogSelectionStartOffset =
+    sourceSelectionStartOffset - interactionLogSourceOffset;
+  const interactionLogSelectionEndOffset =
+    sourceSelectionEndOffset - interactionLogSourceOffset;
   const result: UserInteraction[] = [];
   for (const event of file.userInteractionLog.log) {
     const eventTimeSeconds = event.time / 1000;
-    if (eventTimeSeconds > interactionLogSelectionStartOffset && eventTimeSeconds < interactionLogSelectionEndOffset) {
+    if (
+      eventTimeSeconds > interactionLogSelectionStartOffset &&
+      eventTimeSeconds < interactionLogSelectionEndOffset
+    ) {
       result.push(event);
     } else if (eventTimeSeconds > interactionLogSelectionEndOffset) {
       break;
@@ -110,10 +142,10 @@ const diffPatcher = create({ textDiff: { minLength: 20 } });
 const trimerger = new Trimerger(diffPatcher);
 
 export interface RootState {
-  composition: ActiveComposition,
-  playback: PlaybackState,
-  project: StateWithHistory<Project>,
-  selection: SelectionState,
+  composition: ActiveComposition;
+  playback: PlaybackState;
+  project: StateWithHistory<Project>;
+  selection: SelectionState;
 }
 
 export const store = configureStore({
@@ -177,6 +209,29 @@ export function tightenSelection({
       );
       dispatch(setSelection(undefined));
     });
+  };
+}
+
+export function simplifySelectedMouseInteractions(): ThunkAction<
+  void,
+  RootState,
+  unknown,
+  AnyAction
+> {
+  return (dispatch: (action: any) => void, getState: () => RootState) => {
+    const state = getState();
+    const composition = selectComposition(state);
+    const project = selectProject(state);
+    const selection = selectSelection(state);
+
+    if (!selection) {
+      return;
+    }
+
+    const { clip: startClip, offset: selectionStartClipOffset } =
+      getClipForTime(project, composition.id, selection.startTimeSeconds) ?? {};
+    const { clip: endClip, offset: selectionEndClipOffset } =
+      getClipForTime(project, composition.id, selection.endTimeSeconds) ?? {};
   };
 }
 
