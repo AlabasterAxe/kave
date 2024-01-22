@@ -7,3 +7,5 @@ yarn.lock
 Debug/
 
 *.vcxproj.user
+
+dist/
