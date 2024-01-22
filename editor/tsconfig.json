@@ -19,6 +19,11 @@
     "isolatedModules": true,
     "noEmit": true,
     "jsx": "react-jsx",
+    "paths": {
+      "kave-common": [
+        "../common/"
+      ]
+    }
   },
   "include": [
     "src"

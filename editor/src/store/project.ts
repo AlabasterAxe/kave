@@ -33,7 +33,10 @@ function initialProject(): Project {
             sourceOffsetSeconds: 0,
           },
         ],
-        aspectRatio: 1.7777777777777777,
+        resolution: {
+          x: 2558,
+          y: 1316,
+        }
       },
     ],
     files: [
@@ -69,7 +72,7 @@ function initialProject(): Project {
 }
 
 function newProject(): Project {
-  const fileId = uuidv4();
+  const videoFileId = uuidv4();
   const userInteractionLogId = uuidv4();
   const sequenceId = uuidv4();
   const clipId1 = uuidv4();
@@ -87,14 +90,21 @@ function newProject(): Project {
             sourceOffsetSeconds: 0,
           },
         ],
-        aspectRatio: 1.7777777777777777,
+        resolution: {
+          x: 2558,
+          y: 1316,
+        },
       },
     ],
     files: [
       {
-        id: fileId,
+        id: videoFileId,
         type: FileType.video,
         fileUri: "screen_recording.mp4",
+        resolution: {
+          x: 2558,
+          y: 1316,
+        },
       },
       {
         id: userInteractionLogId,
@@ -109,7 +119,7 @@ function newProject(): Project {
           {
             id: uuidv4(),
             alignmentSeconds: 0,
-            fileId: fileId,
+            fileId: videoFileId,
           },
           {
             id: uuidv4(),

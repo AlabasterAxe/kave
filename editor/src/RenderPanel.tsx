@@ -1,7 +1,7 @@
-import { FileType, Project, UserInteraction } from "kave-common";
+import { Project, UserInteraction } from "kave-common";
 import { useAppSelector } from "./store/hooks";
-import { selectComposition, selectProject } from "./store/store";
 import { getInteractionLogEventsForClip } from "./store/project";
+import { selectComposition, selectProject } from "./store/store";
 
 function run(rqst: { events: any[]; render: boolean }) {
   

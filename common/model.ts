@@ -36,6 +36,7 @@ export interface FileBase {
 export interface VideoFile extends FileBase {
   type: FileType.video;
   fileUri: string;
+  resolution: {x: number, y: number};
 }
 
 export interface InteractionLogFile extends FileBase {
@@ -73,7 +74,7 @@ export type Clip = Readonly<{
 export type Composition = Readonly<{
   id: string;
   clips: Clip[];
-  aspectRatio: number;
+  dimensions: {x: number, y: number};
 }>;
 
 export type Project = Readonly<{
