@@ -10,7 +10,7 @@ import {
   InteractionLogFile,
   UserInteraction,
   Track,
-} from "../../../../lib/common/dist";
+} from "kave-common";
 
 const INTERACTION_DURATION_SECONDS = 0.1;
 
