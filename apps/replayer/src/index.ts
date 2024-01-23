@@ -1,4 +1,4 @@
-import { Builder, Key, WebDriver } from "selenium-webdriver";
+import { Builder, By, Key, WebDriver, until } from "selenium-webdriver";
 import { Options } from "selenium-webdriver/chrome";
 import {writeFile} from "fs";
 import express from "express";
@@ -169,6 +169,7 @@ async function run({events, render}: RunRequest) {
     .build();
   await driver.get("http://localhost:52222/");
 
+  await driver.sleep(5000);
   await driver.executeScript('enableSimulatedCursor();');
 
   await processEvents(driver, events, {render});
@@ -178,7 +179,7 @@ async function run({events, render}: RunRequest) {
 
 const app = express();
 
-app.get('/ok', (_, res) => res.send('oks'));
+app.get('/ok', (_, res) => res.send('okso'));
 
 app.use(bodyParser.json({ limit: '5mb' }));
 
