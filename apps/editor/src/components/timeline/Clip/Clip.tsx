@@ -4,7 +4,7 @@ import {
   FileType,
   Sequence,
   TimelineViewport,
-} from "kave-common";
+} from "../../../../../../lib/common/dist";
 import { useAppSelector } from "../../../store/hooks";
 import { selectComposition, selectProject } from "../../../store/store";
 import { MultiTrackInteractionLog } from "./InteractionLog";

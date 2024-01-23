@@ -20,7 +20,7 @@ import { batch } from "react-redux";
 import undoable, { StateWithHistory } from "redux-undo";
 import { Trimerger } from "../persistence/trimerge-sync";
 import { create } from "jsondiffpatch";
-import { Project, UserInteraction } from "kave-common";
+import { Project, UserInteraction } from "../../../../lib/common/dist";
 
 export const selectComposition = (state: RootState) => state.composition;
 export const selectPlayback = (state: RootState) => state.playback;

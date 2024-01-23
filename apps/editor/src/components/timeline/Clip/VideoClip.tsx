@@ -1,4 +1,4 @@
-import { Clip } from "kave-common";
+import { Clip } from "../../../../../../lib/common/dist";
 
 interface VideoClipProps {
   clip: Clip;

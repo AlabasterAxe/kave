@@ -1,4 +1,4 @@
-import { Project, UserInteraction } from "kave-common";
+import { Project, UserInteraction } from "../../../lib/common/dist";
 import { useAppSelector } from "./store/hooks";
 import { getInteractionLogEventsForClip } from "./store/project";
 import { selectComposition, selectProject } from "./store/store";

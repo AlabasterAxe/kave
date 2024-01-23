@@ -25,7 +25,7 @@
   ],
   "references": [
     {
-      "path": "../common"
+      "path": "../../lib/common"
     }
   ]
 }
