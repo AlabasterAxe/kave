@@ -220,8 +220,7 @@ function Player() {
   const lowerRight = normalizedPointToScreen({x: 1, y: 1});
   const lowerLeft = normalizedPointToScreen({x: 0, y: 1});
 
-  const videoScaleFactor = 1;
-  
+  const videoScaleFactor = 1/1.75;
   
   const canvasCursorLocation = cursorLocation ? normalizedPointToScreen(browserPointToNormalizedVideoPoint(cursorLocation)): undefined;
 

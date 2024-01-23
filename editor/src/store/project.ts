@@ -136,7 +136,68 @@ function newProject(): Project {
   };
 }
 
-export const ALL_PROJECTS = [initialProject(), newProject()];
+function take_7(): Project {
+  const videoFileId = uuidv4();
+  const userInteractionLogId = uuidv4();
+  const sequenceId = uuidv4();
+  const clipId1 = uuidv4();
+
+  return {
+    id: uuidv4(),
+    compositions: [
+      {
+        id: "ac7c3a24-e08d-4bb6-b1fe-02960b41b870",
+        clips: [
+          {
+            id: clipId1,
+            durationSeconds: 300,
+            sourceId: sequenceId,
+            sourceOffsetSeconds: 0,
+          },
+        ],
+        resolution: {
+          x: 2558,
+          y: 1316,
+        },
+      },
+    ],
+    files: [
+      {
+        id: videoFileId,
+        type: FileType.video,
+        fileUri: "media/take_7/screen_recording.mp4",
+        resolution: {
+          x: 2558,
+          y: 1318,
+        },
+      },
+      {
+        id: userInteractionLogId,
+        type: FileType.interaction_log,
+        fileUri: "media/take_7/interaction_events.json",
+      },
+    ],
+    sequences: [
+      {
+        id: sequenceId,
+        tracks: [
+          {
+            id: uuidv4(),
+            alignmentSeconds: -10.5,
+            fileId: videoFileId,
+          },
+          {
+            id: uuidv4(),
+            alignmentSeconds: 0,
+            fileId: userInteractionLogId,
+          },
+        ],
+      },
+    ],
+  };
+}
+
+export const ALL_PROJECTS = [initialProject(), newProject(), take_7()];
 
 function clipOffsetToInteractionLogOffset(
   clip: Clip,
@@ -413,7 +474,7 @@ const getTightenedClips = (
 
 export const projectSlice = createSlice({
   name: "playback",
-  initialState: newProject(),
+  initialState: take_7(),
   reducers: {
     replaceProject: (_, action: PayloadAction<ReplaceProjectPayload>) => {
       return action.payload.project;

@@ -42,7 +42,7 @@ export function selectCursorLocation(
 
   const { file, offset: interactionLogSourceOffset } =
     getInteractionLogForSourceId(project, clip.sourceId) ?? {};
-  if (!file?.userInteractionLog || !interactionLogSourceOffset) {
+  if (!file?.userInteractionLog || interactionLogSourceOffset === undefined) {
     return undefined;
   }
 
