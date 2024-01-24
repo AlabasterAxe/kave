@@ -4,7 +4,6 @@ import {
   ConfigureStoreOptions,
 } from "@reduxjs/toolkit";
 import { playbackSlice, PlaybackState } from "./playback";
-import { ActiveComposition, compositionSlice } from "./composition";
 import {
   deleteSection,
   projectSlice,
@@ -13,16 +12,19 @@ import {
   getClipForTime,
   getInteractionLogForSourceId,
   smoothInteractions,
+  RouterState,
+  routerSlice,
+  setActiveProjectId,
 } from "./project";
 import { thunk, ThunkAction, ThunkDispatch } from "redux-thunk";
 import { selectionSlice, SelectionState, setSelection } from "./selection";
-import { batch } from "react-redux";
 import undoable, { StateWithHistory } from "redux-undo";
 import { Trimerger } from "../persistence/trimerge-sync";
 import { create } from "jsondiffpatch";
 import { Project, UserInteraction } from "../../../../lib/common/dist";
 
-export const selectComposition = (state: RootState) => state.composition;
+export const selectActiveCompositionId = (state: RootState) => state.router.activeCompositionId;
+export const selectActiveProjectId = (state: RootState) => state.router.activeProjectId;
 export const selectPlayback = (state: RootState) => state.playback;
 export const selectProject = (state: RootState) => state.project.present;
 export const selectSelection = (state: RootState) => state.selection.selection;
@@ -30,11 +32,16 @@ export const selectSelection = (state: RootState) => state.selection.selection;
 export function selectCursorLocation(
   state: RootState
 ): { x: number; y: number } | undefined {
-  const composition = selectComposition(state);
+  const activeCompositionId = selectActiveCompositionId(state);
   const playback = selectPlayback(state);
   const project = selectProject(state);
+
+  if (!activeCompositionId) {
+    return undefined;
+  }
+
   const { clip, offset: clipPlayheadOffset } =
-    getClipForTime(project, composition.id, playback.currentTimeSeconds) ?? {};
+    getClipForTime(project, activeCompositionId, playback.currentTimeSeconds) ?? {};
 
   if (!clip || !clipPlayheadOffset) {
     return undefined;
@@ -73,18 +80,18 @@ export function selectCursorLocation(
 export function selectSelectionUserInteractions(
   state: RootState
 ): UserInteraction[] {
-  const composition = selectComposition(state);
+  const activeCompositionId = selectActiveCompositionId(state);
   const project = selectProject(state);
   const selection = selectSelection(state);
 
-  if (!selection) {
+  if (!selection || !activeCompositionId) {
     return [];
   }
 
   const { clip: startClip, offset: selectionStartClipOffset } =
-    getClipForTime(project, composition.id, selection.startTimeSeconds) ?? {};
+    getClipForTime(project, activeCompositionId, selection.startTimeSeconds) ?? {};
   const { clip: endClip, offset: selectionEndClipOffset } =
-    getClipForTime(project, composition.id, selection.endTimeSeconds) ?? {};
+    getClipForTime(project, activeCompositionId, selection.endTimeSeconds) ?? {};
 
   // TODO: this can probably be handled better
   if (
@@ -143,23 +150,23 @@ const diffPatcher = create({ textDiff: { minLength: 20 } });
 const trimerger = new Trimerger(diffPatcher);
 
 export interface RootState {
-  composition: ActiveComposition;
   playback: PlaybackState;
   project: StateWithHistory<Project>;
+  router: RouterState;
   selection: SelectionState;
 }
 
 export const store = configureStore({
   reducer: {
-    composition: compositionSlice.reducer,
     playback: playbackSlice.reducer,
     project: undoable(projectSlice.reducer),
     selection: selectionSlice.reducer,
+    router: routerSlice.reducer,
   },
   middleware: [thunk, trimerger.middleware],
 } as ConfigureStoreOptions);
 
-trimerger.client.subscribeState((project) => {
+trimerger.subscribeDoc((project) => {
   if (project) {
     store.dispatch(replaceProject({ project }));
   }
@@ -176,7 +183,6 @@ export function deleteSelection({
 }): ThunkAction<void, RootState, unknown, AnyAction> {
   return (dispatch: (action: any) => void) => {
     // should only result in one combined re-render, not two
-    batch(() => {
       dispatch(
         deleteSection({
           compositionId: compositionId,
@@ -185,7 +191,17 @@ export function deleteSelection({
         })
       );
       dispatch(setSelection(undefined));
-    });
+  };
+}
+
+export function setActiveProject({
+  projectId,
+}: {
+  projectId: string | undefined;
+}): ThunkAction<void, RootState, unknown, AnyAction> {
+  return async (dispatch: (action: any) => void) => {
+    await trimerger.setActiveProject(projectId);
+    dispatch(setActiveProjectId(projectId))
   };
 }
 

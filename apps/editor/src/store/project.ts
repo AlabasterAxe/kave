@@ -15,13 +15,14 @@ import {
 const INTERACTION_DURATION_SECONDS = 0.1;
 
 function initialProject(): Project {
-  const fileId = uuidv4();
-  const userInteractionLogId = uuidv4();
-  const sequenceId = uuidv4();
-  const clipId1 = uuidv4();
+  const fileId = '74340fe5-c232-4de4-803e-42fafcd6de31';
+  const userInteractionLogId = 'df805f00-4df7-4787-9a5d-9f067029bb3f';
+  const sequenceId = '0ed26414-999f-4c82-9810-745d3a6c9ddb';
+  const clipId1 = '3e3803ec-6b1c-4cf9-b699-43a1b57bb304';
+  const projectId = '5e6ba258-22be-46fe-a50e-96b1e64191a2';
 
   return {
-    id: uuidv4(),
+    id: projectId,
     compositions: [
       {
         id: "ac7c3a24-e08d-4bb6-b1fe-02960b41b870",
@@ -60,12 +61,12 @@ function initialProject(): Project {
         id: sequenceId,
         tracks: [
           {
-            id: uuidv4(),
+            id: '2f0cafdb-7f8e-4117-8b8c-4f1baafaadb1',
             alignmentSeconds: 0,
             fileId: fileId,
           },
           {
-            id: uuidv4(),
+            id: '32a4f95f-f24c-4e48-b1e7-c388dd3e10c0',
             alignmentSeconds: 5.5,
             fileId: userInteractionLogId,
           },
@@ -76,13 +77,16 @@ function initialProject(): Project {
 }
 
 function newProject(): Project {
-  const videoFileId = uuidv4();
-  const userInteractionLogId = uuidv4();
-  const sequenceId = uuidv4();
-  const clipId1 = uuidv4();
+  const videoFileId = 'ef0b60f4-08cd-45a1-8363-419a6dbc50dc';
+  const userInteractionLogId = 'd8a111f3-8c5b-42cc-bd42-af1b059db41a';
+  const sequenceId = 'e8c8e417-727c-4a8e-9e45-2a786f154010';
+  const clipId1 = '21e5177e-c110-469f-bff5-843cc4a2c358';
+  const projectId = '7dbcaf88-5984-4cf0-8110-1e6acf18b975';
+  const track1Id = '3324f740-6cf7-4988-97ab-65bf34a3069c';
+  const track2Id = 'd978b76a-5e47-4010-bacb-773b6444c305';
 
   return {
-    id: uuidv4(),
+    id: projectId,
     compositions: [
       {
         id: "ac7c3a24-e08d-4bb6-b1fe-02960b41b870",
@@ -104,7 +108,7 @@ function newProject(): Project {
       {
         id: videoFileId,
         type: FileType.video,
-        fileUri: "screen_recording.mp4",
+        fileUri: "/screen_recording.mp4",
         resolution: {
           x: 2558,
           y: 1316,
@@ -113,7 +117,7 @@ function newProject(): Project {
       {
         id: userInteractionLogId,
         type: FileType.interaction_log,
-        fileUri: "interaction_events.json",
+        fileUri: "/interaction_events.json",
       },
     ],
     sequences: [
@@ -121,12 +125,12 @@ function newProject(): Project {
         id: sequenceId,
         tracks: [
           {
-            id: uuidv4(),
+            id: track1Id,
             alignmentSeconds: 0,
             fileId: videoFileId,
           },
           {
-            id: uuidv4(),
+            id: track2Id,
             alignmentSeconds: -17.1,
             fileId: userInteractionLogId,
           },
@@ -137,13 +141,16 @@ function newProject(): Project {
 }
 
 function take_7(): Project {
-  const videoFileId = uuidv4();
-  const userInteractionLogId = uuidv4();
-  const sequenceId = uuidv4();
-  const clipId1 = uuidv4();
+  const videoFileId = '1fb7df05-fb97-4d45-82f6-d01f394b2797';
+  const userInteractionLogId = '4ab6a265-b9a5-44e1-83d6-f746ae023a49';
+  const sequenceId = 'fb4b1d99-4104-4002-ac22-38697eedc9c8';
+  const clipId1 = '529d7130-c065-4533-8bbb-228f251e2cfc';
+  const projectId = 'b37fefab-792f-4e9e-bc98-73900b5b3d3e';
+  const track1Id = '3118a8c0-b387-4497-aba6-5559e8eed9c9';
+  const track2Id = 'ae6927cd-d9a4-4127-8300-a2d1e958b851';
 
   return {
-    id: uuidv4(),
+    id: projectId,
     compositions: [
       {
         id: "ac7c3a24-e08d-4bb6-b1fe-02960b41b870",
@@ -165,7 +172,7 @@ function take_7(): Project {
       {
         id: videoFileId,
         type: FileType.video,
-        fileUri: "media/take_7/screen_recording.mp4",
+        fileUri: "/media/take_7/screen_recording.mp4",
         resolution: {
           x: 2558,
           y: 1318,
@@ -174,7 +181,7 @@ function take_7(): Project {
       {
         id: userInteractionLogId,
         type: FileType.interaction_log,
-        fileUri: "media/take_7/interaction_events.json",
+        fileUri: "/media/take_7/interaction_events.json",
       },
     ],
     sequences: [
@@ -182,12 +189,12 @@ function take_7(): Project {
         id: sequenceId,
         tracks: [
           {
-            id: uuidv4(),
+            id: track1Id,
             alignmentSeconds: -10.5,
             fileId: videoFileId,
           },
           {
-            id: uuidv4(),
+            id: track2Id,
             alignmentSeconds: 0,
             fileId: userInteractionLogId,
           },
@@ -472,8 +479,30 @@ const getTightenedClips = (
   return { clips: tightenedClips, nextClipStartSeconds: durationSoFar };
 };
 
+export interface RouterState {
+  activeProjectId: string | undefined;
+  activeCompositionId: string | undefined;
+}
+
+export const routerSlice = createSlice({
+  name: "router",
+  initialState: {
+    activeProjectId: undefined,
+    // TODO: fix this
+    activeCompositionId: "ac7c3a24-e08d-4bb6-b1fe-02960b41b870",
+  } as RouterState,
+  reducers: {
+    setActiveProjectId: (state, action: PayloadAction<string | undefined>) => {
+      state.activeProjectId = action.payload;
+    },
+    setActiveCompositionId: (state, action: PayloadAction<string | undefined>) => {
+      state.activeCompositionId = action.payload;
+    },
+  },
+});
+
 export const projectSlice = createSlice({
-  name: "playback",
+  name: "project",
   initialState: take_7(),
   reducers: {
     replaceProject: (_, action: PayloadAction<ReplaceProjectPayload>) => {
@@ -770,3 +799,8 @@ export const {
   replaceProject,
   smoothInteractions,
 } = projectSlice.actions;
+
+export const {
+  setActiveProjectId,
+  setActiveCompositionId,
+} = routerSlice.actions;

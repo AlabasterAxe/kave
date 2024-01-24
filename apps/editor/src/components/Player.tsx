@@ -14,7 +14,7 @@ import {
   updatePlayhead,
 } from "../store/playback";
 import {
-  selectComposition,
+  selectActiveCompositionId,
   selectCursorLocation,
   selectPlayback,
   selectProject,
@@ -83,7 +83,7 @@ interface PlayerViewportState {
 function Player() {
   const canvasRef: MutableRefObject<HTMLCanvasElement | null> = useRef(null);
   const [ctx, setContext] = useState<VideoContext | null>(null);
-  const activeComposition = useAppSelector(selectComposition);
+  const activeCompositionId = useAppSelector(selectActiveCompositionId);
   const playback = useAppSelector(selectPlayback);
   const project = useAppSelector(selectProject);
   const cursorLocation = useAppSelector(selectCursorLocation);
@@ -93,7 +93,7 @@ function Player() {
     offset: { x: 0, y: 0 },
   });
   const composition = project.compositions.find(
-    (c: Composition) => c.id === activeComposition.id
+    (c: Composition) => c.id === activeCompositionId
   );
   const dispatch = useAppDispatch();
 

@@ -1,10 +1,14 @@
 import { Builder, By, Key, WebDriver, until } from "selenium-webdriver";
 import { Options } from "selenium-webdriver/chrome";
-import {writeFile} from "fs";
+import { writeFile } from "fs/promises";
+import { exec } from "child_process";
+import { promisify } from "util";
 import express from "express";
 import fileUpload from 'express-fileupload';
 import bodyParser from 'body-parser';
 import cors from 'cors';
+
+const execAsync = promisify(exec);
 
 const FRAMERATE = 30;
 const port = process.env.PORT || 20001;
@@ -41,14 +45,6 @@ async function performEvent(driver: WebDriver, event: any) {
           // ignore
         });
       break;
-    // case "click":
-    //   await driver
-    //     .actions()
-    //     .move({ x: event.x, y: event.y, duration: 1 })
-    //     .click() 
-    //     .perform()
-    //     .catch(() => {});
-    //   break;
     case "mousedown":
       await driver
         .actions()
@@ -108,6 +104,8 @@ async function processEvents(
   const startTime = Date.now();
 
   let currentEvent = events[eventIndex++];
+  let previousPromise: Promise<unknown> = Promise.resolve();
+  let lastRealFrame: number | undefined;
   while (eventIndex < events.length) {
     let eventsPerformed = 0;
     while (currentEvent && currentTime > (currentEvent.time - initialEvent.time)) {
@@ -119,11 +117,17 @@ async function processEvents(
     if (eventsPerformed > 0) {
       console.log("performed", eventsPerformed, "events");
     }
-    if (render && eventsPerformed > 0) {
-      writeFile(`./frames/${zeroPad(frameIndex++, 5)}.png`, await driver.takeScreenshot(), 'base64', () => {});
-    } else {
-      frameIndex++;
-    }
+    if (render) {
+      if (eventsPerformed > 0 || lastRealFrame === undefined) {
+        lastRealFrame = frameIndex
+        previousPromise = writeFile(`./frames/${zeroPad(frameIndex++, 5)}.png`, await driver.takeScreenshot(), 'base64');
+      } else {
+        // create a hard link to the previous frame
+        const lastFrame = lastRealFrame!;
+        const newFrame = frameIndex++;
+        previousPromise.then(()=>execAsync(`ln -f ./frames/${zeroPad(lastFrame, 5)}.png ./frames/${zeroPad(newFrame, 5)}.png`));
+      }
+    } 
     
     const timeStep = 1/FRAMERATE * 1000;
     if (!render) {
@@ -159,7 +163,7 @@ async function run({events, render}: RunRequest) {
   opts.setUserPreferences({
     partition: {
       default_zoom_level: {
-        x: render ? ZOOM_500_PERCENT : ZOOM_150_PERCENT,
+        x: render ? ZOOM_600_PERCENT : ZOOM_150_PERCENT,
       },
     },
   });

@@ -11,18 +11,19 @@ import {
 import { setSelection } from "./store/selection";
 import {
   deleteSelection,
-  selectComposition,
+  selectActiveCompositionId,
   selectSelection,
   simplifySelectedMouseInteractions,
   tightenSelection,
 } from "./store/store";
 import EditorView from "./views/EditorView";
 import { ActionCreators } from "redux-undo";
+import { ProjectListView } from "./views/ProjectListView";
 
 function App() {
   const dispatch = useAppDispatch();
   const selection = useAppSelector(selectSelection);
-  const activeComposition = useAppSelector(selectComposition);
+  const activeCompositionId = useAppSelector(selectActiveCompositionId);
 
   const handleKeyboardEvent = useCallback(
     (e: any) => {
@@ -42,10 +43,10 @@ function App() {
           dispatch(setSelection(undefined));
           break;
         case "Delete":
-          if (selection) {
+          if (selection && activeCompositionId) {
             dispatch(
               deleteSelection({
-                compositionId: activeComposition.id,
+                compositionId: activeCompositionId,
                 startTimeSeconds: selection.startTimeSeconds,
                 endTimeSeconds: selection.endTimeSeconds,
               })
@@ -55,10 +56,10 @@ function App() {
       }
       switch (e.key) {
         case "t":
-          if (selection) {
+          if (selection && activeCompositionId) {
             dispatch(
               tightenSelection({
-                compositionId: activeComposition.id,
+                compositionId: activeCompositionId,
                 startTimeSeconds: selection.startTimeSeconds,
                 endTimeSeconds: selection.endTimeSeconds,
               })
@@ -67,10 +68,10 @@ function App() {
           
           break;
         case "s":
-          if (selection) {
+          if (selection && activeCompositionId) {
             dispatch(
               simplifySelectedMouseInteractions({
-                compositionId: activeComposition.id,
+                compositionId: activeCompositionId,
                 startTimeSeconds: selection.startTimeSeconds,
                 endTimeSeconds: selection.endTimeSeconds,
               })
@@ -84,7 +85,7 @@ function App() {
           }
       }
     },
-    [dispatch, selection, activeComposition]
+    [dispatch, selection, activeCompositionId]
   );
 
   useEffect(() => {
@@ -105,7 +106,8 @@ function App() {
   return (
     <BrowserRouter>
       <Routes>
-        <Route path="/" element={<EditorView />}></Route>
+        <Route path="/" element={<ProjectListView />}></Route>
+        <Route path="/project/:id" element={<EditorView />}></Route>
       </Routes>
     </BrowserRouter>
   );

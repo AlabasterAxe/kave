@@ -1,12 +1,11 @@
 import { useRef, useState } from "react";
 import { Clip, Composition, TimelineViewport } from "../../../../../lib/common/dist";
-import { ActiveComposition } from "../../store/composition";
 import { useAppDispatch, useAppSelector } from "../../store/hooks";
 import { PlaybackStateSource, updatePlayhead } from "../../store/playback";
 import { Selection } from "../../store/selection";
 import { deleteSection, deleteSectionFromClips } from "../../store/project";
 import {
-  selectComposition,
+  selectActiveCompositionId,
   selectPlayback,
   selectProject,
   selectSelection,
@@ -40,8 +39,7 @@ function validDragOperation(
 }
 
 export function Timeline() {
-  const activeComposition: ActiveComposition =
-    useAppSelector(selectComposition);
+  const activeCompositionId = useAppSelector(selectActiveCompositionId);
   const playback = useAppSelector(selectPlayback);
   const project = useAppSelector(selectProject);
   const selection = useAppSelector(selectSelection);
@@ -49,7 +47,7 @@ export function Timeline() {
     null
   );
   const composition = project.compositions.find(
-    (c: Composition) => c.id === activeComposition.id
+    (c: Composition) => c.id === activeCompositionId
   );
   const compositionDurationSeconds: number = composition!.clips.reduce(
     (acc: number, clip: Clip) => clip.durationSeconds + acc,
@@ -122,7 +120,7 @@ export function Timeline() {
 
   const onInteractionDragEnd = () => {
     if (
-      activeComposition &&
+      activeCompositionId &&
       dragOperation &&
       dragOperation.dragStartTimeSeconds -
         dragOperation.currentDragTimeSeconds >
@@ -130,7 +128,7 @@ export function Timeline() {
     ) {
       dispatch(
         deleteSection({
-          compositionId: activeComposition.id,
+          compositionId: activeCompositionId,
           startTimeSeconds: dragOperation.currentDragTimeSeconds,
           endTimeSeconds: dragOperation.dragStartTimeSeconds,
         })

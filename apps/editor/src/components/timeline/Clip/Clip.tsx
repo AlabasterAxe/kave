@@ -6,7 +6,7 @@ import {
   TimelineViewport,
 } from "kave-common";
 import { useAppSelector } from "../../../store/hooks";
-import { selectComposition, selectProject } from "../../../store/store";
+import { selectActiveCompositionId, selectProject } from "../../../store/store";
 import { MultiTrackInteractionLog } from "./InteractionLog";
 import { VideoClip } from "./VideoClip";
 
@@ -23,7 +23,7 @@ interface ClipProps {
 // this is a pretty "smart" component that is responsible for rendering a clip and any possible sub-clips
 export default function ClipComponent(props: ClipProps) {
   const project = useAppSelector(selectProject);
-  const activeComposition = useAppSelector(selectComposition);
+  const activeCompositionId = useAppSelector(selectActiveCompositionId);
   const {
     clip,
     viewport,
@@ -51,6 +51,9 @@ export default function ClipComponent(props: ClipProps) {
     if (!trackFile) {
       return <div>Invalid Track</div>;
     }
+    if (!activeCompositionId) {
+      return null;
+    }
 
     switch (trackFile.type) {
       case FileType.video:
@@ -60,7 +63,7 @@ export default function ClipComponent(props: ClipProps) {
         interactionTrack = (
           <MultiTrackInteractionLog
             file={trackFile}
-            compositionId={activeComposition.id}
+            compositionId={activeCompositionId}
             offsetSeconds={track.alignmentSeconds - clip.sourceOffsetSeconds}
             viewport={viewport}
             clipStartTimeSeconds={props.clipStartTime}

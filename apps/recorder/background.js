@@ -101,6 +101,22 @@ function injectLogger() {
       });
     }
   };
+
+  document.onwheel = function (e) {
+    if (recording) {
+      log.push({
+        x: e.clientX,
+        y: e.clientY,
+        time: Date.now() - startTime,
+        type: "wheel",
+        payload: {
+          deltaX: e.deltaX,
+          deltaY: e.deltaY,
+          deltaZ: e.deltaZ,
+        },
+      });
+    }
+  };
 }
 
 
@@ -108,7 +124,7 @@ chrome.tabs.onUpdated.addListener(function (tabId, changeInfo, tab) {
   console.log('running');
   console.log(changeInfo);
   if (changeInfo.status == "complete") {
-    if (tab.url.startsWith("http://localhost:52222")) {
+    if (tab.url.startsWith("http://localhost")) {
       chrome.scripting.executeScript({
         target: { tabId },
         function: injectLogger,

@@ -1,7 +1,7 @@
 import { Project, UserInteraction } from "../../../lib/common/dist";
 import { useAppSelector } from "./store/hooks";
 import { getInteractionLogEventsForClip } from "./store/project";
-import { selectComposition, selectProject } from "./store/store";
+import { selectActiveCompositionId, selectProject } from "./store/store";
 
 function run(rqst: { events: any[]; render: boolean }) {
   
@@ -31,20 +31,24 @@ function getInteractionLogForComposition(project: Project, compositionId: string
 
 export function RenderPanel() {
   const project = useAppSelector(selectProject);
-  const composition = useAppSelector(selectComposition);
+  const activeCompositionId = useAppSelector(selectActiveCompositionId);
 
   const render = () => {
-    run({
-      events: getInteractionLogForComposition(project, composition.id),
-      render: true,
-    });
+    if (activeCompositionId) {
+      run({
+        events: getInteractionLogForComposition(project, activeCompositionId),
+        render: true,
+      });
+    }
   };
 
   const preview = () => {
+    if (activeCompositionId) {
     run({
-      events: getInteractionLogForComposition(project, composition.id),
+      events: getInteractionLogForComposition(project, activeCompositionId),
       render: false,
     });
+    }
   }
 
   return (

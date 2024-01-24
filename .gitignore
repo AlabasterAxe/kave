@@ -13,3 +13,5 @@ dist/
 media/
 
 .DS_Store
+
+frames/
