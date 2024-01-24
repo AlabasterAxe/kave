@@ -149,7 +149,6 @@ const ZOOM_200_PERCENT = 3.8017840169239308;
 
 const ZOOM_400_PERCENT = 7.6035680338478615;
 const ZOOM_500_PERCENT = 8.827469119589406;
-const ZOOM_600_PERCENT = ZOOM_200_PERCENT * 3;
 
 async function run({events, render}: RunRequest) {
   const opts = new Options();
@@ -157,13 +156,13 @@ async function run({events, render}: RunRequest) {
     opts.addArguments('--headless=new');
   }
   opts.windowSize({
-    width: render ? 2560 * 3 : 2560,
-    height: render ? 1440 * 3 : 1440,
+    width: render ? 2560 * 2 : 2560,
+    height: render ? 1440 * 2 : 1440,
   });
   opts.setUserPreferences({
     partition: {
       default_zoom_level: {
-        x: render ? ZOOM_600_PERCENT : ZOOM_150_PERCENT,
+        x: render ? ZOOM_500_PERCENT : ZOOM_150_PERCENT,
       },
     },
   });

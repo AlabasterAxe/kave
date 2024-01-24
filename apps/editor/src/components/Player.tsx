@@ -125,34 +125,35 @@ function Player() {
         return;
       }
       setUpTimeline(videoContext, composition, project);
+      const playheadUpdate = (currentTime: number) => {
+        if (currentTime !== playheadTimeSeconds.current) {
+          dispatch(
+            updatePlayhead({
+              currentTimeSeconds: currentTime,
+              source: PlaybackStateSource.player,
+            })
+          );
+        }
+      }
       videoContext.registerCallback(
         VideoContext.EVENTS.UPDATE,
-        (currentTime: number) => {
-          if (currentTime !== playheadTimeSeconds.current) {
-            dispatch(
-              updatePlayhead({
-                currentTimeSeconds: currentTime,
-                source: PlaybackStateSource.player,
-              })
-            );
-          }
-        }
+        playheadUpdate, 
       );
       videoContext.registerCallback(
         VideoContext.EVENTS.ENDED,
-        (currentTime: number) => {
-          if (currentTime !== playheadTimeSeconds.current) {
-            dispatch(
-              updatePlayhead({
-                currentTimeSeconds: currentTime,
-                source: PlaybackStateSource.player,
-              })
-            );
-          }
-        }
+        playheadUpdate,
       );
 
       setContext(videoContext);
+
+      return () => {
+        if (videoContext) {
+          videoContext.unregisterCallback(
+            playheadUpdate,
+          );
+          videoContext.reset();
+        }
+      }
     }
   }, [dispatch, composition, ctx, project]);
 

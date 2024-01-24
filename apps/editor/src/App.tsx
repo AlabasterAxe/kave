@@ -1,11 +1,12 @@
-import React, { useCallback, useEffect } from "react";
-import { BrowserRouter, Route, Routes, useNavigate } from "react-router-dom";
+import { useCallback, useEffect } from "react";
+import { BrowserRouter, Route, Routes } from "react-router-dom";
+import { ActionCreators } from "redux-undo";
 import "./App.css";
 import { useAppDispatch, useAppSelector } from "./store/hooks";
 import {
+  PlaybackStateSource,
   nudgeBackward,
   nudgeForward,
-  PlaybackStateSource,
   togglePlaybackState,
 } from "./store/playback";
 import { setSelection } from "./store/selection";
@@ -17,7 +18,6 @@ import {
   tightenSelection,
 } from "./store/store";
 import EditorView from "./views/EditorView";
-import { ActionCreators } from "redux-undo";
 import { ProjectListView } from "./views/ProjectListView";
 
 

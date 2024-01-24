@@ -6,6 +6,7 @@ import Player from "../components/Player";
 import { Timeline } from "../components/timeline/Timeline";
 import { useAppDispatch } from "../store/hooks";
 import { setActiveProject } from "../store/store";
+import EventLogDropZone from "../components/EventLogDropZone";
 
 function EditorView() {
   const { id } = useParams();
@@ -35,6 +36,7 @@ function EditorView() {
       <div className="left-0 top-0 absolute">
         <NavLink to={"/"}>Back</NavLink>
       </div>
+      <EventLogDropZone onNewLog={console.log}/>
     </div>
   );
 }

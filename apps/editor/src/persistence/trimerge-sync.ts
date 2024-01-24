@@ -102,9 +102,7 @@ export class Trimerger {
     this.unsubscribeSyncStatus = newClient.subscribeSyncStatus(value => {
       if (value.localRead === "ready" && this.readyResolve) {
         this.client = newClient
-        if (this.onNewDoc) {
-          this.client.subscribeDoc(this.onNewDoc);
-        }
+        this.client.subscribeDoc((doc) => this.handleDocUpdate(doc));
         this.readyResolve(this.client);
         this.readyPromise = undefined;
         this.readyResolve = undefined;
@@ -115,22 +113,28 @@ export class Trimerger {
     });
     return this.readyPromise;
   }
+  
+  private handleDocUpdate(doc: Project | undefined) {
+    if (!this.onNewDoc) {
+      return;
+    }
+
+    if (!doc) {
+      for (const project of ALL_PROJECTS) {
+        if (project.id === this.activeProjectId) {
+          this.onNewDoc(project);
+          return;
+        }
+      }
+      this.onNewDoc(blankProject(this.activeProjectId!))
+      return;
+    }
+
+    this.onNewDoc(doc);
+  }
 
   subscribeDoc(onNewDoc: (doc: Project | undefined) => void) {
     this.onNewDoc = onNewDoc;
-    this.client?.subscribeDoc(doc => {
-      if (!doc) {
-        for (const project of ALL_PROJECTS) {
-          if (project.id === this.activeProjectId) {
-            onNewDoc(project);
-            return;
-          }
-        }
-        onNewDoc(blankProject(this.activeProjectId!))
-        return;
-      }
-      onNewDoc(doc);
-    });
   }
 
   private merge: MergeDocFn<Project, string> = (
