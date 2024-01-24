@@ -1,7 +1,9 @@
 import {
+  Action,
   AnyAction,
   configureStore,
   ConfigureStoreOptions,
+  Store,
 } from "@reduxjs/toolkit";
 import { playbackSlice, PlaybackState } from "./playback";
 import {
@@ -18,7 +20,7 @@ import {
 } from "./project";
 import { thunk, ThunkAction, ThunkDispatch } from "redux-thunk";
 import { selectionSlice, SelectionState, setSelection } from "./selection";
-import undoable, { StateWithHistory } from "redux-undo";
+import undoable, { ActionCreators, StateWithHistory } from "redux-undo";
 import { Trimerger } from "../persistence/trimerge-sync";
 import { create } from "jsondiffpatch";
 import { Project, UserInteraction } from "../../../../lib/common/dist";
@@ -36,7 +38,7 @@ export function selectCursorLocation(
   const playback = selectPlayback(state);
   const project = selectProject(state);
 
-  if (!activeCompositionId) {
+  if (!activeCompositionId || !project) {
     return undefined;
   }
 
@@ -84,7 +86,7 @@ export function selectSelectionUserInteractions(
   const project = selectProject(state);
   const selection = selectSelection(state);
 
-  if (!selection || !activeCompositionId) {
+  if (!selection || !activeCompositionId || !project) {
     return [];
   }
 
@@ -151,19 +153,33 @@ const trimerger = new Trimerger(diffPatcher);
 
 export interface RootState {
   playback: PlaybackState;
-  project: StateWithHistory<Project>;
+  project: StateWithHistory<Project|null>;
   router: RouterState;
   selection: SelectionState;
 }
 
+const projectMiddleware = (store: Store) => (next: any) => (action: Action) => {
+  const result = next(action);
+  if (action.type === setActiveProjectId.type && (action as any).payload.initialize) {
+    const projects = JSON.parse(localStorage.getItem('projects') ?? "[]") as {id: string, name: string}[];
+    projects.push({
+      id: (action as any).payload.projectId,
+      name: "Untitled",
+    });
+    localStorage.setItem('projects', JSON.stringify(projects));
+  }
+
+  return result;
+};
+
 export const store = configureStore({
   reducer: {
     playback: playbackSlice.reducer,
-    project: undoable(projectSlice.reducer),
+    project: undoable<Project|null>(projectSlice.reducer),
     selection: selectionSlice.reducer,
     router: routerSlice.reducer,
   },
-  middleware: [thunk, trimerger.middleware],
+  middleware: [thunk, trimerger.middleware, projectMiddleware],
 } as ConfigureStoreOptions);
 
 trimerger.subscribeDoc((project) => {
@@ -194,15 +210,11 @@ export function deleteSelection({
   };
 }
 
-export function setActiveProject({
-  projectId,
-}: {
-  projectId: string | undefined;
-}): ThunkAction<void, RootState, unknown, AnyAction> {
-  return async (dispatch: (action: any) => void) => {
-    await trimerger.setActiveProject(projectId);
-    dispatch(setActiveProjectId(projectId))
-  };
+
+export async function setActiveProject(dispatch: (action: any) => void, projectId: string): Promise<void> {
+  dispatch(ActionCreators.clearHistory());
+  await trimerger.setActiveProject(projectId);
+  dispatch(setActiveProjectId(projectId));
 }
 
 export function tightenSelection({

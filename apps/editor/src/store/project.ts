@@ -23,6 +23,7 @@ function initialProject(): Project {
 
   return {
     id: projectId,
+    name: "Initial Project",
     compositions: [
       {
         id: "ac7c3a24-e08d-4bb6-b1fe-02960b41b870",
@@ -76,6 +77,42 @@ function initialProject(): Project {
   };
 }
 
+export function blankProject(projectId: string): Project {
+  const sequenceId = uuidv4();
+  const clipId1 = uuidv4();
+
+  return {
+    id: projectId,
+    name: "Untitled",
+    compositions: [
+      {
+        id: "ac7c3a24-e08d-4bb6-b1fe-02960b41b870",
+        clips: [
+          {
+            id: clipId1,
+            durationSeconds: 60,
+            sourceId: sequenceId,
+            sourceOffsetSeconds: 0,
+          },
+        ],
+        resolution: {
+          x: 1920,
+          y: 1080,
+        }
+      },
+    ],
+    files: [
+    ],
+    sequences: [
+      {
+        id: sequenceId,
+        tracks: [
+        ],
+      },
+    ],
+  };
+}
+
 function newProject(): Project {
   const videoFileId = 'ef0b60f4-08cd-45a1-8363-419a6dbc50dc';
   const userInteractionLogId = 'd8a111f3-8c5b-42cc-bd42-af1b059db41a';
@@ -87,6 +124,7 @@ function newProject(): Project {
 
   return {
     id: projectId,
+    name: "Take 6",
     compositions: [
       {
         id: "ac7c3a24-e08d-4bb6-b1fe-02960b41b870",
@@ -151,6 +189,7 @@ function take_7(): Project {
 
   return {
     id: projectId,
+    name: "Take 7",
     compositions: [
       {
         id: "ac7c3a24-e08d-4bb6-b1fe-02960b41b870",
@@ -503,12 +542,15 @@ export const routerSlice = createSlice({
 
 export const projectSlice = createSlice({
   name: "project",
-  initialState: take_7(),
+  initialState: null as Project | null,
   reducers: {
     replaceProject: (_, action: PayloadAction<ReplaceProjectPayload>) => {
       return action.payload.project;
     },
     splitClip: (state, action: PayloadAction<SplitClipPayload>) => {
+      if (!state) {
+        return state;
+      }
       const composition = state.compositions.find(
         (composition) => composition.id === action.payload.compositionId
       );
@@ -559,6 +601,9 @@ export const projectSlice = createSlice({
       state.compositions = newCompositions;
     },
     updateClip: (state, action: PayloadAction<UpdateClipPayload>) => {
+      if (!state) {
+        return state;
+      }
       const composition = state.compositions.find(
         (composition) => composition.id === action.payload.compositionId
       );
@@ -583,6 +628,9 @@ export const projectSlice = createSlice({
       state.compositions = newCompositions;
     },
     deleteSection: (state, action: PayloadAction<DeleteSectionPayload>) => {
+      if (!state) {
+        return state;
+      }
       const composition = state.compositions.find(
         (composition) => composition.id === action.payload.compositionId
       );
@@ -603,6 +651,9 @@ export const projectSlice = createSlice({
       state.compositions = newCompositions;
     },
     tightenSection: (state, action: PayloadAction<TightenSectionPayload>) => {
+      if (!state) {
+        return state;
+      }
       const composition = state.compositions.find(
         (composition) => composition.id === action.payload.compositionId
       );
@@ -699,6 +750,9 @@ export const projectSlice = createSlice({
       state.compositions = newCompositions;
     },
     smoothInteractions: (state, action: PayloadAction<TightenSectionPayload>) => {
+      if (!state) {
+        return state;
+      }
       const composition = state.compositions.find(
         (composition) => composition.id === action.payload.compositionId
       );
@@ -778,6 +832,9 @@ export const projectSlice = createSlice({
       state,
       action: PayloadAction<LoadInteractionFilePayload>
     ) => {
+      if (!state) {
+        return state;
+      }
       const newFiles = state.files.map((file) => {
         if (file.id === action.payload.fileId) {
           return { ...file, userInteractionLog: action.payload.interactionLog };

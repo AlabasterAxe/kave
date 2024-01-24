@@ -32,12 +32,12 @@ export default function ClipComponent(props: ClipProps) {
     onInteractionDragEnd,
   } = props;
 
-  let file = project.files.find((f: KaveFile) => f.id === clip.sourceId);
+  let file = project?.files.find((f: KaveFile) => f.id === clip.sourceId);
   if (file) {
     return <VideoClip clip={clip} />;
   }
 
-  const seq = project.sequences.find((s: Sequence) => s.id === clip.sourceId);
+  const seq = project?.sequences.find((s: Sequence) => s.id === clip.sourceId);
   if (!seq) {
     return <div>Invalid Clip</div>;
   }
@@ -45,7 +45,7 @@ export default function ClipComponent(props: ClipProps) {
   let videoTrack = null;
   let interactionTrack = null;
   for (const track of seq.tracks) {
-    const trackFile = project.files.find(
+    const trackFile = project?.files.find(
       (f: KaveFile) => f.id === track.fileId
     );
     if (!trackFile) {

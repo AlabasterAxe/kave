@@ -34,7 +34,7 @@ export function RenderPanel() {
   const activeCompositionId = useAppSelector(selectActiveCompositionId);
 
   const render = () => {
-    if (activeCompositionId) {
+    if (activeCompositionId && project) {
       run({
         events: getInteractionLogForComposition(project, activeCompositionId),
         render: true,
@@ -43,7 +43,7 @@ export function RenderPanel() {
   };
 
   const preview = () => {
-    if (activeCompositionId) {
+    if (activeCompositionId && project) {
     run({
       events: getInteractionLogForComposition(project, activeCompositionId),
       render: false,

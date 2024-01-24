@@ -46,19 +46,23 @@ export function Timeline() {
   const [dragOperation, setDragOperation] = useState<DragOperation | null>(
     null
   );
-  const composition = project.compositions.find(
+  const composition = project?.compositions.find(
     (c: Composition) => c.id === activeCompositionId
   );
-  const compositionDurationSeconds: number = composition!.clips.reduce(
+  const compositionDurationSeconds: number = composition ? composition.clips.reduce(
     (acc: number, clip: Clip) => clip.durationSeconds + acc,
     0
-  );
+  ) : 0;
   const dispatch = useAppDispatch();
   const [viewport, setViewport] = useState<TimelineViewport>({
     startTimeSeconds: 0,
     endTimeSeconds: compositionDurationSeconds,
   });
   const timelineRef = useRef<HTMLDivElement | null>(null);
+
+  if (!composition) {
+    return null;
+  }
 
   const scrubHandler = (e: any) => {
     const rect = e.currentTarget.getBoundingClientRect();
@@ -238,11 +242,11 @@ export function Timeline() {
   let durationSoFar = 0;
   const timelineClips = validDragOperation(dragOperation)
     ? deleteSectionFromClips(
-        composition!.clips,
+        composition.clips,
         dragOperation.currentDragTimeSeconds,
         dragOperation.dragStartTimeSeconds
       )
-    : composition!.clips;
+    : composition.clips;
   for (const clip of timelineClips) {
     clips.push(renderClip(clip, durationSoFar));
     durationSoFar += clip.durationSeconds;

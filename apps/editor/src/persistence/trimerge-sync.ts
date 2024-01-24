@@ -7,7 +7,7 @@ import { produce } from "immer";
 import { Delta, DiffPatcher } from "jsondiffpatch";
 import { selectProject } from "../store/store";
 import { Action, Store } from "redux";
-import { ALL_PROJECTS } from "../store/project";
+import { ALL_PROJECTS, blankProject } from "../store/project";
 
 const UNDEFINED_PARENT = uuidv4();
 
@@ -126,6 +126,8 @@ export class Trimerger {
             return;
           }
         }
+        onNewDoc(blankProject(this.activeProjectId!))
+        return;
       }
       onNewDoc(doc);
     });
@@ -168,7 +170,7 @@ export class Trimerger {
     const oldProject = selectProject(store.getState());
     const result = next(action);
     const newProject = selectProject(store.getState());
-    if (newProject !== oldProject) {
+    if (newProject && newProject !== oldProject) {
       this.client?.updateDoc(newProject, "new project");
     }
     return result;

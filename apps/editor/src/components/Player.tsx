@@ -82,6 +82,7 @@ interface PlayerViewportState {
 
 function Player() {
   const canvasRef: MutableRefObject<HTMLCanvasElement | null> = useRef(null);
+  const playheadTimeSeconds: MutableRefObject<number> = useRef(0);
   const [ctx, setContext] = useState<VideoContext | null>(null);
   const activeCompositionId = useAppSelector(selectActiveCompositionId);
   const playback = useAppSelector(selectPlayback);
@@ -92,7 +93,7 @@ function Player() {
     zoom: 1,
     offset: { x: 0, y: 0 },
   });
-  const composition = project.compositions.find(
+  const composition = project?.compositions.find(
     (c: Composition) => c.id === activeCompositionId
   );
   const dispatch = useAppDispatch();
@@ -120,30 +121,34 @@ function Player() {
           { aspectRatio: composition?.resolution ? composition?.resolution.x / composition?.resolution.y : 16/9 }
         );
       }
-      if (!composition) {
+      if (!composition || !project) {
         return;
       }
       setUpTimeline(videoContext, composition, project);
       videoContext.registerCallback(
         VideoContext.EVENTS.UPDATE,
         (currentTime: number) => {
-          dispatch(
-            updatePlayhead({
-              currentTimeSeconds: currentTime,
-              source: PlaybackStateSource.player,
-            })
-          );
+          if (currentTime !== playheadTimeSeconds.current) {
+            dispatch(
+              updatePlayhead({
+                currentTimeSeconds: currentTime,
+                source: PlaybackStateSource.player,
+              })
+            );
+          }
         }
       );
       videoContext.registerCallback(
         VideoContext.EVENTS.ENDED,
         (currentTime: number) => {
-          dispatch(
-            updatePlayhead({
-              currentTimeSeconds: currentTime,
-              source: PlaybackStateSource.player,
-            })
-          );
+          if (currentTime !== playheadTimeSeconds.current) {
+            dispatch(
+              updatePlayhead({
+                currentTimeSeconds: currentTime,
+                source: PlaybackStateSource.player,
+              })
+            );
+          }
         }
       );
 
@@ -174,6 +179,10 @@ function Player() {
   }, [resizeCallback]);
 
   useEffect(resizeCallback, [resizeCallback]);
+
+  useEffect(()=>{
+    playheadTimeSeconds.current = playback.currentTimeSeconds;
+  }, [playback.currentTimeSeconds]);
 
   const zoomHandler = (e: any) => {
     if (e.ctrlKey || e.metaKey) {

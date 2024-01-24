@@ -79,6 +79,7 @@ export type Composition = Readonly<{
 
 export type Project = Readonly<{
   id: string;
+  name: string;
   files: KaveFile[];
   sequences: Sequence[];
   compositions: Composition[];
