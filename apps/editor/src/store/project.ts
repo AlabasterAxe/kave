@@ -11,6 +11,7 @@ import {
   UserInteraction,
   Track,
 } from "kave-common";
+import { WritableDraft } from "immer/dist/internal";
 
 const INTERACTION_DURATION_SECONDS = 0.1;
 
@@ -251,6 +252,19 @@ function clipOffsetToInteractionLogOffset(
   clipOffsetSeconds: number,
 ): number {
   return clip.sourceOffsetSeconds + clipOffsetSeconds - interactionLogTrack.alignmentSeconds;
+}
+
+function addInteractionLogToDefaultSequence(
+  project: WritableDraft<Project>,
+  interactionLogFile: InteractionLogFile,
+): void {
+  project.files.push(interactionLogFile);
+  const [sequence] = project.sequences;
+  sequence.tracks.push({
+    id: uuidv4(),
+    alignmentSeconds: 0,
+    fileId: interactionLogFile.id,
+  });
 }
 
 export interface SplitClipPayload {

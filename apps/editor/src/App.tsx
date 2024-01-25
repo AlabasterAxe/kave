@@ -1,5 +1,5 @@
 import { useCallback, useEffect } from "react";
-import { BrowserRouter, Route, Routes } from "react-router-dom";
+import { BrowserRouter, Outlet, Route, RouterProvider, Routes, createBrowserRouter, createRoutesFromElements } from "react-router-dom";
 import { ActionCreators } from "redux-undo";
 import "./App.css";
 import { useAppDispatch, useAppSelector } from "./store/hooks";
@@ -17,9 +17,7 @@ import {
   simplifySelectedMouseInteractions,
   tightenSelection,
 } from "./store/store";
-import EditorView from "./views/EditorView";
-import { ProjectListView } from "./views/ProjectListView";
-
+import { Header } from "./components/Header";
 
 function App() {
   const dispatch = useAppDispatch();
@@ -66,7 +64,7 @@ function App() {
               })
             );
           }
-          
+
           break;
         case "s":
           if (selection && activeCompositionId) {
@@ -78,7 +76,7 @@ function App() {
               })
             );
           }
-          
+
           break;
         case "z":
           if (e.ctrlKey || e.metaKey) {
@@ -99,18 +97,19 @@ function App() {
     };
   }, []);
 
-  useEffect(() => {
-    document.addEventListener("keyup", handleKeyboardEvent);
-    return () => document.removeEventListener("keyup", handleKeyboardEvent);
-  }, [handleKeyboardEvent]);
+  useEffect(
+    () => {
+      document.addEventListener("keyup", handleKeyboardEvent);
+      return () => document.removeEventListener("keyup", handleKeyboardEvent);
+    },
+    [handleKeyboardEvent]
+  );
 
   return (
-    <BrowserRouter>
-      <Routes>
-        <Route path="/" element={<ProjectListView />}></Route>
-        <Route path="/project/:id" element={<EditorView />}></Route>
-      </Routes>
-    </BrowserRouter>
+    <div className="flex flex-col w-screen h-screen">
+        <Header />
+        <Outlet></Outlet>
+    </div>
   );
 }
 

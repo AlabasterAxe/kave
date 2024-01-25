@@ -5,14 +5,24 @@ import App from "./App";
 import reportWebVitals from "./reportWebVitals";
 import { store } from "./store/store";
 import { Provider } from "react-redux";
+import { Route, RouterProvider, Routes, createBrowserRouter, createRoutesFromElements } from "react-router-dom";
+import { ProjectListView } from "./views/ProjectListView";
+import EditorView from "./views/EditorView";
 
 const appRootElement = document.getElementById("root");
 const root = createRoot(appRootElement!);
 
+const router = createBrowserRouter(createRoutesFromElements((
+  <Route path="/" element={<App />}>
+    <Route path="/project/:id" element={<EditorView />} />
+    <Route path="" element={<ProjectListView/>} />
+  </Route>
+)))
+
 root.render(
   <React.StrictMode>
     <Provider store={store}>
-      <App />
+      <RouterProvider router={router} />
     </Provider>
   </React.StrictMode>
 );

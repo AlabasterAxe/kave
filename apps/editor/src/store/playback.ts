@@ -72,7 +72,7 @@ export const playbackSlice = createSlice({
     },
     nudgeForward: (state, action: PayloadAction<BasePlaybackActionPayload>) => {
       state.source = action.payload.source;
-      state.currentTimeSeconds = state.currentTimeSeconds + 0.5;
+      state.currentTimeSeconds = state.currentTimeSeconds + 0.1;
       if (state.state === PlayingState.stopped) {
         state.state = PlayingState.paused;
       }
@@ -82,7 +82,7 @@ export const playbackSlice = createSlice({
       action: PayloadAction<BasePlaybackActionPayload>
     ) => {
       state.source = action.payload.source;
-      state.currentTimeSeconds = state.currentTimeSeconds - 0.5;
+      state.currentTimeSeconds = state.currentTimeSeconds - 0.1;
       if (state.state === PlayingState.stopped) {
         state.state = PlayingState.paused;
       }

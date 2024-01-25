@@ -22,8 +22,9 @@ export function ProjectListView() {
         setProjects(localStorageProjects);
         localStorage.setItem("projects", JSON.stringify(localStorageProjects));
     }, [setProjects])
-    return <div className="flex flex-col">
+    return <div className="h-full w-full p-4"><div className="flex flex-col">
+        <h2 className="text-lg font-bold">Projects</h2>
         {(projects.map((project)=><NavLink key={project.id} to={`/project/${project.id}`}>{project.name}</NavLink>))}
         <div onClick={onNewProjectClick}>New Project</div>
-        </div>
+        </div></div>
 }

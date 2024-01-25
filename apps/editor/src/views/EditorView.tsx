@@ -23,7 +23,7 @@ function EditorView() {
   );
 
   return (
-    <div className="w-screen h-screen bg-blue-200 relative">
+    <div className="w-full h-full bg-blue-200 relative">
       <div className="h-5/6 player m-auto ">
         <Player />
       </div>
@@ -32,9 +32,6 @@ function EditorView() {
       </div>
       <div className="right-0 top-0 absolute">
         <RenderPanel />
-      </div>
-      <div className="left-0 top-0 absolute">
-        <NavLink to={"/"}>Back</NavLink>
       </div>
       <EventLogDropZone onNewLog={console.log}/>
     </div>

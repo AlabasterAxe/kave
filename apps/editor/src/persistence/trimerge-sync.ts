@@ -99,11 +99,13 @@ export class Trimerger {
     });
     this.activeProjectId = projectId;
 
+    let completed = false;
     this.unsubscribeSyncStatus = newClient.subscribeSyncStatus(value => {
-      if (value.localRead === "ready" && this.readyResolve) {
+      if (value.localRead === "ready" && !completed) {
+        completed = true;
         this.client = newClient
         this.client.subscribeDoc((doc) => this.handleDocUpdate(doc));
-        this.readyResolve(this.client);
+        this.readyResolve?.(this.client);
         this.readyPromise = undefined;
         this.readyResolve = undefined;
         this.readyReject = undefined;
