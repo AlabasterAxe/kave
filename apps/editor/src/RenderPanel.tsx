@@ -1,4 +1,4 @@
-import { Project, UserInteraction } from "../../../lib/common/dist";
+import { Document, UserInteraction } from "../../../lib/common/dist";
 import { useAppSelector } from "./store/hooks";
 import { getInteractionLogEventsForClip } from "./store/project";
 import { selectActiveCompositionId, selectProject } from "./store/store";
@@ -14,7 +14,7 @@ function run(rqst: { events: any[]; render: boolean }) {
     });
 }
 
-function getInteractionLogForComposition(project: Project, compositionId: string): UserInteraction[] {
+function getInteractionLogForComposition(project: Document, compositionId: string): UserInteraction[] {
   const composition = project.compositions.find((c) => c.id === compositionId);
   
   if (!composition) {

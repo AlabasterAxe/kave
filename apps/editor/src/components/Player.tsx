@@ -6,7 +6,7 @@ import {
   useState,
 } from "react";
 import VideoContext from "videocontext";
-import { Composition, FileType, Project, UserInteraction } from "kave-common";
+import { Composition, FileType, Document, UserInteraction } from "kave-common";
 import { useAppDispatch, useAppSelector } from "../store/hooks";
 import {
   PlaybackStateSource,
@@ -30,7 +30,7 @@ import { normalizedVideoPointToScreen } from "../util/canvas-transformer";
 function setUpTimeline(
   videoContext: VideoContext,
   composition: Composition,
-  project: Project
+  project: Document
 ) {
   videoContext.reset();
   let duration = 0;

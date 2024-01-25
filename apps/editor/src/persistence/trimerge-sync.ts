@@ -1,5 +1,5 @@
 import { CommitDoc, CoordinatingLocalStore, MergeDocFn, MergeResult, OnStoreEventFn, TrimergeClient, makeMergeAllBranchesFn } from "trimerge-sync";
-import { Project } from "../../../../lib/common/dist";
+import { Document } from "../../../../lib/common/dist";
 import { IndexedDbCommitRepository } from "trimerge-sync-indexed-db";
 import { v4 as uuidv4, v5 as uuidv5 } from "uuid";
 import { produce } from "immer";
@@ -38,18 +38,18 @@ function getLocalStore(docId: string) {
 }}
 
 export class Trimerger {
-  private client: TrimergeClient<Project, Project, string, Delta, unknown> | undefined;
+  private client: TrimergeClient<Document, Document, string, Delta, unknown> | undefined;
   private activeProjectId: string | undefined;
-  private readyResolve: ((client: TrimergeClient<Project, Project, string, Delta, unknown>) => void) | undefined;
+  private readyResolve: ((client: TrimergeClient<Document, Document, string, Delta, unknown>) => void) | undefined;
   private readyReject: ((error: Error) => void) | undefined;
-  private readyPromise: Promise<TrimergeClient<Project, Project, string, Delta, unknown>> | undefined;
+  private readyPromise: Promise<TrimergeClient<Document, Document, string, Delta, unknown>> | undefined;
   private unsubscribeSyncStatus: (() => void) | undefined;
-  private onNewDoc: ((doc: Project | undefined) => void) | undefined;
+  private onNewDoc: ((doc: Document | undefined) => void) | undefined;
 
   constructor(private readonly diffPatcher: DiffPatcher) {}
 
   // TODO: handle the case where another setActiveProject call comes in before the first one is done
-  async setActiveProject(projectId: string | undefined): Promise<TrimergeClient<Project, Project, string, Delta, unknown> | undefined> {
+  async setActiveProject(projectId: string | undefined): Promise<TrimergeClient<Document, Document, string, Delta, unknown> | undefined> {
     if (projectId === this.activeProjectId) {
       return this.client ?? await this.readyPromise;
     }
@@ -84,7 +84,7 @@ export class Trimerger {
         computeRef,
         // we do this so that diff doesn't inherit "this" from the parent
         differ: {
-          diff: (prior: Project | undefined, current: Project) => this.diffPatcher.diff(prior, current),
+          diff: (prior: Document | undefined, current: Document) => this.diffPatcher.diff(prior, current),
           patch: this.patch,
         },
         mergeAllBranches: makeMergeAllBranchesFn(sortRefs, this.merge),
@@ -93,7 +93,7 @@ export class Trimerger {
 
     
 
-    this.readyPromise = new Promise<TrimergeClient<Project, Project, string, Delta, unknown>>((resolve, reject)=> {
+    this.readyPromise = new Promise<TrimergeClient<Document, Document, string, Delta, unknown>>((resolve, reject)=> {
       this.readyResolve = resolve;
       this.readyReject = reject;
     });
@@ -116,7 +116,7 @@ export class Trimerger {
     return this.readyPromise;
   }
   
-  private handleDocUpdate(doc: Project | undefined) {
+  private handleDocUpdate(doc: Document | undefined) {
     if (!this.onNewDoc) {
       return;
     }
@@ -135,15 +135,15 @@ export class Trimerger {
     this.onNewDoc(doc);
   }
 
-  subscribeDoc(onNewDoc: (doc: Project | undefined) => void) {
+  subscribeDoc(onNewDoc: (doc: Document | undefined) => void) {
     this.onNewDoc = onNewDoc;
   }
 
-  private merge: MergeDocFn<Project, string> = (
-    base: CommitDoc<Project, string> | undefined,
-    left: CommitDoc<Project, string>,
-    right: CommitDoc<Project, string>,
-  ): MergeResult<Project, string> => {
+  private merge: MergeDocFn<Document, string> = (
+    base: CommitDoc<Document, string> | undefined,
+    left: CommitDoc<Document, string>,
+    right: CommitDoc<Document, string>,
+  ): MergeResult<Document, string> => {
     // TODO: actually merge the projects
     return {
       doc: left.doc,
@@ -153,9 +153,9 @@ export class Trimerger {
   };
 
   private patch = (
-    base: Project | undefined,
+    base: Document | undefined,
     delta: Delta | undefined
-  ): Project => {
+  ): Document => {
     if (delta === undefined) {
       if (base === undefined) {
         throw new Error("one of base or delta must be defined");

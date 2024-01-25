@@ -77,12 +77,17 @@ export type Composition = Readonly<{
   resolution: {x: number, y: number};
 }>;
 
-export type Project = Readonly<{
+export type Document = Readonly<{
   id: string;
   name: string;
   files: KaveFile[];
   sequences: Sequence[];
   compositions: Composition[];
+}>;
+
+export type Project = Readonly<{
+  id: string;
+  name: string;
 }>;
 
 export interface TimelineViewport {

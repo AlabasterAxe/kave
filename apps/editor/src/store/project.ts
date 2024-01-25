@@ -3,19 +3,21 @@ import { v4 as uuidv4 } from "uuid";
 import {
   Clip,
   KaveFile,
-  Project,
+  Document,
   Sequence,
   UserInteractionLog,
   FileType,
   InteractionLogFile,
   UserInteraction,
   Track,
+  Project,
 } from "kave-common";
 import { WritableDraft } from "immer/dist/internal";
+import { readLocalStoreProjects, upsertLocalStoreProject } from "../persistence/local-storage-utils";
 
 const INTERACTION_DURATION_SECONDS = 0.1;
 
-function initialProject(): Project {
+function initialProject(): Document {
   const fileId = '74340fe5-c232-4de4-803e-42fafcd6de31';
   const userInteractionLogId = 'df805f00-4df7-4787-9a5d-9f067029bb3f';
   const sequenceId = '0ed26414-999f-4c82-9810-745d3a6c9ddb';
@@ -78,7 +80,7 @@ function initialProject(): Project {
   };
 }
 
-export function blankProject(projectId: string): Project {
+export function blankProject(projectId: string): Document {
   const sequenceId = uuidv4();
   const clipId1 = uuidv4();
 
@@ -114,7 +116,7 @@ export function blankProject(projectId: string): Project {
   };
 }
 
-function newProject(): Project {
+function newProject(): Document {
   const videoFileId = 'ef0b60f4-08cd-45a1-8363-419a6dbc50dc';
   const userInteractionLogId = 'd8a111f3-8c5b-42cc-bd42-af1b059db41a';
   const sequenceId = 'e8c8e417-727c-4a8e-9e45-2a786f154010';
@@ -179,7 +181,7 @@ function newProject(): Project {
   };
 }
 
-function take_7(): Project {
+function take_7(): Document {
   const videoFileId = '1fb7df05-fb97-4d45-82f6-d01f394b2797';
   const userInteractionLogId = '4ab6a265-b9a5-44e1-83d6-f746ae023a49';
   const sequenceId = 'fb4b1d99-4104-4002-ac22-38697eedc9c8';
@@ -255,7 +257,7 @@ function clipOffsetToInteractionLogOffset(
 }
 
 function addInteractionLogToDefaultSequence(
-  project: WritableDraft<Project>,
+  project: WritableDraft<Document>,
   interactionLogFile: InteractionLogFile,
 ): void {
   project.files.push(interactionLogFile);
@@ -273,7 +275,7 @@ export interface SplitClipPayload {
 }
 
 export interface ReplaceProjectPayload {
-  project: Project;
+  project: Document;
 }
 
 export interface UpdateClipPayload {
@@ -358,7 +360,7 @@ export const deleteSectionFromClips = (
 };
 
 export function getInteractionLogForSourceId(
-  state: Project,
+  state: Document,
   sourceId: string
 ): { file: InteractionLogFile; offset: number } | undefined {
   const sequence = state.sequences.find((f) => f.id === sourceId);
@@ -385,7 +387,7 @@ export function getInteractionLogForSourceId(
 }
 
 export function getClipForTime(
-  project: Project,
+  project: Document,
   compositionId: string,
   time: number
 ): { clip: Clip; offset: number } | undefined {
@@ -404,7 +406,7 @@ export function getClipForTime(
 }
 
 export function getInteractionLogEventsForClip(
-  project: Project,
+  project: Document,
   clip: Clip
 ): UserInteraction[] {
   const sequence = project.sequences.find((f) => f.id === clip.sourceId);
@@ -554,9 +556,23 @@ export const routerSlice = createSlice({
   },
 });
 
-export const projectSlice = createSlice({
-  name: "project",
-  initialState: null as Project | null,
+export const projectsSlice = createSlice({
+  name: "projects",
+  initialState: readLocalStoreProjects().reduce((acc: Record<string, Project>, project) => {
+    acc[project.id] = project;
+    return acc;
+  },{}),
+  reducers: {
+    upsertProject: (state, action: PayloadAction<Project>) => {
+      state[action.payload.id] = action.payload;
+      upsertLocalStoreProject(action.payload);
+    },
+  },
+});
+
+export const documentSlice = createSlice({
+  name: "document",
+  initialState: null as Document | null,
   reducers: {
     replaceProject: (_, action: PayloadAction<ReplaceProjectPayload>) => {
       return action.payload.project;
@@ -869,9 +885,13 @@ export const {
   tightenSection,
   replaceProject,
   smoothInteractions,
-} = projectSlice.actions;
+} = documentSlice.actions;
 
 export const {
   setActiveProjectId,
   setActiveCompositionId,
 } = routerSlice.actions;
+
+export const {
+  upsertProject,
+} = projectsSlice.actions;
