@@ -164,8 +164,10 @@ function Player() {
       if (playback.source !== PlaybackStateSource.player) {
         ctx.currentTime = playback.currentTimeSeconds;
         if (playback.state === PlayingState.playing) {
+          console.log("play");
           ctx.play();
         } else {
+          console.log("pause");
           ctx.pause();
         }
       }

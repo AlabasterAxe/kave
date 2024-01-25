@@ -119,7 +119,7 @@ export function selectSelectionUserInteractions(
 
   const { file, offset: interactionLogSourceOffset } =
     getInteractionLogForSourceId(project, startClip.sourceId) ?? {};
-  if (!file?.userInteractionLog || !interactionLogSourceOffset) {
+  if (!file?.userInteractionLog || interactionLogSourceOffset === undefined) {
     return [];
   }
 
