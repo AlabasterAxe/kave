@@ -256,19 +256,6 @@ function clipOffsetToInteractionLogOffset(
   return clip.sourceOffsetSeconds + clipOffsetSeconds - interactionLogTrack.alignmentSeconds;
 }
 
-function addInteractionLogToDefaultSequence(
-  project: WritableDraft<Document>,
-  interactionLogFile: InteractionLogFile,
-): void {
-  project.files.push(interactionLogFile);
-  const [sequence] = project.sequences;
-  sequence.tracks.push({
-    id: uuidv4(),
-    alignmentSeconds: 0,
-    fileId: interactionLogFile.id,
-  });
-}
-
 export interface SplitClipPayload {
   compositionId: string;
   splitOffsetSeconds: number;
@@ -572,10 +559,47 @@ export const projectsSlice = createSlice({
 
 export const documentSlice = createSlice({
   name: "document",
+  // This is null because undoable does something weird with undefined values when you attempt to clear the state
   initialState: null as Document | null,
   reducers: {
-    replaceProject: (_, action: PayloadAction<ReplaceProjectPayload>) => {
+    replaceDocument: (_, action: PayloadAction<ReplaceProjectPayload>) => {
       return action.payload.project;
+    },
+    addFileToDefaultSequence: (state, action: PayloadAction<KaveFile>) => {
+      if (!state) {
+        return state;
+      }
+      const [sequence] = state.sequences;
+      if (!sequence) {
+        return state;
+      }
+      sequence.tracks.push({
+        id: uuidv4(),
+        alignmentSeconds: 0,
+        fileId: action.payload.id,
+      });
+      state.files.push(action.payload);
+
+      if (action.payload.type === FileType.interaction_log) {
+        let minEventTimeSeconds: number | undefined;
+        let maxEventTimeSeconds: number | undefined;
+        action.payload.userInteractionLog?.log.forEach((event) => {
+          const eventTimeSeconds = event.time / 1000;
+          if (!minEventTimeSeconds || eventTimeSeconds < minEventTimeSeconds) {
+            minEventTimeSeconds = eventTimeSeconds;
+          }
+          if (!maxEventTimeSeconds || eventTimeSeconds > maxEventTimeSeconds) {
+            maxEventTimeSeconds = eventTimeSeconds;
+          }
+        });
+        const [compositions] = state.compositions;
+        if (!compositions) {
+          return state;
+        }
+
+        const [clip] = compositions.clips;
+        clip.durationSeconds = maxEventTimeSeconds! - minEventTimeSeconds!;
+      }
     },
     splitClip: (state, action: PayloadAction<SplitClipPayload>) => {
       if (!state) {
@@ -883,8 +907,9 @@ export const {
   loadInteractionFile,
   deleteSection,
   tightenSection,
-  replaceProject,
+  replaceDocument,
   smoothInteractions,
+  addFileToDefaultSequence,
 } = documentSlice.actions;
 
 export const {

@@ -10,7 +10,7 @@ import {
   deleteSection,
   documentSlice,
   tightenSection,
-  replaceProject as replaceDocument,
+  replaceDocument,
   getClipForTime,
   getInteractionLogForSourceId,
   smoothInteractions,

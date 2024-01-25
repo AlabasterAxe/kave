@@ -1,16 +1,16 @@
-import { FileType, InteractionLogFile, UserInteraction } from "kave-common";
+import { FileType, InteractionLogFile, KaveFile, UserInteraction } from "kave-common";
 import { useCallback, useEffect, useRef, useState } from "react";
 import { v4 as uuidv4 } from "uuid";
 import "./EventLogDropZone.css";
 
-export interface InteractionLogResult {
-    file: InteractionLogFile;
+export interface FileDropEvent {
+    files: KaveFile[];
 }
 
-export default function EventLogDropZone({
-  onNewLog,
+export default function FileDropZone({
+  onFileDrop,
 }: {
-  onNewLog: (payload: InteractionLogResult) => void;
+  onFileDrop: (event: FileDropEvent) => void;
 }) {
   const [dropZoneVisible, setDropZoneVisible] = useState<boolean>(false);
 
@@ -28,27 +28,50 @@ export default function EventLogDropZone({
   }, [setDropZoneVisible]);
 
   const handleDrop = useCallback(
-    async (e: any) => {
+    async (e: DragEvent) => {
       e.preventDefault();
       hideDropZone();
 
-      let events: UserInteraction[] = [];
-      for (const item of e.dataTransfer.items ?? e.dataTransfer.files) {
+      let files: KaveFile[] = [];
+      for (const item of e.dataTransfer?.items ?? e.dataTransfer?.files ?? []) {
         // If dropped items aren't files, ignore them
-        if (item.kind === "file") {
-          const file = item.getAsFile();
-          events.push(...JSON.parse(await file.text()));
+        if ((item as DataTransferItem).kind === "file") {
+          const file = (item as DataTransferItem).getAsFile();
+
+          if (!file) {
+            return;
+          }
+          const nameParts = file.name.split(".");
+          if (nameParts.length < 2) {
+            return;
+          }
+          switch (nameParts[nameParts.length - 1]) {
+            case "json":
+              files.push(
+                {
+                  userInteractionLog: {
+                      log: JSON.parse(await file.text()) 
+                  },
+                  type: FileType.interaction_log,
+                  id: uuidv4()
+              });
+              break;
+            default:
+              files.push({
+                fileUri: URL.createObjectURL(file),
+                type: FileType.video,
+                id: uuidv4(),
+                resolution: {
+                  x: 1920,
+                  y: 1080,
+                },
+              })
+          }
         }
       }
 
-      onNewLog({
-        file: {
-            userInteractionLog: {
-                log: events
-            },
-            type: FileType.interaction_log,
-            id: uuidv4()
-        }
+      onFileDrop({
+        files 
       });
     },
     [hideDropZone]
