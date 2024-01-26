@@ -1,14 +1,24 @@
-import { useRef, useState } from "react";
-import { Clip, Composition, TimelineViewport } from "../../../../../lib/common/dist";
+import { useEffect, useRef, useState } from "react";
+import {
+  Clip,
+  Composition,
+  KaveDoc,
+  TimelineViewport,
+} from "../../../../../lib/common/dist";
 import { useAppDispatch, useAppSelector } from "../../store/hooks";
 import { PlaybackStateSource, updatePlayhead } from "../../store/playback";
 import { Selection } from "../../store/selection";
-import { deleteSection, deleteSectionFromClips } from "../../store/project";
+import {
+  deleteSection,
+  deleteSectionFromClips,
+  setTempDoc,
+} from "../../store/project";
 import {
   selectActiveCompositionId,
   selectPlayback,
-  selectProject,
+  selectDocument,
   selectSelection,
+  selectPersistedDocument,
 } from "../../store/store";
 import {
   scaleToScreen,
@@ -38,10 +48,28 @@ function validDragOperation(
   );
 }
 
+function applyDragOperation(
+  doc: KaveDoc,
+  compositionId: string,
+  operation: DragOperation | null
+): KaveDoc {
+  if (!validDragOperation(operation)) {
+    return doc;
+  }
+
+  return deleteSectionFromClips(
+    doc,
+    compositionId,
+    operation.currentDragTimeSeconds,
+    operation.dragStartTimeSeconds
+  );
+}
+
 export function Timeline() {
   const activeCompositionId = useAppSelector(selectActiveCompositionId);
   const playback = useAppSelector(selectPlayback);
-  const project = useAppSelector(selectProject);
+  const doc = useAppSelector(selectDocument);
+  const persistedDoc = useAppSelector(selectPersistedDocument);
   const selection = useAppSelector(selectSelection);
   const [dragOperation, setDragOperation] = useState<DragOperation | null>(
     null
@@ -49,10 +77,12 @@ export function Timeline() {
   const composition = project?.compositions.find(
     (c: Composition) => c.id === activeCompositionId
   );
-  const compositionDurationSeconds: number = composition ? composition.clips.reduce(
+  const compositionDurationSeconds: number = composition
+    ? composition.clips.reduce(
     (acc: number, clip: Clip) => clip.durationSeconds + acc,
     0
-  ) : 0;
+      )
+    : 0;
   const dispatch = useAppDispatch();
   const [viewport, setViewport] = useState<TimelineViewport>({
     startTimeSeconds: 0,
@@ -112,13 +142,25 @@ export function Timeline() {
         viewport,
         dragLocPx / window.innerWidth
       );
-      setDragOperation({
-        dragStartTimeSeconds: dragOperation.dragStartTimeSeconds,
+      const newDragOperation = {
+        ...dragOperation,
         currentDragTimeSeconds: Math.min(
           globalTimelineLocationSeconds,
           dragOperation.dragStartTimeSeconds
         ),
-      });
+      };
+      if (persistedDoc && activeCompositionId) {
+        dispatch(
+          setTempDoc(
+            applyDragOperation(
+              persistedDoc,
+              activeCompositionId,
+              newDragOperation
+            )
+          )
+        );
+      }
+      setDragOperation(newDragOperation);
     }
   };
 
