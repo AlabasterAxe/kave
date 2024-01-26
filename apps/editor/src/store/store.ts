@@ -239,7 +239,7 @@ export const store = configureStore({
     projects: projectsSlice.reducer,
     tempDocument: tempDocumentSlice.reducer,
   },
-  middleware: [thunk, trimerger.middleware, sideEffectMiddleware],
+  middleware: [thunk, /*trimerger.middleware,*/ sideEffectMiddleware],
 } as ConfigureStoreOptions);
 
 trimerger.subscribeDoc((document) => {

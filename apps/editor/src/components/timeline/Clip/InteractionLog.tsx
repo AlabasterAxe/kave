@@ -13,6 +13,7 @@ import {
   scaleToScreen,
   transformToScreen,
 } from "../../../util/timeline-transformer";
+import { set } from "immer/dist/internal";
 
 interface InteractionHandleProps {
   onDragStart: (time: number) => void;
@@ -33,11 +34,10 @@ const MIN_INTERACTION_DURATION_SECONDS = 0.1;
 
 function InteractionHandle(props: InteractionHandleProps) {
   const dragRef = useRef<HTMLDivElement | null>(null);
-  const [dragging, setDragging] = useState(false);
+  const [mouseDown, setMouseDown] = useState(false);
+  const [emittedStart, setEmittedStart] = useState(false);
   const {
     onDragStart,
-    onDragUpdate,
-    onDragEnd,
     onClick,
     timelineElement,
     interactionStartTime,
@@ -81,23 +81,6 @@ function InteractionHandle(props: InteractionHandleProps) {
   }
 
   return (
-    <DraggableCore
-      nodeRef={dragRef}
-      offsetParent={timelineElement}
-      onStart={() => onDragStart(clipStartTimeSeconds + interactionStartTime)}
-      onDrag={(e, data) => {
-        onDragUpdate(data.x);
-        setDragging(true);
-      }}
-      onStop={(e) => {
-        if (dragging) {
-          onDragEnd();
-          setDragging(false);
-        } else {
-          onClick(e);
-        }
-      }}
-    >
       <div
         style={interactionStyle}
         className={[
@@ -110,10 +93,26 @@ function InteractionHandle(props: InteractionHandleProps) {
         ].join(" ")}
         ref={dragRef}
         title={displayText}
+        onMouseDown={(e)=>{
+          setMouseDown(true);
+          setEmittedStart(false);
+          e.stopPropagation();
+        }}
+        onMouseMove={()=>{
+          if (mouseDown && !emittedStart) {
+            setEmittedStart(true);
+            onDragStart(interactionStartTime);
+          }
+        }}
+        onMouseUp={()=>{
+          if (mouseDown) {
+            setMouseDown(false);
+          }
+        }}
+        onClick={onClick}
       >
         <div className="truncate">{displayText}</div>
       </div>
-    </DraggableCore>
   );
 }
 

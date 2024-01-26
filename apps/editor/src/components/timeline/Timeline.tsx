@@ -293,6 +293,8 @@ export function Timeline() {
       className="w-full h-full bg-gray-200 relative flex flex-col"
       onClick={scrubHandler}
       onWheel={zoomHandler}
+      onMouseMove={dragOperation ? (e) => onInteractionDragUpdate(e.clientX) : undefined}
+      onMouseUp={dragOperation ? onInteractionDragEnd : undefined}
     >
       {renderTimeline(viewport, composition.clips)}
       <div className="h-full w-full flex relative">{clips}</div>
