@@ -7,7 +7,7 @@ import {
 } from "kave-common";
 import { useAppSelector } from "../../../store/hooks";
 import { selectActiveCompositionId, selectDocument } from "../../../store/store";
-import { MultiTrackInteractionLog } from "./InteractionLog";
+import { DragStartEvent, MultiTrackInteractionLog } from "./InteractionLog";
 import { VideoClip } from "./VideoClip";
 
 interface ClipProps {
@@ -15,7 +15,7 @@ interface ClipProps {
   viewport: TimelineViewport;
   clipStartTime: number;
   timelineElement: HTMLElement;
-  onInteractionDragStart: (time: number) => void;
+  onInteractionDragStart: (event: DragStartEvent) => void;
   onInteractionDragUpdate: (delta: number) => void;
   onInteractionDragEnd: () => void;
 }

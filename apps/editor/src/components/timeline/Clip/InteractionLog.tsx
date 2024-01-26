@@ -13,10 +13,15 @@ import {
   scaleToScreen,
   transformToScreen,
 } from "../../../util/timeline-transformer";
-import { set } from "immer/dist/internal";
+
+export interface DragStartEvent {
+  startTimeSeconds: number;
+  shiftKey: boolean;
+  clipId: string;
+}
 
 interface InteractionHandleProps {
-  onDragStart: (time: number) => void;
+  onDragStart: (event: DragStartEvent) => void;
   onDragUpdate: (xLocPx: number) => void;
   onDragEnd: () => void;
   onClick: (e: any) => void;
@@ -27,6 +32,7 @@ interface InteractionHandleProps {
   viewport: TimelineViewport;
   clipStartTimeSeconds: number;
   bottomTrack?: boolean;
+  clipId: string;
 }
 
 const COALESCING_THRESHOLD = 1; // if two interactions are within 3 vws of one another, merge them into one
@@ -39,12 +45,11 @@ function InteractionHandle(props: InteractionHandleProps) {
   const {
     onDragStart,
     onClick,
-    timelineElement,
     interactionStartTime,
     interactionEndTime,
     userInteractions,
     viewport,
-    clipStartTimeSeconds,
+    clipId,
   } = props;
   const interactionStyle = {
     transform: `translateX(${scaleToScreen(
@@ -98,10 +103,10 @@ function InteractionHandle(props: InteractionHandleProps) {
           setEmittedStart(false);
           e.stopPropagation();
         }}
-        onMouseMove={()=>{
+        onMouseMove={(e)=>{
           if (mouseDown && !emittedStart) {
             setEmittedStart(true);
-            onDragStart(interactionStartTime);
+            onDragStart({startTimeSeconds: interactionStartTime, shiftKey: e.shiftKey, clipId});
           }
         }}
         onMouseUp={()=>{
@@ -127,7 +132,7 @@ export interface InteractionLogProps {
   timelineElement: HTMLElement;
   clipId: string;
   file: InteractionLogFile;
-  onDragStart: (time: number) => void;
+  onDragStart: (event: DragStartEvent) => void;
   onDragUpdate: (delta: number) => void;
   onDragEnd: () => void;
 }
@@ -247,6 +252,7 @@ function MouseInteractionLog(props: InteractionLogProps) {
           key={`${clipId}-${interactionCluster[0].time}`}
           interactionStartTime={interactionStartTime}
           interactionEndTime={interactionEndTime}
+          clipId={clipId}
           onDragEnd={onDragEnd}
           onDragStart={onDragStart}
           onDragUpdate={onDragUpdate}
@@ -387,6 +393,7 @@ function KeyboardInteractionLog(props: InteractionLogProps) {
       return (
         <InteractionHandle
           key={`${clipId}-${interactionCluster[0].time}`}
+          clipId={clipId}
           interactionStartTime={interactionStartTime}
           interactionEndTime={interactionEndTime}
           onDragEnd={onDragEnd}

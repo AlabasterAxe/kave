@@ -12,7 +12,6 @@ import {
   Track,
   Project,
 } from "kave-common";
-import { WritableDraft } from "immer/dist/internal";
 import { readLocalStoreProjects, upsertLocalStoreProject } from "../persistence/local-storage-utils";
 
 const INTERACTION_DURATION_SECONDS = 0.1;
@@ -667,6 +666,12 @@ export const documentSlice = createSlice({
         clip.durationSeconds = maxEventTimeSeconds! - minEventTimeSeconds!;
       }
     },
+    updateInteractionLogOffsetAction: (state, action: PayloadAction<{ clipId: string; delta: number }>) => {
+      if (!state) {
+        return state;
+      }
+      return updateInteractionLogOffset(state, action.payload.clipId, action.payload.delta);
+    },
     splitClip: (state, action: PayloadAction<SplitClipPayload>) => {
       if (!state) {
         return state;
@@ -972,6 +977,7 @@ export const {
   replaceDocument,
   smoothInteractions,
   addFileToDefaultSequence,
+  updateInteractionLogOffsetAction,
 } = documentSlice.actions;
 
 export const {

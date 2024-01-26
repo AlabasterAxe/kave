@@ -1,24 +1,26 @@
-import { useEffect, useRef, useState } from "react";
+import { useRef, useState } from "react";
 import {
   Clip,
   Composition,
   KaveDoc,
   TimelineViewport,
-} from "../../../../../lib/common/dist";
+} from "kave-common";
 import { useAppDispatch, useAppSelector } from "../../store/hooks";
 import { PlaybackStateSource, updatePlayhead } from "../../store/playback";
-import { Selection } from "../../store/selection";
 import {
   deleteSection,
   deleteSectionFromClips,
   setTempDoc,
+  updateInteractionLogOffset,
+  updateInteractionLogOffsetAction,
 } from "../../store/project";
+import { Selection } from "../../store/selection";
 import {
   selectActiveCompositionId,
-  selectPlayback,
   selectDocument,
-  selectSelection,
   selectPersistedDocument,
+  selectPlayback,
+  selectSelection,
 } from "../../store/store";
 import {
   scaleToScreen,
@@ -26,6 +28,7 @@ import {
   transformToTimeline,
 } from "../../util/timeline-transformer";
 import ClipComponent from "./Clip/Clip";
+import { DragStartEvent } from "./Clip/InteractionLog";
 
 const CLIP_SPLIT_THRESHOLD = 0.05;
 const MIN_VIEWPORT_SPAN = 0.05;
@@ -36,15 +39,18 @@ export interface DragOperation {
   // this can be null if the drags an interaction that is aligned to the start of the clip
   dragStartTimeSeconds: number;
   currentDragTimeSeconds: number;
+
+  shiftKey: boolean;
+  clipId: string;
 }
 
 function validDragOperation(
   operation: DragOperation | null
 ): operation is DragOperation {
-  return (
-    !!operation &&
-    operation.dragStartTimeSeconds - operation.currentDragTimeSeconds >
-      CLIP_SPLIT_THRESHOLD
+  return Boolean(
+    operation &&
+    (operation.shiftKey || operation.dragStartTimeSeconds - operation.currentDragTimeSeconds >
+      CLIP_SPLIT_THRESHOLD)
   );
 }
 
@@ -55,6 +61,14 @@ function applyDragOperation(
 ): KaveDoc {
   if (!validDragOperation(operation)) {
     return doc;
+  }
+
+  if (operation.shiftKey) {
+    return updateInteractionLogOffset(
+      doc,
+      operation.clipId,
+      operation.currentDragTimeSeconds - operation.dragStartTimeSeconds
+    );
   }
 
   return deleteSectionFromClips(
@@ -79,8 +93,8 @@ export function Timeline() {
   );
   const compositionDurationSeconds: number = composition
     ? composition.clips.reduce(
-    (acc: number, clip: Clip) => clip.durationSeconds + acc,
-    0
+        (acc: number, clip: Clip) => clip.durationSeconds + acc,
+        0
       )
     : 0;
   const dispatch = useAppDispatch();
@@ -128,11 +142,17 @@ export function Timeline() {
     });
   };
 
-  const onInteractionDragStart = (dragStartSeconds: number) => {
+  const onInteractionDragStart = ({
+    startTimeSeconds,
+    shiftKey,
+    clipId,
+  }: DragStartEvent) => {
     // this means the user is dragging an interaction that is aligned to the start of the clip
     setDragOperation({
-      dragStartTimeSeconds: dragStartSeconds,
-      currentDragTimeSeconds: dragStartSeconds,
+      dragStartTimeSeconds: startTimeSeconds,
+      currentDragTimeSeconds: startTimeSeconds,
+      shiftKey,
+      clipId,
     });
   };
 
@@ -144,7 +164,7 @@ export function Timeline() {
       );
       const newDragOperation = {
         ...dragOperation,
-        currentDragTimeSeconds: Math.min(
+        currentDragTimeSeconds: dragOperation.shiftKey ? globalTimelineLocationSeconds : Math.min(
           globalTimelineLocationSeconds,
           dragOperation.dragStartTimeSeconds
         ),
@@ -172,13 +192,24 @@ export function Timeline() {
         dragOperation.currentDragTimeSeconds >
         CLIP_SPLIT_THRESHOLD
     ) {
-      dispatch(
-        deleteSection({
-          compositionId: activeCompositionId,
-          startTimeSeconds: dragOperation.currentDragTimeSeconds,
-          endTimeSeconds: dragOperation.dragStartTimeSeconds,
-        })
-      );
+      if (dragOperation.shiftKey) {
+        dispatch(
+          updateInteractionLogOffsetAction({
+            clipId: dragOperation.clipId,
+            delta:
+              dragOperation.currentDragTimeSeconds -
+              dragOperation.dragStartTimeSeconds,
+          })
+        );
+      } else {
+        dispatch(
+          deleteSection({
+            compositionId: activeCompositionId,
+            startTimeSeconds: dragOperation.currentDragTimeSeconds,
+            endTimeSeconds: dragOperation.dragStartTimeSeconds,
+          })
+        );
+      }
     }
     setDragOperation(null);
   };
@@ -268,13 +299,9 @@ export function Timeline() {
           viewport={viewport}
           clipStartTime={clipStartTimeSeconds}
           timelineElement={timelineRef.current!}
-          onInteractionDragStart={(time: number) =>
-            onInteractionDragStart(time)
-          }
-          onInteractionDragUpdate={(dragLocPx: number) =>
-            onInteractionDragUpdate(dragLocPx)
-          }
-          onInteractionDragEnd={() => onInteractionDragEnd()}
+          onInteractionDragStart={onInteractionDragStart}
+          onInteractionDragUpdate={onInteractionDragUpdate}
+          onInteractionDragEnd={onInteractionDragEnd}
         ></ClipComponent>
       </div>
     );
@@ -293,7 +320,9 @@ export function Timeline() {
       className="w-full h-full bg-gray-200 relative flex flex-col"
       onClick={scrubHandler}
       onWheel={zoomHandler}
-      onMouseMove={dragOperation ? (e) => onInteractionDragUpdate(e.clientX) : undefined}
+      onMouseMove={
+        dragOperation ? (e) => onInteractionDragUpdate(e.clientX) : undefined
+      }
       onMouseUp={dragOperation ? onInteractionDragEnd : undefined}
     >
       {renderTimeline(viewport, composition.clips)}
