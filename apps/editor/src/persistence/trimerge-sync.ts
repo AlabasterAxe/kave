@@ -1,11 +1,11 @@
 import { CommitDoc, CoordinatingLocalStore, MergeDocFn, MergeResult, OnStoreEventFn, TrimergeClient, makeMergeAllBranchesFn } from "trimerge-sync";
-import { Document } from "../../../../lib/common/dist";
+import { KaveDoc } from "../../../../lib/common/dist";
 import { IndexedDbCommitRepository } from "trimerge-sync-indexed-db";
 import { v4 as uuidv4, v5 as uuidv5 } from "uuid";
 import { produce } from "immer";
 
 import { Delta, DiffPatcher } from "jsondiffpatch";
-import { selectProject } from "../store/store";
+import { selectDocument } from "../store/store";
 import { Action, Store } from "redux";
 import { ALL_PROJECTS, blankProject } from "../store/project";
 
@@ -38,18 +38,18 @@ function getLocalStore(docId: string) {
 }}
 
 export class Trimerger {
-  private client: TrimergeClient<Document, Document, string, Delta, unknown> | undefined;
+  private client: TrimergeClient<KaveDoc, KaveDoc, string, Delta, unknown> | undefined;
   private activeProjectId: string | undefined;
-  private readyResolve: ((client: TrimergeClient<Document, Document, string, Delta, unknown>) => void) | undefined;
+  private readyResolve: ((client: TrimergeClient<KaveDoc, KaveDoc, string, Delta, unknown>) => void) | undefined;
   private readyReject: ((error: Error) => void) | undefined;
-  private readyPromise: Promise<TrimergeClient<Document, Document, string, Delta, unknown>> | undefined;
+  private readyPromise: Promise<TrimergeClient<KaveDoc, KaveDoc, string, Delta, unknown>> | undefined;
   private unsubscribeSyncStatus: (() => void) | undefined;
-  private onNewDoc: ((doc: Document | undefined) => void) | undefined;
+  private onNewDoc: ((doc: KaveDoc | undefined) => void) | undefined;
 
   constructor(private readonly diffPatcher: DiffPatcher) {}
 
   // TODO: handle the case where another setActiveProject call comes in before the first one is done
-  async setActiveProject(projectId: string | undefined): Promise<TrimergeClient<Document, Document, string, Delta, unknown> | undefined> {
+  async setActiveProject(projectId: string | undefined): Promise<TrimergeClient<KaveDoc, KaveDoc, string, Delta, unknown> | undefined> {
     if (projectId === this.activeProjectId) {
       return this.client ?? await this.readyPromise;
     }
@@ -84,7 +84,7 @@ export class Trimerger {
         computeRef,
         // we do this so that diff doesn't inherit "this" from the parent
         differ: {
-          diff: (prior: Document | undefined, current: Document) => this.diffPatcher.diff(prior, current),
+          diff: (prior: KaveDoc | undefined, current: KaveDoc) => this.diffPatcher.diff(prior, current),
           patch: this.patch,
         },
         mergeAllBranches: makeMergeAllBranchesFn(sortRefs, this.merge),
@@ -93,7 +93,7 @@ export class Trimerger {
 
     
 
-    this.readyPromise = new Promise<TrimergeClient<Document, Document, string, Delta, unknown>>((resolve, reject)=> {
+    this.readyPromise = new Promise<TrimergeClient<KaveDoc, KaveDoc, string, Delta, unknown>>((resolve, reject)=> {
       this.readyResolve = resolve;
       this.readyReject = reject;
     });
@@ -116,7 +116,7 @@ export class Trimerger {
     return this.readyPromise;
   }
   
-  private handleDocUpdate(doc: Document | undefined) {
+  private handleDocUpdate(doc: KaveDoc | undefined) {
     if (!this.onNewDoc) {
       return;
     }
@@ -135,15 +135,15 @@ export class Trimerger {
     this.onNewDoc(doc);
   }
 
-  subscribeDoc(onNewDoc: (doc: Document | undefined) => void) {
+  subscribeDoc(onNewDoc: (doc: KaveDoc | undefined) => void) {
     this.onNewDoc = onNewDoc;
   }
 
-  private merge: MergeDocFn<Document, string> = (
-    base: CommitDoc<Document, string> | undefined,
-    left: CommitDoc<Document, string>,
-    right: CommitDoc<Document, string>,
-  ): MergeResult<Document, string> => {
+  private merge: MergeDocFn<KaveDoc, string> = (
+    base: CommitDoc<KaveDoc, string> | undefined,
+    left: CommitDoc<KaveDoc, string>,
+    right: CommitDoc<KaveDoc, string>,
+  ): MergeResult<KaveDoc, string> => {
     // TODO: actually merge the projects
     return {
       doc: left.doc,
@@ -153,9 +153,9 @@ export class Trimerger {
   };
 
   private patch = (
-    base: Document | undefined,
+    base: KaveDoc | undefined,
     delta: Delta | undefined
-  ): Document => {
+  ): KaveDoc => {
     if (delta === undefined) {
       if (base === undefined) {
         throw new Error("one of base or delta must be defined");
@@ -173,9 +173,9 @@ export class Trimerger {
   };
 
   public middleware = (store: Store) => (next: any) => (action: Action) => {
-    const oldProject = selectProject(store.getState());
+    const oldProject = selectDocument(store.getState());
     const result = next(action);
-    const newProject = selectProject(store.getState());
+    const newProject = selectDocument(store.getState());
     if (newProject && newProject !== oldProject) {
       this.client?.updateDoc(newProject, "new project");
     }

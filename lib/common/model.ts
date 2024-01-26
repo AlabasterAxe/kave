@@ -77,7 +77,7 @@ export type Composition = Readonly<{
   resolution: {x: number, y: number};
 }>;
 
-export type Document = Readonly<{
+export type KaveDoc = Readonly<{
   id: string;
   name: string;
   files: KaveFile[];

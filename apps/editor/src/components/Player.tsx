@@ -6,7 +6,7 @@ import {
   useState,
 } from "react";
 import VideoContext from "videocontext";
-import { Composition, FileType, Document, UserInteraction } from "kave-common";
+import { Composition, FileType, KaveDoc, UserInteraction } from "kave-common";
 import { useAppDispatch, useAppSelector } from "../store/hooks";
 import {
   PlaybackStateSource,
@@ -17,7 +17,7 @@ import {
   selectActiveCompositionId,
   selectCursorLocation,
   selectPlayback,
-  selectProject,
+  selectDocument,
   selectSelectionUserInteractions,
 } from "../store/store";
 import { normalizedVideoPointToScreen } from "../util/canvas-transformer";
@@ -30,7 +30,7 @@ import { normalizedVideoPointToScreen } from "../util/canvas-transformer";
 function setUpTimeline(
   videoContext: VideoContext,
   composition: Composition,
-  project: Document
+  project: KaveDoc
 ) {
   videoContext.reset();
   let duration = 0;
@@ -42,9 +42,11 @@ function setUpTimeline(
         continue;
       }
 
+      let hadVideo = false;
       for (const track of seq.tracks) {
         const trackFile = project.files.find((f) => f.id === track.fileId);
         if (trackFile?.type === FileType.video) {
+          hadVideo = true;
           // TODO: this can potentially cause issues if the track alignment causes a gap in the video.
 
           const videoNode = videoContext.video(
@@ -57,6 +59,14 @@ function setUpTimeline(
           duration += clip.durationSeconds;
           videoNode.stopAt(duration);
         }
+      }
+      if (!hadVideo) {
+        // dummy node to keep the timeline in sync
+        const imageNode = videoContext.image("blank.png");
+        imageNode.connect(videoContext.destination);
+        imageNode.startAt(duration);
+        duration += clip.durationSeconds;
+        imageNode.stopAt(duration);
       }
     } else {
       if (file.type !== FileType.video) {
@@ -86,7 +96,7 @@ function Player() {
   const [ctx, setContext] = useState<VideoContext | null>(null);
   const activeCompositionId = useAppSelector(selectActiveCompositionId);
   const playback = useAppSelector(selectPlayback);
-  const project = useAppSelector(selectProject);
+  const project = useAppSelector(selectDocument);
   const cursorLocation = useAppSelector(selectCursorLocation);
   const selectionUserInteractions = useAppSelector(selectSelectionUserInteractions);
   const [playerViewport, setPlayerViewport] = useState<PlayerViewportState>({

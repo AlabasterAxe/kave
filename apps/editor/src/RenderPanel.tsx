@@ -1,7 +1,7 @@
-import { Document, UserInteraction } from "../../../lib/common/dist";
+import { KaveDoc, UserInteraction } from "../../../lib/common/dist";
 import { useAppSelector } from "./store/hooks";
 import { getInteractionLogEventsForClip } from "./store/project";
-import { selectActiveCompositionId, selectProject } from "./store/store";
+import { selectActiveCompositionId, selectDocument } from "./store/store";
 
 function run(rqst: { events: any[]; render: boolean }) {
   
@@ -14,7 +14,7 @@ function run(rqst: { events: any[]; render: boolean }) {
     });
 }
 
-function getInteractionLogForComposition(project: Document, compositionId: string): UserInteraction[] {
+function getInteractionLogForComposition(project: KaveDoc, compositionId: string): UserInteraction[] {
   const composition = project.compositions.find((c) => c.id === compositionId);
   
   if (!composition) {
@@ -23,14 +23,14 @@ function getInteractionLogForComposition(project: Document, compositionId: strin
 
   const events: UserInteraction[] = [];
   for (const clip of composition.clips) {
-    events.push(...getInteractionLogEventsForClip(project, clip));
+    events.push(...(getInteractionLogEventsForClip(project, clip)?.log ?? []));
   }
 
   return events;
 }
 
 export function RenderPanel() {
-  const project = useAppSelector(selectProject);
+  const project = useAppSelector(selectDocument);
   const activeCompositionId = useAppSelector(selectActiveCompositionId);
 
   const render = () => {

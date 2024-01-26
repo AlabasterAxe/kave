@@ -18,19 +18,34 @@ import {
   routerSlice,
   setActiveProjectId,
   projectsSlice,
+  setTempDoc,
+  tempDocumentSlice,
+  loadInteractionFile,
 } from "./project";
 import { thunk, ThunkAction, ThunkDispatch } from "redux-thunk";
 import { selectionSlice, SelectionState, setSelection } from "./selection";
 import undoable, { ActionCreators, StateWithHistory } from "redux-undo";
 import { Trimerger } from "../persistence/trimerge-sync";
 import { create } from "jsondiffpatch";
-import { Project, Document, UserInteraction } from "kave-common";
-import { readLocalStoreProjects, upsertLocalStoreProject } from "../persistence/local-storage-utils";
+import { Project, KaveDoc, UserInteraction, FileType } from "kave-common";
+import { upsertLocalStoreProject } from "../persistence/local-storage-utils";
 
-export const selectActiveCompositionId = (state: RootState) => state.router.activeCompositionId;
-export const selectActiveProjectId = (state: RootState) => state.router.activeProjectId;
+export const selectActiveCompositionId = (state: RootState) =>
+  state.router.activeCompositionId;
+export const selectActiveProjectId = (state: RootState) =>
+  state.router.activeProjectId;
 export const selectPlayback = (state: RootState) => state.playback;
-export const selectProject = (state: RootState) => state.document.present;
+
+/** This document represents the most up-to-date document we're aware of. This includes ephemeral operations
+ *  such as the user drag operations. It should not be used to compute new states. */
+export const selectDocument = (state: RootState) =>
+  state.tempDocument ?? state.document.present;
+
+/** This document represents a version of the document that has been persisted but it may not represent
+ *  ephemeral operations such as drag events.
+ */
+export const selectPersistedDocument = (state: RootState) =>
+  state.document.present;
 export const selectProjects = (state: RootState) => state.projects;
 export const selectSelection = (state: RootState) => state.selection.selection;
 
@@ -39,14 +54,15 @@ export function selectCursorLocation(
 ): { x: number; y: number } | undefined {
   const activeCompositionId = selectActiveCompositionId(state);
   const playback = selectPlayback(state);
-  const project = selectProject(state);
+  const project = selectDocument(state);
 
   if (!activeCompositionId || !project) {
     return undefined;
   }
 
   const { clip, offset: clipPlayheadOffset } =
-    getClipForTime(project, activeCompositionId, playback.currentTimeSeconds) ?? {};
+    getClipForTime(project, activeCompositionId, playback.currentTimeSeconds) ??
+    {};
 
   if (!clip || !clipPlayheadOffset) {
     return undefined;
@@ -86,7 +102,7 @@ export function selectSelectionUserInteractions(
   state: RootState
 ): UserInteraction[] {
   const activeCompositionId = selectActiveCompositionId(state);
-  const project = selectProject(state);
+  const project = selectDocument(state);
   const selection = selectSelection(state);
 
   if (!selection || !activeCompositionId || !project) {
@@ -94,9 +110,11 @@ export function selectSelectionUserInteractions(
   }
 
   const { clip: startClip, offset: selectionStartClipOffset } =
-    getClipForTime(project, activeCompositionId, selection.startTimeSeconds) ?? {};
+    getClipForTime(project, activeCompositionId, selection.startTimeSeconds) ??
+    {};
   const { clip: endClip, offset: selectionEndClipOffset } =
-    getClipForTime(project, activeCompositionId, selection.endTimeSeconds) ?? {};
+    getClipForTime(project, activeCompositionId, selection.endTimeSeconds) ??
+    {};
 
   // TODO: this can probably be handled better
   if (
@@ -156,39 +174,72 @@ const trimerger = new Trimerger(diffPatcher);
 
 export interface RootState {
   playback: PlaybackState;
-  document: StateWithHistory<Document|null>;
+  document: StateWithHistory<KaveDoc | null>;
+  tempDocument: KaveDoc | undefined;
   router: RouterState;
   selection: SelectionState;
   projects: Record<string, Project>;
 }
 
-const projectMiddleware = (store: Store) => (next: any) => (action: Action) => {
-  const result = next(action);
-  switch (action.type) {
-    case setActiveProjectId.type:
-      if ((action as any).payload.initialize) {
-        upsertLocalStoreProject({
-          id: (action as any).payload.projectId,
-          name: "Untitled",
-        });
-      }
-      break;
-    default:
-      break;
-  }
+const sideEffectMiddleware =
+  (store: Store) => (next: any) => (action: Action) => {
+    const preState = store.getState();
+    const result = next(action);
+    const postState: RootState = store.getState();
 
-  return result;
-};
+    // if anything sets the actual document clear the temp document
+    // not sure if this is valid in a multi-user context
+    if (preState.document.present !== postState.document.present) {
+      store.dispatch(setTempDoc(undefined));
+    }
+
+    switch (action.type) {
+      case setActiveProjectId.type:
+        if ((action as any).payload.initialize) {
+          upsertLocalStoreProject({
+            id: (action as any).payload.projectId,
+            name: "Untitled",
+          });
+        }
+        break;
+      case replaceDocument.type:
+        for (const file of postState.document?.present?.files ?? []) {
+          if (
+            file.type === FileType.interaction_log &&
+            file.fileUri &&
+            !file.userInteractionLog
+          ) {
+            fetch(file.fileUri!)
+              .then((response) => response.text())
+              .then((text) => {
+                const userInteractionLog = JSON.parse(text);
+                store.dispatch(
+                  loadInteractionFile({
+                    fileId: file.id,
+                    interactionLog: { log: userInteractionLog },
+                  })
+                );
+              });
+          }
+        }
+        break;
+      default:
+        break;
+    }
+
+    return result;
+  };
 
 export const store = configureStore({
   reducer: {
     playback: playbackSlice.reducer,
-    document: undoable<Document|null>(documentSlice.reducer),
+    document: undoable<KaveDoc | null>(documentSlice.reducer),
     selection: selectionSlice.reducer,
     router: routerSlice.reducer,
     projects: projectsSlice.reducer,
+    tempDocument: tempDocumentSlice.reducer,
   },
-  middleware: [thunk, trimerger.middleware, projectMiddleware],
+  middleware: [thunk, trimerger.middleware, sideEffectMiddleware],
 } as ConfigureStoreOptions);
 
 trimerger.subscribeDoc((document) => {
@@ -208,19 +259,21 @@ export function deleteSelection({
 }): ThunkAction<void, RootState, unknown, AnyAction> {
   return (dispatch: (action: any) => void) => {
     // should only result in one combined re-render, not two
-      dispatch(
-        deleteSection({
-          compositionId: compositionId,
-          startTimeSeconds: startTimeSeconds,
-          endTimeSeconds: endTimeSeconds,
-        })
-      );
-      dispatch(setSelection(undefined));
+    dispatch(
+      deleteSection({
+        compositionId: compositionId,
+        startTimeSeconds: startTimeSeconds,
+        endTimeSeconds: endTimeSeconds,
+      })
+    );
+    dispatch(setSelection(undefined));
   };
 }
 
-
-export async function setActiveProject(dispatch: (action: any) => void, projectId: string): Promise<void> {
+export async function setActiveProject(
+  dispatch: (action: any) => void,
+  projectId: string
+): Promise<void> {
   dispatch(ActionCreators.clearHistory());
   await trimerger.setActiveProject(projectId);
   dispatch(setActiveProjectId(projectId));
@@ -256,12 +309,7 @@ export function simplifySelectedMouseInteractions({
   compositionId: string;
   startTimeSeconds: number;
   endTimeSeconds: number;
-}): ThunkAction<
-  void,
-  RootState,
-  unknown,
-  AnyAction
-> {
+}): ThunkAction<void, RootState, unknown, AnyAction> {
   return (dispatch: (action: any) => void, getState: () => RootState) => {
     dispatch(
       smoothInteractions({

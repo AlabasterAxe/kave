@@ -3,7 +3,7 @@ import { v4 as uuidv4 } from "uuid";
 import {
   Clip,
   KaveFile,
-  Document,
+  KaveDoc,
   Sequence,
   UserInteractionLog,
   FileType,
@@ -17,7 +17,7 @@ import { readLocalStoreProjects, upsertLocalStoreProject } from "../persistence/
 
 const INTERACTION_DURATION_SECONDS = 0.1;
 
-function initialProject(): Document {
+function initialProject(): KaveDoc {
   const fileId = '74340fe5-c232-4de4-803e-42fafcd6de31';
   const userInteractionLogId = 'df805f00-4df7-4787-9a5d-9f067029bb3f';
   const sequenceId = '0ed26414-999f-4c82-9810-745d3a6c9ddb';
@@ -80,7 +80,7 @@ function initialProject(): Document {
   };
 }
 
-export function blankProject(projectId: string): Document {
+export function blankProject(projectId: string): KaveDoc {
   const sequenceId = uuidv4();
   const clipId1 = uuidv4();
 
@@ -116,7 +116,7 @@ export function blankProject(projectId: string): Document {
   };
 }
 
-function newProject(): Document {
+function newProject(): KaveDoc {
   const videoFileId = 'ef0b60f4-08cd-45a1-8363-419a6dbc50dc';
   const userInteractionLogId = 'd8a111f3-8c5b-42cc-bd42-af1b059db41a';
   const sequenceId = 'e8c8e417-727c-4a8e-9e45-2a786f154010';
@@ -181,7 +181,7 @@ function newProject(): Document {
   };
 }
 
-function take_7(): Document {
+function take_7(): KaveDoc {
   const videoFileId = '1fb7df05-fb97-4d45-82f6-d01f394b2797';
   const userInteractionLogId = '4ab6a265-b9a5-44e1-83d6-f746ae023a49';
   const sequenceId = 'fb4b1d99-4104-4002-ac22-38697eedc9c8';
@@ -262,7 +262,7 @@ export interface SplitClipPayload {
 }
 
 export interface ReplaceProjectPayload {
-  project: Document;
+  project: KaveDoc;
 }
 
 export interface UpdateClipPayload {
@@ -293,13 +293,18 @@ interface ClipTighteningResult {
 }
 
 export const deleteSectionFromClips = (
-  clips: Clip[],
+  doc: KaveDoc,
+  compositionId: string,
   deletionStartTimeSeconds: number,
   deletionEndTimeSeconds: number
-): Clip[] => {
-  const newClips = [];
+): KaveDoc => {
+  const composition = doc.compositions.find((c)=>c.id === compositionId);
+  if (!composition) {
+    return doc;
+  }
+  const newClips: Clip[] = [];
   let clipStartTime = 0;
-  for (const clip of clips) {
+  for (const clip of composition.clips) {
     const clipEndTime = clipStartTime + clip.durationSeconds;
     // the clip is completely outside of the selection
     if (
@@ -343,11 +348,56 @@ export const deleteSectionFromClips = (
     }
     clipStartTime = clipEndTime;
   }
-  return newClips;
+  return {
+    ...doc,
+    compositions: doc.compositions.map((composition) => {
+      if (composition.id === doc.compositions[0].id) {
+        return { ...composition, clips: newClips };
+      } else {
+        return composition;
+      }
+    }),
+  };
 };
 
+export function updateInteractionLogOffset(state: KaveDoc, clipId: string, delta: number): KaveDoc {
+  const composition = state.compositions.find((composition) => composition.clips.find((clip) => clip.id === clipId));
+  if (!composition) {
+    console.warn("non-existent composition referenced in action payload");
+    return state;
+  }
+  const clip = composition.clips.find((clip) => clip.id === clipId);
+
+  if (!clip) {
+    console.warn("non-existent clip referenced in action payload");
+    return state;
+  }
+
+  const sequence = state.sequences.find((f) => f.id === clip.sourceId);
+
+  if (!sequence) {
+    return state;
+  }
+
+  let newTrack: Track | undefined;
+  for (const track of sequence.tracks) {
+    const file = state.files.find((f) => f.id === track.fileId);
+    if (file?.type === FileType.interaction_log) {
+      newTrack = { ...track, alignmentSeconds: track.alignmentSeconds + delta };
+      break;
+    }
+  }
+  return {
+    ...state,
+    sequences: state.sequences.filter((s) => s.id !== sequence.id).concat({
+      ...sequence,
+      tracks: sequence.tracks.filter((t) => t.id !== newTrack?.id).concat(newTrack!),
+    }),
+  }
+}
+
 export function getInteractionLogForSourceId(
-  state: Document,
+  state: KaveDoc,
   sourceId: string
 ): { file: InteractionLogFile; offset: number } | undefined {
   const sequence = state.sequences.find((f) => f.id === sourceId);
@@ -374,7 +424,7 @@ export function getInteractionLogForSourceId(
 }
 
 export function getClipForTime(
-  project: Document,
+  project: KaveDoc,
   compositionId: string,
   time: number
 ): { clip: Clip; offset: number } | undefined {
@@ -393,13 +443,16 @@ export function getClipForTime(
 }
 
 export function getInteractionLogEventsForClip(
-  project: Document,
+  project: KaveDoc,
   clip: Clip
-): UserInteraction[] {
+): {
+  log: UserInteraction[],
+  logClipOffsetSeconds: number,
+} | undefined {
   const sequence = project.sequences.find((f) => f.id === clip.sourceId);
 
   if (!sequence) {
-    return [];
+    return undefined;
   }
 
   let interactionLogFile: InteractionLogFile | undefined;
@@ -413,7 +466,7 @@ export function getInteractionLogEventsForClip(
   });
 
   if (!interactionLogFile || !track) {
-    return [];
+    return undefined;
   }
 
   const interactionLogOffset = clip.sourceOffsetSeconds - track.alignmentSeconds;
@@ -427,7 +480,10 @@ export function getInteractionLogEventsForClip(
     }
   );
 
-  return interactionLogEvents ?? [];
+  return {
+    log: interactionLogEvents ?? [],
+    logClipOffsetSeconds: interactionLogOffset,
+  };
 }
 
 /** This will replace the events in the specified range of the log file and replace them with the supplied events that occur within the specified time range.
@@ -557,10 +613,20 @@ export const projectsSlice = createSlice({
   },
 });
 
+export const tempDocumentSlice = createSlice({
+  name: "tempDocument",
+  initialState: null as KaveDoc | null,
+  reducers: {
+    setTempDoc: (state, action: PayloadAction<KaveDoc | undefined>) => {
+      return action.payload ?? null;
+    },
+  },
+});
+
 export const documentSlice = createSlice({
   name: "document",
   // This is null because undoable does something weird with undefined values when you attempt to clear the state
-  initialState: null as Document | null,
+  initialState: null as KaveDoc | null,
   reducers: {
     replaceDocument: (_, action: PayloadAction<ReplaceProjectPayload>) => {
       return action.payload.project;
@@ -693,16 +759,12 @@ export const documentSlice = createSlice({
         return state;
       }
 
-      composition.clips = deleteSectionFromClips(
-        composition.clips,
+      return deleteSectionFromClips(
+        state,
+        composition.id,
         action.payload.startTimeSeconds,
         action.payload.endTimeSeconds
       );
-      const newCompositions = state.compositions.filter(
-        (c) => c.id !== composition.id
-      );
-      newCompositions.push(composition);
-      state.compositions = newCompositions;
     },
     tightenSection: (state, action: PayloadAction<TightenSectionPayload>) => {
       if (!state) {
@@ -920,3 +982,7 @@ export const {
 export const {
   upsertProject,
 } = projectsSlice.actions;
+
+export const {
+  setTempDoc,
+} = tempDocumentSlice.actions;
