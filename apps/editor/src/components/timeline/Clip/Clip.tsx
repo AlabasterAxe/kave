@@ -6,7 +6,7 @@ import {
   TimelineViewport,
 } from "kave-common";
 import { useAppSelector } from "../../../store/hooks";
-import { selectActiveCompositionId, selectProject } from "../../../store/store";
+import { selectActiveCompositionId, selectDocument } from "../../../store/store";
 import { MultiTrackInteractionLog } from "./InteractionLog";
 import { VideoClip } from "./VideoClip";
 
@@ -22,7 +22,7 @@ interface ClipProps {
 
 // this is a pretty "smart" component that is responsible for rendering a clip and any possible sub-clips
 export default function ClipComponent(props: ClipProps) {
-  const project = useAppSelector(selectProject);
+  const document = useAppSelector(selectDocument);
   const activeCompositionId = useAppSelector(selectActiveCompositionId);
   const {
     clip,
@@ -32,12 +32,12 @@ export default function ClipComponent(props: ClipProps) {
     onInteractionDragEnd,
   } = props;
 
-  let file = project?.files.find((f: KaveFile) => f.id === clip.sourceId);
+  let file = document?.files.find((f: KaveFile) => f.id === clip.sourceId);
   if (file) {
     return <VideoClip clip={clip} />;
   }
 
-  const seq = project?.sequences.find((s: Sequence) => s.id === clip.sourceId);
+  const seq = document?.sequences.find((s: Sequence) => s.id === clip.sourceId);
   if (!seq) {
     return <div>Invalid Clip</div>;
   }
@@ -45,7 +45,7 @@ export default function ClipComponent(props: ClipProps) {
   let videoTrack = null;
   let interactionTrack = null;
   for (const track of seq.tracks) {
-    const trackFile = project?.files.find(
+    const trackFile = document?.files.find(
       (f: KaveFile) => f.id === track.fileId
     );
     if (!trackFile) {

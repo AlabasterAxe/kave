@@ -74,7 +74,7 @@ export function Timeline() {
   const [dragOperation, setDragOperation] = useState<DragOperation | null>(
     null
   );
-  const composition = project?.compositions.find(
+  const composition = doc?.compositions.find(
     (c: Composition) => c.id === activeCompositionId
   );
   const compositionDurationSeconds: number = composition
@@ -282,14 +282,7 @@ export function Timeline() {
 
   const clips = [];
   let durationSoFar = 0;
-  const timelineClips = validDragOperation(dragOperation)
-    ? deleteSectionFromClips(
-        composition.clips,
-        dragOperation.currentDragTimeSeconds,
-        dragOperation.dragStartTimeSeconds
-      )
-    : composition.clips;
-  for (const clip of timelineClips) {
+  for (const clip of composition.clips) {
     clips.push(renderClip(clip, durationSoFar));
     durationSoFar += clip.durationSeconds;
   }
@@ -301,7 +294,7 @@ export function Timeline() {
       onClick={scrubHandler}
       onWheel={zoomHandler}
     >
-      {renderTimeline(viewport, timelineClips)}
+      {renderTimeline(viewport, composition.clips)}
       <div className="h-full w-full flex relative">{clips}</div>
       {selection && renderSelection(viewport, selection)}
       {renderPlayhead(viewport, playback.currentTimeSeconds)}
