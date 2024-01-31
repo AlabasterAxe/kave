@@ -11,6 +11,7 @@ import {
   UserInteraction,
   Track,
   Project,
+  WheelEventPayload,
 } from "kave-common";
 import { readLocalStoreProjects, upsertLocalStoreProject } from "../persistence/local-storage-utils";
 
@@ -76,6 +77,12 @@ function initialProject(): KaveDoc {
         ],
       },
     ],
+    renderSettings: {
+      target: "",
+      authTarget: "",
+      username: "",
+      password: ""
+    },
   };
 }
 
@@ -112,6 +119,12 @@ export function blankProject(projectId: string): KaveDoc {
         ],
       },
     ],
+    renderSettings: {
+      target: "",
+      authTarget: "",
+      username: "",
+      password: ""
+    },
   };
 }
 
@@ -177,6 +190,12 @@ function newProject(): KaveDoc {
         ],
       },
     ],
+    renderSettings: {
+      target: "",
+      authTarget: "",
+      username: "",
+      password: ""
+    },
   };
 }
 
@@ -242,6 +261,12 @@ function take_7(): KaveDoc {
         ],
       },
     ],
+    renderSettings: {
+      target: "",
+      authTarget: "",
+      username: "",
+      password: ""
+    },
   };
 }
 
@@ -622,6 +647,41 @@ export const tempDocumentSlice = createSlice({
   },
 });
 
+function smoothWheelEvents(events: UserInteraction[]): UserInteraction[] {
+  const wheelEvents = events.filter(e=>e.type === "wheel")
+  const totalScrollDistance = wheelEvents.reduce((acc, event) => acc + (event.payload as WheelEventPayload).deltaY ?? 0, 0);
+  const selectionStartTime = wheelEvents[0].time;
+  const selectionEndTime = wheelEvents[wheelEvents.length - 1].time;
+  const timeDurationMillis = selectionEndTime - selectionStartTime;
+  const smoothedEvents: UserInteraction[] = [];
+  let eventTime = selectionStartTime;
+  const numScrollEvents = timeDurationMillis / 16.66666666;
+  const scrollPerEvent = totalScrollDistance / numScrollEvents;
+  // const timePerScrollEvent = timeDurationMillis / wheelEvents.length;
+  // for (const wheelEvent of wheelEvents) {
+  //   wheelEvent.time = eventTime;
+  //   eventTime += timePerScrollEvent;
+  //   eventTime = Math.round(eventTime);
+  // }
+  while (eventTime < selectionEndTime) {
+    
+    smoothedEvents.push({
+      time: eventTime,
+      type: "wheel",
+      x: wheelEvents[0].x,
+      y: wheelEvents[0].y,
+      payload: {
+        deltaX: 0,
+        deltaY: scrollPerEvent,
+        deltaZ: 0,
+      },
+    });
+    eventTime += 16.66666666;
+    eventTime = Math.round(eventTime);
+  }
+  return wheelEvents;
+}
+
 export const documentSlice = createSlice({
   name: "document",
   // This is null because undoable does something weird with undefined values when you attempt to clear the state
@@ -629,6 +689,12 @@ export const documentSlice = createSlice({
   reducers: {
     replaceDocument: (_, action: PayloadAction<ReplaceProjectPayload>) => {
       return action.payload.project;
+    },
+    updateRenderSettings: (state, action: PayloadAction<{ target?: string; authTarget?: string; username?: string; password?: string }>) => {
+      if (!state) {
+        return state;
+      }
+      return { ...state, renderSettings: { ...state.renderSettings, ...action.payload} };
     },
     addFileToDefaultSequence: (state, action: PayloadAction<KaveFile>) => {
       if (!state) {
@@ -638,6 +704,12 @@ export const documentSlice = createSlice({
       if (!sequence) {
         return state;
       }
+
+      // remove any existing interaction log tracks
+      if (action.payload.type === FileType.interaction_log) {
+        sequence.tracks = sequence.tracks.filter((t)=>state.files.find((f)=>f.id === t.fileId)?.type !== FileType.interaction_log);
+      }
+      
       sequence.tracks.push({
         id: uuidv4(),
         alignmentSeconds: 0,
@@ -912,7 +984,6 @@ export const documentSlice = createSlice({
           continue;
         }
 
-
         let interactionLogTrack: Track | undefined = undefined;
         let interactionLogFile: InteractionLogFile | undefined;
         for (const track of seq.tracks) {
@@ -938,7 +1009,12 @@ export const documentSlice = createSlice({
         const selectionEndClipOffsetSeconds = action.payload.endTimeSeconds - nextStartTime;
         const selectionStartInteractionOffsetSeconds = clipOffsetToInteractionLogOffset(clip, interactionLogTrack, selectionStartClipOffsetSeconds);
         const selectionEndInteractionOffsetSeconds = clipOffsetToInteractionLogOffset(clip, interactionLogTrack, selectionEndClipOffsetSeconds);
-        const newInteractionLogFile = replaceInteractionLogRange(interactionLogFile, selectionStartInteractionOffsetSeconds, selectionEndInteractionOffsetSeconds, []);
+        const sectionToSmooth = interactionLogFile.userInteractionLog?.log.filter((event) => {
+          const eventTimeSeconds = event.time / 1000;
+          return eventTimeSeconds > selectionStartInteractionOffsetSeconds && eventTimeSeconds < selectionEndInteractionOffsetSeconds;
+        });
+
+        const newInteractionLogFile = replaceInteractionLogRange(interactionLogFile, selectionStartInteractionOffsetSeconds, selectionEndInteractionOffsetSeconds, sectionToSmooth ? smoothWheelEvents(sectionToSmooth) : []);
         
         state.files = state.files.map((file) => {
           if (file.id === interactionLogFile?.id) {
@@ -978,6 +1054,7 @@ export const {
   smoothInteractions,
   addFileToDefaultSequence,
   updateInteractionLogOffsetAction,
+  updateRenderSettings,
 } = documentSlice.actions;
 
 export const {

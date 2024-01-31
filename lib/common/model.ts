@@ -11,12 +11,18 @@ export interface KeyEventPayload {
   code: string;
 }
 
+export interface WheelEventPayload {
+  deltaX: number;
+  deltaY: number;
+  deltaZ: number;
+}
+
 export interface UserInteraction {
   time: number;
   type: string;
   x?: number;
   y?: number;
-  payload?: KeyEventPayload;
+  payload?: KeyEventPayload | WheelEventPayload;
 }
 
 export interface UserInteractionLog {
@@ -83,6 +89,12 @@ export type KaveDoc = Readonly<{
   files: KaveFile[];
   sequences: Sequence[];
   compositions: Composition[];
+  renderSettings: {
+    target: string;
+    authTarget: string;
+    username: string;
+    password: string;
+  }
 }>;
 
 export type Project = Readonly<{

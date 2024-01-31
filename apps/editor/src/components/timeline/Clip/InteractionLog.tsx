@@ -2,9 +2,10 @@ import { useEffect, useRef, useState } from "react";
 import { DraggableCore } from "react-draggable";
 import {
   InteractionLogFile,
+  KeyEventPayload,
   TimelineViewport,
   UserInteraction,
-} from "../../../../../../lib/common/dist";
+} from "kave-common";
 import { useAppDispatch, useAppSelector } from "../../../store/hooks";
 import { loadInteractionFile } from "../../../store/project";
 import { setSelection } from "../../../store/selection";
@@ -66,8 +67,9 @@ function InteractionHandle(props: InteractionHandleProps) {
   let displayText = "";
 
   for (const userInteraction of userInteractions) {
-    if (userInteraction.type === "keyup" && userInteraction.payload?.key) {
-      switch (userInteraction.payload.key) {
+    const key = (userInteraction.payload as KeyEventPayload)?.key
+    if (userInteraction.type === "keyup" && key) {
+      switch (key) {
         case "Backspace":
           displayText += "‹";
           break;
@@ -78,10 +80,12 @@ function InteractionHandle(props: InteractionHandleProps) {
           displayText += "⇧";
           break;
         default:
-          displayText += userInteraction.payload.key;
+          displayText += key;
       }
     } else if (userInteraction.type === "mousemove" && !displayText) {
       displayText = "Mouse Move";
+    } else if (userInteraction.type === "wheel" && !displayText) {
+      displayText = "Scroll";
     }
   }
 
@@ -186,7 +190,7 @@ function MouseInteractionLog(props: InteractionLogProps) {
   const visibleUserInteractions = log.filter((interaction) => {
     const interactionTime = interaction.time / 1000 - startTime + offsetSeconds;
     return (
-      interaction.type === "mousemove" &&
+      interaction.type === "wheel" &&
       interactionTime >= 0 &&
       interactionTime < clipDurationSeconds &&
       clipStartTimeSeconds + interactionTime > viewport.startTimeSeconds &&

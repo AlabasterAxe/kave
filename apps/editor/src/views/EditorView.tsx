@@ -4,13 +4,16 @@ import { v4 as uuidv4 } from "uuid";
 import { RenderPanel } from "../RenderPanel";
 import Player from "../components/Player";
 import { Timeline } from "../components/timeline/Timeline";
-import { useAppDispatch } from "../store/hooks";
-import { setActiveProject } from "../store/store";
+import { useAppDispatch, useAppSelector } from "../store/hooks";
+import { selectPersistedDocument, setActiveProject } from "../store/store";
 import FileDropZone, { FileDropEvent } from "../components/EventLogDropZone";
-import { addFileToDefaultSequence } from "../store/project";
+import { addFileToDefaultSequence, replaceDocument } from "../store/project";
+import JsonEditor from "../components/JsonEditor";
+import { TextContent } from "vanilla-jsoneditor";
 
 function EditorView() {
   const { id } = useParams();
+  const persistedDoc = useAppSelector(selectPersistedDocument);
   const dispatch = useAppDispatch();
 
   useEffect(
@@ -40,6 +43,12 @@ function EditorView() {
       <div className="right-0 top-0 absolute">
         <RenderPanel />
       </div>
+      <div className="left-0 top-0 w-96 absolute h-full">
+      <JsonEditor content={{json: persistedDoc ?? {}}} onChange={(content)=>{
+        if ((content as TextContent).text) {
+          dispatch(replaceDocument({project: JSON.parse((content as TextContent).text)}));
+        }
+      }}/></div>
       <FileDropZone onFileDrop={handleFileDrop}/>
     </div>
   );
