@@ -87,6 +87,8 @@ function InteractionHandle(props: InteractionHandleProps) {
       displayText = "Mouse Move";
     } else if (userInteraction.type === "wheel" && !displayText) {
       displayText = "Scroll";
+    } else if (userInteraction.type === "mouseup" && !displayText) {
+      displayText = "Click";
     }
   }
 
@@ -143,6 +145,7 @@ export interface InteractionLogProps {
 export function MultiTrackInteractionLog(props: InteractionLogProps) {
   return (
     <>
+      <InteractionTrack {...props} interactionType="mouseup" trackNumber={0} />
       <InteractionTrack {...props} interactionType="keydown" trackNumber={1} />
       <InteractionTrack {...props} interactionType="keyup" trackNumber={2} />
       <InteractionTrack {...props} interactionType="mousemove" trackNumber={3} />

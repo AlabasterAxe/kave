@@ -156,21 +156,22 @@ export function RenderPanel() {
         </tr>
         <tr>
           <td className="font-bold">Magnification:</td>
-          <td><input
+          <td><select
           className="border-2 border-black"
-          type="number"
           value={magnification}
-          min={1}
-          max={2}
           onInput={(e) => {
-            setMagnification(Number((e.target as HTMLInputElement).value));
+            setMagnification(Number((e.target as HTMLSelectElement).value));
           }}
           onChange={(e) => {
             dispatch(updateRenderSettings(
-              {magnification: Number((e.target as HTMLInputElement).value)}
+              {magnification: Number((e.target as HTMLSelectElement).value)}
             ));
           }}
-           /></td>
+           >
+            <option value="1">1x</option>
+            <option value="2">2x</option>
+            <option value="2.5">2.5x</option>
+            </select></td>
         </tr>
       </table>
 

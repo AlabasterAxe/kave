@@ -279,6 +279,19 @@ const ZOOM_200_PERCENT = 3.8017840169239308;
 const ZOOM_400_PERCENT = 7.6035680338478615;
 const ZOOM_500_PERCENT = 8.827469119589406;
 
+function getZoomLevel(magnification: number) {
+  switch (magnification) {
+    case 1:
+      return ZOOM_200_PERCENT;
+    case 2:
+      return ZOOM_400_PERCENT;
+    case 2.5:
+      return ZOOM_500_PERCENT;
+    default:
+      return ZOOM_200_PERCENT;
+  }
+}
+
 async function run({
   events,
   render,
@@ -296,10 +309,11 @@ async function run({
     width: render ? 2560 * magnification : 2560,
     height: (render ? 1440 * magnification : 1440) + 85,
   });
+
   opts.setUserPreferences({
     partition: {
       default_zoom_level: {
-        x: render ? ZOOM_200_PERCENT * magnification : ZOOM_200_PERCENT,
+        x: render ? getZoomLevel(magnification) : ZOOM_200_PERCENT,
       },
     },
   });
