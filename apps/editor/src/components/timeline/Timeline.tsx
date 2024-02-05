@@ -14,7 +14,7 @@ import {
   updateInteractionLogOffset,
   updateInteractionLogOffsetAction,
 } from "../../store/project";
-import { Selection } from "../../store/selection";
+import { Selection, setSelection } from "../../store/selection";
 import {
   selectActiveCompositionId,
   selectDocument,
@@ -111,15 +111,25 @@ export function Timeline() {
   const scrubHandler = (e: any) => {
     const rect = e.currentTarget.getBoundingClientRect();
     const x = e.clientX - rect.left; //x position within the element.
+    const clickTime = Math.max(0, transformToTimeline(viewport, x / rect.width));
+    const previousCurrentTime = playback.currentTimeSeconds;
     dispatch(
       updatePlayhead({
         currentTimeSeconds: Math.min(
-          Math.max(0, transformToTimeline(viewport, x / rect.width)),
+          clickTime,
           compositionDurationSeconds
         ),
         source: PlaybackStateSource.timeline,
       })
     );
+    if (e.shiftKey) {
+      dispatch(
+        setSelection({
+          startTimeSeconds: Math.min(clickTime, previousCurrentTime),
+          endTimeSeconds: Math.max(clickTime, previousCurrentTime),
+        })
+      );
+    }
   };
 
   const zoomHandler = (e: any) => {
