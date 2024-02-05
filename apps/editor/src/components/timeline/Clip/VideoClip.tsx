@@ -9,8 +9,8 @@ export function VideoClip(props: VideoClipProps) {
   const { clip, interaction = false } = props;
   const style = interaction
     ? {
-        height: "66.7%",
-        top: "33.3%",
+        height: `${1/6 * 100}%`,
+        top: `${5/6 * 100}%`,
       }
     : {};
   return (

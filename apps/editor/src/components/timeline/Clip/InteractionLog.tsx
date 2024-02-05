@@ -1,15 +1,16 @@
 import { useEffect, useRef, useState } from "react";
 import { DraggableCore } from "react-draggable";
 import {
+  Clip,
   InteractionLogFile,
   KeyEventPayload,
   TimelineViewport,
   UserInteraction,
+  getInteractionLogEventsForClip,
 } from "kave-common";
 import { useAppDispatch, useAppSelector } from "../../../store/hooks";
-import { loadInteractionFile } from "../../../store/project";
 import { setSelection } from "../../../store/selection";
-import { selectSelection } from "../../../store/store";
+import { selectDocument, selectSelection } from "../../../store/store";
 import {
   scaleToScreen,
   transformToScreen,
@@ -32,7 +33,7 @@ interface InteractionHandleProps {
   userInteractions: UserInteraction[];
   viewport: TimelineViewport;
   clipStartTimeSeconds: number;
-  bottomTrack?: boolean;
+  trackNumber: number;
   clipId: string;
 }
 
@@ -56,7 +57,7 @@ function InteractionHandle(props: InteractionHandleProps) {
     transform: `translateX(${scaleToScreen(
       viewport,
       interactionStartTime
-    )}vw) ${props.bottomTrack ? `translateY(100%)` : ""}`,
+    )}vw) translateY(${props.trackNumber * 100}%)`,
     cursor: "grab",
     width: `calc(${scaleToScreen(
       viewport,
@@ -68,7 +69,7 @@ function InteractionHandle(props: InteractionHandleProps) {
 
   for (const userInteraction of userInteractions) {
     const key = (userInteraction.payload as KeyEventPayload)?.key
-    if (userInteraction.type === "keyup" && key) {
+    if ((userInteraction.type === "keyup" || userInteraction.type === "keydown") && key) {
       switch (key) {
         case "Backspace":
           displayText += "‹";
@@ -95,7 +96,6 @@ function InteractionHandle(props: InteractionHandleProps) {
         className={[
           "h-full",
           "border",
-          "border-b-0",
           "border-gray-300",
           "bg-white",
           "absolute",
@@ -128,14 +128,13 @@ function InteractionHandle(props: InteractionHandleProps) {
 export interface InteractionLogProps {
   // TODO: it's kind of gross how many props we need to pass into this component, potentially we should be passing it the whole clip or getting more
   // stuff from state
-  offsetSeconds: number;
+  clipCompositionOffset: number;
   viewport: TimelineViewport;
   compositionId: string;
   clipStartTimeSeconds: number;
   clipDurationSeconds: number;
   timelineElement: HTMLElement;
-  clipId: string;
-  file: InteractionLogFile;
+  clip: Clip;
   onDragStart: (event: DragStartEvent) => void;
   onDragUpdate: (delta: number) => void;
   onDragEnd: () => void;
@@ -144,53 +143,41 @@ export interface InteractionLogProps {
 export function MultiTrackInteractionLog(props: InteractionLogProps) {
   return (
     <>
-      <KeyboardInteractionLog {...props} />
-      <MouseInteractionLog {...props} />
+      <InteractionTrack {...props} interactionType="keydown" trackNumber={1} />
+      <InteractionTrack {...props} interactionType="keyup" trackNumber={2} />
+      <InteractionTrack {...props} interactionType="mousemove" trackNumber={3} />
+      <InteractionTrack {...props} interactionType="wheel" trackNumber={4} />
     </>
   );
 }
 
-function MouseInteractionLog(props: InteractionLogProps) {
+function InteractionTrack(props: InteractionLogProps & { interactionType: string, trackNumber: number}) {
   const selection = useAppSelector(selectSelection);
+  const doc = useAppSelector(selectDocument);
   const {
-    file,
-    offsetSeconds,
+    clipCompositionOffset,
     viewport,
     clipDurationSeconds,
     onDragStart,
     onDragUpdate,
     onDragEnd,
     timelineElement,
-    clipId,
+    clip,
     clipStartTimeSeconds,
   } = props;
   const dispatch = useAppDispatch();
-  useEffect(() => {
-    if (!file.userInteractionLog) {
-      // TODO: handle the situation where the file doesn't have a uri.
-      fetch(file.fileUri!)
-        .then((response) => response.text())
-        .then((text) => {
-          const userInteractionLog = JSON.parse(text);
-          dispatch(
-            loadInteractionFile({
-              fileId: file.id,
-              interactionLog: { log: userInteractionLog },
-            })
-          );
-        });
-    }
-  }, [dispatch, file]);
 
-  if (!file.userInteractionLog) {
+  const log = getInteractionLogEventsForClip(doc, clip) ?? {}; 
+
+
+  if (!log) {
     return <>Loading...</>;
   }
-  const log = file.userInteractionLog!.log;
-  const startTime = log[0].time / 1000;
-  const visibleUserInteractions = log.filter((interaction) => {
-    const interactionTime = interaction.time / 1000 - startTime + offsetSeconds;
+
+  const visibleUserInteractions = log.filter((interaction: UserInteraction) => {
+    const interactionTime = interaction.time / 1000;
     return (
-      interaction.type === "wheel" &&
+      interaction.type === props.interactionType &&
       interactionTime >= 0 &&
       interactionTime < clipDurationSeconds &&
       clipStartTimeSeconds + interactionTime > viewport.startTimeSeconds &&
@@ -202,10 +189,10 @@ function MouseInteractionLog(props: InteractionLogProps) {
   let currentCluster: UserInteraction[] = [];
   let prevInteractionScreenPosition = null;
   for (const interaction of visibleUserInteractions) {
-    const interactionTime = interaction.time / 1000 - startTime + offsetSeconds;
+    const interactionTimeSeconds = interaction.time / 1000;
     const interactionScreenPosition = transformToScreen(
       viewport,
-      interactionTime
+      interactionTimeSeconds
     );
     if (
       !prevInteractionScreenPosition ||
@@ -226,7 +213,7 @@ function MouseInteractionLog(props: InteractionLogProps) {
   const userInteractionDom = coalescedInteractions.map(
     (interactionCluster: UserInteraction[], index: number) => {
       const interactionStartTime =
-        interactionCluster[0].time / 1000 - startTime + offsetSeconds;
+        interactionCluster[0].time / 1000;
 
       const minEndTime =
         interactionStartTime + MIN_INTERACTION_DURATION_SECONDS;
@@ -236,15 +223,11 @@ function MouseInteractionLog(props: InteractionLogProps) {
       const nextStartTime =
         index === coalescedInteractions.length - 1
           ? Infinity
-          : coalescedInteractions[index + 1][0].time / 1000 -
-            startTime +
-            offsetSeconds;
+          : coalescedInteractions[index + 1][0].time / 1000;
 
       const interactionEndTime = Math.min(
         Math.max(
-          interactionCluster[interactionCluster.length - 1].time / 1000 -
-            startTime +
-            offsetSeconds,
+          interactionCluster[interactionCluster.length - 1].time / 1000,
           minEndTime
         ),
         nextStartTime
@@ -252,154 +235,11 @@ function MouseInteractionLog(props: InteractionLogProps) {
 
       return (
         <InteractionHandle
-          bottomTrack={true}
-          key={`${clipId}-${interactionCluster[0].time}`}
+          trackNumber={props.trackNumber}
+          key={`${clip.id}-${interactionCluster[0].time}`}
           interactionStartTime={interactionStartTime}
           interactionEndTime={interactionEndTime}
-          clipId={clipId}
-          onDragEnd={onDragEnd}
-          onDragStart={onDragStart}
-          onDragUpdate={onDragUpdate}
-          onClick={(e) => {
-            if (e.shiftKey && selection) {
-              dispatch(
-                setSelection({
-                  startTimeSeconds: Math.min(
-                    selection.startTimeSeconds,
-                    clipStartTimeSeconds + interactionStartTime
-                  ),
-                  endTimeSeconds: Math.max(
-                    selection.endTimeSeconds,
-                    clipStartTimeSeconds + interactionEndTime
-                  ),
-                })
-              );
-            } else {
-              dispatch(
-                setSelection({
-                  startTimeSeconds: clipStartTimeSeconds + interactionStartTime,
-                  endTimeSeconds: clipStartTimeSeconds + interactionEndTime,
-                })
-              );
-            }
-          }}
-          timelineElement={timelineElement}
-          userInteractions={interactionCluster}
-          viewport={viewport}
-          clipStartTimeSeconds={clipStartTimeSeconds}
-        />
-      );
-    }
-  );
-  return <>{userInteractionDom}</>;
-}
-
-function KeyboardInteractionLog(props: InteractionLogProps) {
-  const selection = useAppSelector(selectSelection);
-  const {
-    file,
-    offsetSeconds,
-    viewport,
-    clipDurationSeconds,
-    onDragStart,
-    onDragUpdate,
-    onDragEnd,
-    timelineElement,
-    clipId,
-    clipStartTimeSeconds,
-  } = props;
-  const dispatch = useAppDispatch();
-  useEffect(() => {
-    if (!file.userInteractionLog) {
-      // TODO: handle the situation where the file doesn't have a uri.
-      fetch(file.fileUri!)
-        .then((response) => response.text())
-        .then((text) => {
-          const userInteractionLog = JSON.parse(text);
-          dispatch(
-            loadInteractionFile({
-              fileId: file.id,
-              interactionLog: { log: userInteractionLog },
-            })
-          );
-        });
-    }
-  }, [dispatch, file]);
-
-  if (!file.userInteractionLog) {
-    return <>Loading...</>;
-  }
-  const log = file.userInteractionLog!.log;
-  const startTime = log[0].time / 1000;
-  const visibleUserInteractions = log.filter((interaction) => {
-    const interactionTime = interaction.time / 1000 - startTime + offsetSeconds;
-    return (
-      interaction.type === "keyup" &&
-      interactionTime >= 0 &&
-      interactionTime < clipDurationSeconds &&
-      clipStartTimeSeconds + interactionTime > viewport.startTimeSeconds &&
-      clipStartTimeSeconds + interactionTime < viewport.endTimeSeconds
-    );
-  });
-
-  const coalescedInteractions: UserInteraction[][] = [];
-  let currentCluster: UserInteraction[] = [];
-  let prevInteractionScreenPosition = null;
-  for (const interaction of visibleUserInteractions) {
-    const interactionTime = interaction.time / 1000 - startTime + offsetSeconds;
-    const interactionScreenPosition = transformToScreen(
-      viewport,
-      interactionTime
-    );
-    if (
-      !prevInteractionScreenPosition ||
-      interactionScreenPosition - prevInteractionScreenPosition <
-        COALESCING_THRESHOLD
-    ) {
-      currentCluster.push(interaction);
-    } else {
-      coalescedInteractions.push(currentCluster);
-      currentCluster = [interaction];
-    }
-    prevInteractionScreenPosition = interactionScreenPosition;
-  }
-  if (currentCluster.length) {
-    coalescedInteractions.push(currentCluster);
-  }
-
-  const userInteractionDom = coalescedInteractions.map(
-    (interactionCluster: UserInteraction[], index: number) => {
-      const interactionStartTime =
-        interactionCluster[0].time / 1000 - startTime + offsetSeconds;
-
-      const minEndTime =
-        interactionStartTime + MIN_INTERACTION_DURATION_SECONDS;
-
-      // if the next interaction of the is close than MIN_INTERACTION_DURATION_SECONDS
-      // we make it as wide as the gap between the interaction time and the next interaction.
-      const nextStartTime =
-        index === coalescedInteractions.length - 1
-          ? Infinity
-          : coalescedInteractions[index + 1][0].time / 1000 -
-            startTime +
-            offsetSeconds;
-
-      const interactionEndTime = Math.min(
-        Math.max(
-          interactionCluster[interactionCluster.length - 1].time / 1000 -
-            startTime +
-            offsetSeconds,
-          minEndTime
-        ),
-        nextStartTime
-      );
-
-      return (
-        <InteractionHandle
-          key={`${clipId}-${interactionCluster[0].time}`}
-          clipId={clipId}
-          interactionStartTime={interactionStartTime}
-          interactionEndTime={interactionEndTime}
+          clipId={clip.id}
           onDragEnd={onDragEnd}
           onDragStart={onDragStart}
           onDragUpdate={onDragUpdate}

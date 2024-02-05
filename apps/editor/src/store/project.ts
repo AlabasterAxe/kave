@@ -12,6 +12,7 @@ import {
   Track,
   Project,
   WheelEventPayload,
+  RenderSettings,
 } from "kave-common";
 import { readLocalStoreProjects, upsertLocalStoreProject } from "../persistence/local-storage-utils";
 
@@ -81,7 +82,8 @@ function initialProject(): KaveDoc {
       target: "",
       authTarget: "",
       username: "",
-      password: ""
+      password: "",
+      magnification: 1,
     },
   };
 }
@@ -123,7 +125,8 @@ export function blankProject(projectId: string): KaveDoc {
       target: "",
       authTarget: "",
       username: "",
-      password: ""
+      password: "",
+      magnification: 1,
     },
   };
 }
@@ -194,7 +197,8 @@ function newProject(): KaveDoc {
       target: "",
       authTarget: "",
       username: "",
-      password: ""
+      password: "",
+      magnification: 1,
     },
   };
 }
@@ -265,7 +269,8 @@ function take_7(): KaveDoc {
       target: "",
       authTarget: "",
       username: "",
-      password: ""
+      password: "",
+      magnification: 1,
     },
   };
 }
@@ -420,95 +425,7 @@ export function updateInteractionLogOffset(state: KaveDoc, clipId: string, delta
   }
 }
 
-export function getInteractionLogForSourceId(
-  state: KaveDoc,
-  sourceId: string
-): { file: InteractionLogFile; offset: number } | undefined {
-  const sequence = state.sequences.find((f) => f.id === sourceId);
 
-  if (!sequence) {
-    return undefined;
-  }
-
-  let interactionLogFile: InteractionLogFile | undefined;
-  const track = sequence.tracks.find((t) => {
-    const file = state.files.find((f) => f.id === t.fileId);
-    if (file?.type === FileType.interaction_log) {
-      interactionLogFile = file;
-      return true;
-    }
-    return false;
-  });
-
-  if (!interactionLogFile || !track) {
-    return undefined;
-  }
-
-  return { file: interactionLogFile, offset: track.alignmentSeconds };
-}
-
-export function getClipForTime(
-  project: KaveDoc,
-  compositionId: string,
-  time: number
-): { clip: Clip; offset: number } | undefined {
-  const comp = project.compositions.find((c) => c.id === compositionId);
-  if (!comp) {
-    return undefined;
-  }
-  let curTime = 0;
-  for (const clip of comp.clips) {
-    if (curTime + clip.durationSeconds > time) {
-      return { clip, offset: time - curTime };
-    }
-    curTime += clip.durationSeconds;
-  }
-  return undefined;
-}
-
-export function getInteractionLogEventsForClip(
-  project: KaveDoc,
-  clip: Clip
-): {
-  log: UserInteraction[],
-  logClipOffsetSeconds: number,
-} | undefined {
-  const sequence = project.sequences.find((f) => f.id === clip.sourceId);
-
-  if (!sequence) {
-    return undefined;
-  }
-
-  let interactionLogFile: InteractionLogFile | undefined;
-  const track = sequence.tracks.find((t) => {
-    const file = project.files.find((f) => f.id === t.fileId);
-    if (file?.type === FileType.interaction_log) {
-      interactionLogFile = file;
-      return true;
-    }
-    return false;
-  });
-
-  if (!interactionLogFile || !track) {
-    return undefined;
-  }
-
-  const interactionLogOffset = clip.sourceOffsetSeconds - track.alignmentSeconds;
-  const interactionLogEvents = interactionLogFile.userInteractionLog?.log.filter(
-    (event) => {
-      const eventTimeSeconds = event.time / 1000;
-      return (
-        eventTimeSeconds >= interactionLogOffset &&
-        eventTimeSeconds <= interactionLogOffset + clip.durationSeconds
-      );
-    }
-  );
-
-  return {
-    log: interactionLogEvents ?? [],
-    logClipOffsetSeconds: interactionLogOffset,
-  };
-}
 
 /** This will replace the events in the specified range of the log file and replace them with the supplied events that occur within the specified time range.
  *  It doesn't attempt to do anything clever with the timestamps of the incoming events so it's possible that the new events will overlap with the old ones. 
@@ -679,7 +596,7 @@ function smoothWheelEvents(events: UserInteraction[]): UserInteraction[] {
     eventTime += 16.66666666;
     eventTime = Math.round(eventTime);
   }
-  return wheelEvents;
+  return smoothedEvents;
 }
 
 export const documentSlice = createSlice({
@@ -690,7 +607,7 @@ export const documentSlice = createSlice({
     replaceDocument: (_, action: PayloadAction<ReplaceProjectPayload>) => {
       return action.payload.project;
     },
-    updateRenderSettings: (state, action: PayloadAction<{ target?: string; authTarget?: string; username?: string; password?: string }>) => {
+    updateRenderSettings: (state, action: PayloadAction<Partial<RenderSettings>>) => {
       if (!state) {
         return state;
       }

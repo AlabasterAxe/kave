@@ -5,4 +5,5 @@ export interface RunRequest {
   username?: string;
   password?: string;
   authTarget?: string;
+  magnification?: number;
 }

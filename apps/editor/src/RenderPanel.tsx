@@ -1,7 +1,7 @@
+import { RunRequest, getInteractionLogEventsForComposition } from "kave-common";
 import { useEffect, useState } from "react";
-import { KaveDoc, RunRequest, UserInteraction } from "kave-common";
 import { useAppDispatch, useAppSelector } from "./store/hooks";
-import { getInteractionLogEventsForClip, updateRenderSettings } from "./store/project";
+import { updateRenderSettings } from "./store/project";
 import { selectActiveCompositionId, selectDocument } from "./store/store";
 
 function run(rqst: RunRequest) {
@@ -14,24 +14,6 @@ function run(rqst: RunRequest) {
   });
 }
 
-function getInteractionLogForComposition(
-  project: KaveDoc,
-  compositionId: string
-): UserInteraction[] {
-  const composition = project.compositions.find((c) => c.id === compositionId);
-
-  if (!composition) {
-    throw new Error(`Composition ${compositionId} not found`);
-  }
-
-  const events: UserInteraction[] = [];
-  for (const clip of composition.clips) {
-    events.push(...(getInteractionLogEventsForClip(project, clip)?.log ?? []));
-  }
-
-  return events;
-}
-
 export function RenderPanel() {
   const project = useAppSelector(selectDocument);
   const activeCompositionId = useAppSelector(selectActiveCompositionId);
@@ -40,6 +22,7 @@ export function RenderPanel() {
   const [username, setUsername] = useState<string>(project?.renderSettings?.username ?? "");
   const [password, setPassword] = useState<string>(project?.renderSettings?.password ?? "");
   const [authTarget, setAuthTarget] = useState<string>(project?.renderSettings?.authTarget ?? "");
+  const [magnification, setMagnification] = useState<number>(project?.renderSettings?.magnification ?? 1);
 
   useEffect(()=>{
     if (project?.renderSettings?.target) {
@@ -76,12 +59,13 @@ export function RenderPanel() {
   const render = () => {
     if (activeCompositionId && project) {
       run({
-        events: getInteractionLogForComposition(project, activeCompositionId),
+        events: getInteractionLogEventsForComposition(project, activeCompositionId),
         render: true,
         target,
         authTarget,
         username,
         password,
+        magnification,
       });
     }
   };
@@ -89,7 +73,7 @@ export function RenderPanel() {
   const preview = () => {
     if (activeCompositionId && project) {
       run({
-        events: getInteractionLogForComposition(project, activeCompositionId),
+        events: getInteractionLogEventsForComposition(project, activeCompositionId),
         render: false,
         target,
         authTarget,
@@ -167,6 +151,24 @@ export function RenderPanel() {
             dispatch(updateRenderSettings(
               {password: (e.target as HTMLInputElement).value,}
             ))
+          }}
+           /></td>
+        </tr>
+        <tr>
+          <td className="font-bold">Magnification:</td>
+          <td><input
+          className="border-2 border-black"
+          type="number"
+          value={magnification}
+          min={1}
+          max={2}
+          onInput={(e) => {
+            setMagnification(Number((e.target as HTMLInputElement).value));
+          }}
+          onChange={(e) => {
+            dispatch(updateRenderSettings(
+              {magnification: Number((e.target as HTMLInputElement).value)}
+            ));
           }}
            /></td>
         </tr>

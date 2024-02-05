@@ -20,8 +20,8 @@ export interface WheelEventPayload {
 export interface UserInteraction {
   time: number;
   type: string;
-  x?: number;
-  y?: number;
+  x: number;
+  y: number;
   payload?: KeyEventPayload | WheelEventPayload;
 }
 
@@ -83,18 +83,21 @@ export type Composition = Readonly<{
   resolution: {x: number, y: number};
 }>;
 
+export type RenderSettings = Readonly<{
+    target: string;
+    authTarget: string;
+    username: string;
+    password: string;
+    magnification: number;
+}>;
+
 export type KaveDoc = Readonly<{
   id: string;
   name: string;
   files: KaveFile[];
   sequences: Sequence[];
   compositions: Composition[];
-  renderSettings: {
-    target: string;
-    authTarget: string;
-    username: string;
-    password: string;
-  }
+  renderSettings: RenderSettings;
 }>;
 
 export type Project = Readonly<{

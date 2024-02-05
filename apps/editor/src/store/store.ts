@@ -11,8 +11,6 @@ import {
   documentSlice,
   tightenSection,
   replaceDocument,
-  getClipForTime,
-  getInteractionLogForSourceId,
   smoothInteractions,
   RouterState,
   routerSlice,
@@ -27,7 +25,7 @@ import { selectionSlice, SelectionState, setSelection } from "./selection";
 import undoable, { ActionCreators, StateWithHistory } from "redux-undo";
 import { Trimerger } from "../persistence/trimerge-sync";
 import { create } from "jsondiffpatch";
-import { Project, KaveDoc, UserInteraction, FileType } from "kave-common";
+import { Project, KaveDoc, UserInteraction, FileType, getClipForTime, getInteractionLogForSourceId } from "kave-common";
 import { upsertLocalStoreProject } from "../persistence/local-storage-utils";
 
 export const selectActiveCompositionId = (state: RootState) =>

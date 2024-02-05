@@ -36,7 +36,7 @@ newDiv.appendChild(document.importNode(doc.documentElement, true));
 document.body.appendChild(newDiv);
 
 document.addEventListener("mousemove", (e) => {
-  newDiv.style.left = e.clientX + "px";
-  newDiv.style.top = e.clientY + "px";
+  newDiv.style.left = e.pageX + "px";
+  newDiv.style.top = e.pageY + "px";
 });
 `

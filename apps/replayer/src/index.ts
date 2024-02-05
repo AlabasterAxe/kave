@@ -7,7 +7,7 @@ import express from "express";
 import fileUpload from "express-fileupload";
 import bodyParser from "body-parser";
 import cors from "cors";
-import { RunRequest, UserInteraction } from "kave-common";
+import { RunRequest, UserInteraction, WheelEventPayload } from "kave-common";
 import "isomorphic-fetch";
 import { FALSE_CURSOR_CODE } from "./false-cursor";
 
@@ -34,12 +34,20 @@ function getKey(key: string): any {
       return Key.BACK_SPACE;
     case "Tab":
       return Key.TAB;
+    case "ArrowLeft":
+      return Key.ARROW_LEFT;
+    case "ArrowRight":
+      return Key.ARROW_RIGHT;
+    case "ArrowUp":
+      return Key.ARROW_UP;
+    case "ArrowDown":
+      return Key.ARROW_DOWN;
     default:
       return key;
   }
 }
 
-async function performEvent(driver: WebDriver, event: any) {
+async function performEvent(driver: WebDriver, event: any, {browserZoom}: {browserZoom: number}) {
   switch (event.type) {
     case "mousemove":
       await driver
@@ -61,9 +69,11 @@ async function performEvent(driver: WebDriver, event: any) {
     case "wheel":
         await (driver
           .actions() as any)
-          .scroll(event.x, event.y, event.payload.deltaX, event.payload.deltaY * 1.5)
+          .scroll(0, 0, Math.round(event.payload.deltaX * browserZoom), Math.round(event.payload.deltaY * browserZoom))
           .perform()
-          .catch(() => {});
+          .catch((e: any) => {
+            console.log("bad?", e);
+          });
         break;
     case "mouseup":
       await driver
@@ -109,10 +119,56 @@ function interpolate(controlPoint1: UserInteraction, controlPoint2: UserInteract
   };
 }
 
+function simplifyEvents(events: UserInteraction[]) {
+  const result = [];
+
+  let currentEventTypeStreak: string | undefined; 
+  let acc: UserInteraction | undefined;
+  for (const event of events) {
+    switch (event.type) {
+      case "mousemove":
+        if (currentEventTypeStreak === "mousemove") {
+          acc = event;
+        } else {
+          if (acc) {
+            result.push(acc);
+          }
+          acc = event;
+          currentEventTypeStreak = "mousemove";
+        }
+        break;
+      case "wheel":
+        if (currentEventTypeStreak === "wheel") {
+          acc = { ...acc!, payload: { deltaX: (acc!.payload as WheelEventPayload).deltaX + (event.payload as WheelEventPayload).deltaX, deltaY: (acc!.payload as WheelEventPayload).deltaY + (event.payload as WheelEventPayload).deltaY, deltaZ: (acc!.payload as WheelEventPayload).deltaZ + (event.payload as WheelEventPayload).deltaZ } };
+        } else {
+          if (acc) {
+            result.push(acc);
+          }
+          acc = event;
+          currentEventTypeStreak = "wheel";
+        }
+        break;
+      default:
+        if (acc) {
+          result.push(acc);
+        }
+        acc = undefined;
+        currentEventTypeStreak = undefined;
+        result.push(event);
+    }
+
+  }
+  if (acc) {
+    result.push(acc);
+  }
+
+  return result;
+}
+
 async function processEvents(
   driver: WebDriver,
   events: any[],
-  { render }: { render: boolean }
+  { render, magnification = 1 }: { render: boolean, magnification?: number }
 ) {
   let totalEventsPerformed = 0;
   let currentTime = 0;
@@ -136,20 +192,26 @@ async function processEvents(
   while (eventIndex < events.length) {
     let eventsPerformed = 0;
     let performedMouseMove = false;
+    const eventsToPerform = [];
     while (
       currentEvent &&
       currentTime > currentEvent.time - initialEvent.time
     ) {
-      await performEvent(driver, currentEvent);
+      eventsToPerform.push(currentEvent);
+      currentEvent = events[eventIndex++];
+    }
+
+    for (const event of simplifyEvents(eventsToPerform)) {
+      await performEvent(driver, event, {browserZoom: 2 * magnification});
       totalEventsPerformed++;
       eventsPerformed++;
-      currentEvent = events[eventIndex++];
       if (currentEvent?.type === "mousemove") {
         prevPrevMouseMoveEvent = prevMouseMoveEvent;
         prevMouseMoveEvent = currentEvent;
         performedMouseMove = true;
       }
     }
+
     if (!performedMouseMove && prevMouseMoveEvent) {
       let nextMouseMoveEvent: UserInteraction | undefined;
       let nextNextMouseMoveEvent: UserInteraction | undefined;
@@ -169,7 +231,7 @@ async function processEvents(
         const lastControlPoint = nextNextMouseMoveEvent ?? nextMouseMoveEvent;
         const t = (currentTime - firstControlPoint.time) / (lastControlPoint.time - firstControlPoint.time);
         const interpolatedCoordinate = interpolate(prevPrevMouseMoveEvent ?? prevMouseMoveEvent, prevMouseMoveEvent, nextMouseMoveEvent, nextNextMouseMoveEvent ?? nextMouseMoveEvent, t);
-        performEvent(driver, { type: "mousemove", x: interpolatedCoordinate.x, y: interpolatedCoordinate.y });
+        performEvent(driver, { type: "mousemove", x: interpolatedCoordinate.x, y: interpolatedCoordinate.y }, {browserZoom: 2 * magnification});
       }
       
     }
@@ -224,19 +286,20 @@ async function run({
   username,
   password,
   authTarget,
+  magnification=1,
 }: RunRequest) {
   const opts = new Options();
   if (render) {
     opts.addArguments("--headless=new");
   }
   opts.windowSize({
-    width: render ? 2560 : 2560,
-    height: (render ? 1440 : 1440) + 85,
+    width: render ? 2560 * magnification : 2560,
+    height: (render ? 1440 * magnification : 1440) + 85,
   });
   opts.setUserPreferences({
     partition: {
       default_zoom_level: {
-        x: render ? ZOOM_200_PERCENT : ZOOM_200_PERCENT,
+        x: render ? ZOOM_200_PERCENT * magnification : ZOOM_200_PERCENT,
       },
     },
   });
@@ -279,10 +342,7 @@ async function run({
     await driver.executeScript(FALSE_CURSOR_CODE);
   }
 
-  // await driver.sleep(5000);
-  // await driver.executeScript('enableSimulatedCursor();');
-
-  await processEvents(driver, events, { render });
+  await processEvents(driver, events, { render, magnification });
 
   await driver.sleep(100_000);
 

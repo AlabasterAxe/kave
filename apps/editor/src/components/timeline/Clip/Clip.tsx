@@ -56,15 +56,11 @@ export default function ClipComponent(props: ClipProps) {
     }
 
     switch (trackFile.type) {
-      case FileType.video:
-        videoTrack = <VideoClip clip={clip} interaction />;
-        break;
       case FileType.interaction_log:
         interactionTrack = (
           <MultiTrackInteractionLog
-            file={trackFile}
             compositionId={activeCompositionId}
-            offsetSeconds={track.alignmentSeconds - clip.sourceOffsetSeconds}
+            clipCompositionOffset={track.alignmentSeconds - clip.sourceOffsetSeconds}
             viewport={viewport}
             clipStartTimeSeconds={props.clipStartTime}
             clipDurationSeconds={clip.durationSeconds}
@@ -72,7 +68,7 @@ export default function ClipComponent(props: ClipProps) {
             onDragStart={onInteractionDragStart}
             onDragUpdate={onInteractionDragUpdate}
             onDragEnd={onInteractionDragEnd}
-            clipId={clip.id}
+            clip={clip}
           />
         );
     }
@@ -80,7 +76,7 @@ export default function ClipComponent(props: ClipProps) {
   return (
     <>
       {interactionTrack}
-      {videoTrack}
+      <VideoClip clip={clip} interaction />
     </>
   );
 }
