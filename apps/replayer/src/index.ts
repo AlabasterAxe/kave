@@ -7,7 +7,7 @@ import express from "express";
 import fileUpload from "express-fileupload";
 import bodyParser from "body-parser";
 import cors from "cors";
-import { RunRequest, UserInteraction, WheelEventPayload } from "kave-common";
+import { RunInfo, RunRequest, RunStatus, UserInteraction, WheelEventPayload } from "kave-common";
 import "isomorphic-fetch";
 import { FALSE_CURSOR_CODE } from "./false-cursor";
 
@@ -17,6 +17,8 @@ const FRAMERATE = 30;
 const port = process.env.PORT || 20001;
 const optimizeRender = true;
 const interpolateMouseMove = true;
+
+const renderJobs = new Map<string, RunInfo>();
 
 function getKey(key: string): any {
   switch (key) {
@@ -166,14 +168,19 @@ function simplifyEvents(events: UserInteraction[]) {
 }
 
 async function processEvents(
+  runId: string,
   driver: WebDriver,
   events: any[],
   { render, magnification = 1 }: { render: boolean, magnification?: number }
 ) {
+  const frameCount = (events[events.length - 1].time - events[0].time) / (1000 / FRAMERATE);
+
+  const status = { totalFrameCount: Math.floor(frameCount), frameIndex: 0, status: RunStatus.running };
+  renderJobs.set(runId, status);
+
   let totalEventsPerformed = 0;
   let currentTime = 0;
   let eventIndex = 0;
-  let frameIndex = 0;
   const initialEvent = events[0];
   console.log("running");
   const startTime = Date.now();
@@ -190,6 +197,12 @@ async function processEvents(
   }
 
   while (eventIndex < events.length) {
+    if (status.status === RunStatus.cancelled) {
+      break;
+    } else if (status.status === RunStatus.paused) {
+      await sleep(1000);
+      continue;
+    }
     let eventsPerformed = 0;
     let performedMouseMove = false;
     const eventsToPerform = [];
@@ -240,22 +253,24 @@ async function processEvents(
     }
     if (render) {
       if (eventsPerformed > 0 || lastRealFrame === undefined || !optimizeRender) {
-        lastRealFrame = frameIndex;
+        lastRealFrame = status.frameIndex;
         previousPromise = writeFile(
-          `./frames/${zeroPad(frameIndex++, 5)}.png`,
+          `./frames/${zeroPad(status.frameIndex++, 5)}.png`,
           await driver.takeScreenshot(),
           "base64"
         );
       } else {
         // create a hard link to the previous frame
         const lastFrame = lastRealFrame!;
-        const newFrame = frameIndex++;
+        const newFrame = status.frameIndex++;
         previousPromise.then(() =>
           execAsync(
             `ln -f ./frames/${zeroPad(lastFrame, 5)}.png ./frames/${zeroPad(newFrame, 5)}.png`
           )
         );
       }
+    } else {
+      status.frameIndex++;
     }
 
     const timeStep = (1 / FRAMERATE) * 1000;
@@ -267,6 +282,7 @@ async function processEvents(
     }
     console.log(currentTime);
   }
+  status.status = RunStatus.finished;
   console.log("done! performed", totalEventsPerformed, "events");
 }
 
@@ -292,7 +308,7 @@ function getZoomLevel(magnification: number) {
   }
 }
 
-async function run({
+async function run(runId: string, {
   events,
   render,
   target,
@@ -301,6 +317,7 @@ async function run({
   authTarget,
   magnification=1,
 }: RunRequest) {
+
   const opts = new Options();
   if (render) {
     opts.addArguments("--headless=new");
@@ -356,9 +373,7 @@ async function run({
     await driver.executeScript(FALSE_CURSOR_CODE);
   }
 
-  await processEvents(driver, events, { render, magnification });
-
-  await driver.sleep(100_000);
+  await processEvents(runId, driver, events, { render, magnification });
 
   driver.quit();
 }
@@ -376,11 +391,66 @@ app.use(fileUpload());
 app.use(cors());
 
 app.post("/run", (req, res) => {
-  run({
+  const runId = Math.random().toString(36).substring(7);
+  run(runId, {
     ...req.body,
     render: req.body.render ?? false,
   });
-  res.sendStatus(200);
+  res.send({
+    runId,
+  });
+});
+
+app.post("/cancel", (req, res) => {
+  const job = renderJobs.get(req.body.runId);
+
+  if (job) {
+    job.status = RunStatus.cancelled;
+  }
+
+  res.send(job);
+});
+
+app.post("/pause", (req, res) => {
+  const job = renderJobs.get(req.body.runId);
+
+  if (job) {
+    job.status = RunStatus.paused;
+  }
+
+  res.send(job);
+});
+
+app.post("/play", (req, res) => {
+  const job = renderJobs.get(req.body.runId);
+
+  if (job) {
+    if (job.status === RunStatus.paused) {
+      job.status = RunStatus.running;
+    } else if (job.status === RunStatus.cancelled || job.status === RunStatus.finished) {
+      res.sendStatus(400);
+      return;
+    }
+  }
+
+  res.send(job);
+});
+
+app.get("/status", (req, res) => {
+  const runId = (req.query as any)["runId"]
+
+  if (!runId) {
+    res.sendStatus(400);
+    return;
+  }
+  const job = renderJobs.get(runId);
+
+  if (!job) {
+    res.sendStatus(404);
+    return;
+  }
+
+  res.send(job);
 });
 
 app.listen(port, () => {

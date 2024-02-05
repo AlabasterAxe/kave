@@ -1,65 +1,104 @@
-import { RunRequest, getInteractionLogEventsForComposition } from "kave-common";
+import {
+  RunInfo,
+  RunRequest,
+  RunStatus,
+  getInteractionLogEventsForComposition,
+} from "kave-common";
 import { useEffect, useState } from "react";
 import { useAppDispatch, useAppSelector } from "./store/hooks";
 import { updateRenderSettings } from "./store/project";
 import { selectActiveCompositionId, selectDocument } from "./store/store";
+import { set } from "immer/dist/internal";
 
-function run(rqst: RunRequest) {
-  fetch("http://localhost:20001/run", {
+async function run(rqst: RunRequest) {
+  const resp = await fetch("http://localhost:20001/run", {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
     },
     body: JSON.stringify(rqst),
   });
+
+  return await resp.json();
 }
 
 export function RenderPanel() {
   const project = useAppSelector(selectDocument);
   const activeCompositionId = useAppSelector(selectActiveCompositionId);
   const dispatch = useAppDispatch();
-  const [target, setTarget] = useState<string>(project?.renderSettings?.target ?? "");
-  const [username, setUsername] = useState<string>(project?.renderSettings?.username ?? "");
-  const [password, setPassword] = useState<string>(project?.renderSettings?.password ?? "");
-  const [authTarget, setAuthTarget] = useState<string>(project?.renderSettings?.authTarget ?? "");
-  const [magnification, setMagnification] = useState<number>(project?.renderSettings?.magnification ?? 1);
+  const [target, setTarget] = useState<string>(
+    project?.renderSettings?.target ?? ""
+  );
+  const [username, setUsername] = useState<string>(
+    project?.renderSettings?.username ?? ""
+  );
+  const [password, setPassword] = useState<string>(
+    project?.renderSettings?.password ?? ""
+  );
+  const [authTarget, setAuthTarget] = useState<string>(
+    project?.renderSettings?.authTarget ?? ""
+  );
+  const [magnification, setMagnification] = useState<number>(
+    project?.renderSettings?.magnification ?? 1
+  );
+  const [runId, setRunId] = useState<string | undefined>();
+  const [runStatus, setRunStatus] = useState<RunInfo | undefined>();
 
-  useEffect(()=>{
+  useEffect(() => {
+    if (runId) {
+      const interval = setInterval(async () => {
+        const resp = await fetch(
+          `http://localhost:20001/status?runId=${runId}`
+        );
+        const runInfo = await resp.json();
+        if (runInfo.status === RunStatus.cancelled) {
+          setRunId(undefined);
+          setRunStatus(undefined);
+        } else {
+          setRunStatus(runInfo);
+        }
+      }, 5000);
+      return () => clearInterval(interval);
+    }
+  }, [runId]);
+
+  useEffect(() => {
     if (project?.renderSettings?.target) {
       setTarget(project.renderSettings.target);
     }
-  }, [
-    project?.renderSettings?.target,
-  ])
+  }, [project?.renderSettings?.target]);
 
-  useEffect(()=>{
+  useEffect(() => {
     if (project?.renderSettings.username) {
       setUsername(project?.renderSettings.username);
     }
-  }, [
-    project?.renderSettings?.username,
-  ])
+  }, [project?.renderSettings?.username]);
 
-  useEffect(()=>{
+  useEffect(() => {
     if (project?.renderSettings?.password) {
       setPassword(project.renderSettings.password);
     }
-  }, [
-    project?.renderSettings?.password,
-  ])
+  }, [project?.renderSettings?.password]);
 
-  useEffect(()=>{
+  useEffect(() => {
     if (project?.renderSettings?.authTarget) {
       setAuthTarget(project.renderSettings.authTarget);
     }
-  }, [
-    project?.renderSettings?.authTarget,
-  ])
+  }, [project?.renderSettings?.authTarget]);
 
-  const render = () => {
+  useEffect(() => {
+    if (project?.renderSettings?.magnification !== undefined) {
+      setMagnification(project.renderSettings.magnification);
+    }
+  }, [project?.renderSettings?.magnification]);
+
+  const render = async () => {
     if (activeCompositionId && project) {
-      run({
-        events: getInteractionLogEventsForComposition(project, activeCompositionId),
+      const { runId } = await run({
+        events: getInteractionLogEventsForComposition(
+          project,
+          activeCompositionId
+        ),
         render: true,
         target,
         authTarget,
@@ -67,19 +106,67 @@ export function RenderPanel() {
         password,
         magnification,
       });
+      setRunId(runId);
     }
   };
 
-  const preview = () => {
+  const togglePlayback = async () => {
+    if (runId && runStatus) {
+      const resp = await fetch(
+        `http://localhost:20001/${
+          runStatus.status === RunStatus.running ? "pause" : "play"
+        }`,
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({ runId }),
+        }
+      );
+      const runInfo = await resp.json();
+      setRunStatus(runInfo);
+    }
+  };
+
+  const dismiss = async () => {
+    setRunId(undefined);
+    setRunStatus(undefined);
+  };
+
+  const cancel = async () => {
     if (activeCompositionId && project) {
-      run({
-        events: getInteractionLogEventsForComposition(project, activeCompositionId),
+      const { runId } = await run({
+        events: getInteractionLogEventsForComposition(
+          project,
+          activeCompositionId
+        ),
+        render: true,
+        target,
+        authTarget,
+        username,
+        password,
+        magnification,
+      });
+      setRunId(runId);
+    }
+  };
+
+  const preview = async () => {
+    if (activeCompositionId && project) {
+      const { runId } = await run({
+        events: getInteractionLogEventsForComposition(
+          project,
+          activeCompositionId
+        ),
         render: false,
         target,
         authTarget,
         username,
         password,
       });
+
+      setRunId(runId);
     }
   };
 
@@ -97,9 +184,11 @@ export function RenderPanel() {
                 setTarget((e.target as HTMLInputElement).value);
               }}
               onChange={(e) => {
-                dispatch(updateRenderSettings(
-                  {target: (e.target as HTMLInputElement).value,}
-                ))
+                dispatch(
+                  updateRenderSettings({
+                    target: (e.target as HTMLInputElement).value,
+                  })
+                );
               }}
             ></input>
           </td>
@@ -115,63 +204,78 @@ export function RenderPanel() {
                 setAuthTarget((e.target as HTMLInputElement).value);
               }}
               onChange={(e) => {
-                dispatch(updateRenderSettings(
-                  {authTarget: (e.target as HTMLInputElement).value,}
-                ))
+                dispatch(
+                  updateRenderSettings({
+                    authTarget: (e.target as HTMLInputElement).value,
+                  })
+                );
               }}
             ></input>
           </td>
         </tr>
         <tr>
           <td className="font-bold">Username:</td>
-          <td><input
+          <td>
+            <input
               className="border-2 border-black"
               value={username}
-          onInput={(e) => {
-            setUsername((e.target as HTMLInputElement).value);
-          }}
-          onChange={(e) => {
-            dispatch(updateRenderSettings(
-              {username: (e.target as HTMLInputElement).value,}
-            ))
-          }}
-        ></input></td>
-      
+              onInput={(e) => {
+                setUsername((e.target as HTMLInputElement).value);
+              }}
+              onChange={(e) => {
+                dispatch(
+                  updateRenderSettings({
+                    username: (e.target as HTMLInputElement).value,
+                  })
+                );
+              }}
+            ></input>
+          </td>
         </tr>
         <tr>
           <td className="font-bold">Password:</td>
-          <td><input
-          className="border-2 border-black"
-          type="password"
-          value={password}
-          onInput={(e) => {
-            setPassword((e.target as HTMLInputElement).value);
-          }}
-          onChange={(e) => {
-            dispatch(updateRenderSettings(
-              {password: (e.target as HTMLInputElement).value,}
-            ))
-          }}
-           /></td>
+          <td>
+            <input
+              className="border-2 border-black"
+              type="password"
+              value={password}
+              onInput={(e) => {
+                setPassword((e.target as HTMLInputElement).value);
+              }}
+              onChange={(e) => {
+                dispatch(
+                  updateRenderSettings({
+                    password: (e.target as HTMLInputElement).value,
+                  })
+                );
+              }}
+            />
+          </td>
         </tr>
         <tr>
           <td className="font-bold">Magnification:</td>
-          <td><select
-          className="border-2 border-black"
-          value={magnification}
-          onInput={(e) => {
-            setMagnification(Number((e.target as HTMLSelectElement).value));
-          }}
-          onChange={(e) => {
-            dispatch(updateRenderSettings(
-              {magnification: Number((e.target as HTMLSelectElement).value)}
-            ));
-          }}
-           >
-            <option value="1">1x</option>
-            <option value="2">2x</option>
-            <option value="2.5">2.5x</option>
-            </select></td>
+          <td>
+            <select
+              className="border-2 border-black"
+              value={magnification}
+              onInput={(e) => {
+                setMagnification(Number((e.target as HTMLSelectElement).value));
+              }}
+              onChange={(e) => {
+                dispatch(
+                  updateRenderSettings({
+                    magnification: Number(
+                      (e.target as HTMLSelectElement).value
+                    ),
+                  })
+                );
+              }}
+            >
+              <option value="1">1x</option>
+              <option value="2">2x</option>
+              <option value="2.5">2.5x</option>
+            </select>
+          </td>
         </tr>
       </table>
 
@@ -189,6 +293,38 @@ export function RenderPanel() {
           Preview
         </button>
       </div>
+      {runStatus && (
+        <div className="flex flex-row items-center">
+          <progress
+            id="file"
+            value={runStatus.frameIndex}
+            max={runStatus.totalFrameCount}
+          ></progress>
+          {runStatus.status === RunStatus.finished ? (
+            <button
+              className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded shadow"
+              onClick={dismiss}
+            >
+              Dismiss
+            </button>
+          ) : (
+            <>
+              <button
+                className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded shadow"
+                onClick={togglePlayback}
+              >
+                {runStatus.status === RunStatus.running ? "Pause" : "Continue"}
+              </button>
+              <button
+                className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded shadow"
+                onClick={cancel}
+              >
+                Cancel
+              </button>
+            </>
+          )}
+        </div>
+      )}
     </div>
   );
 }
