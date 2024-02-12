@@ -19,7 +19,7 @@
     },
     "host_permissions": [
         "http://localhost/*",
-        "https://weekly.mathchops.com"
+        "https://weekly.mathchops.com/*"
     ],
     "manifest_version": 3
 }
