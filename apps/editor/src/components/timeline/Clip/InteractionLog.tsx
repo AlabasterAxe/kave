@@ -170,7 +170,7 @@ function InteractionTrack(props: InteractionLogProps & { interactionType: string
   } = props;
   const dispatch = useAppDispatch();
 
-  const log = getInteractionLogEventsForClip(doc, clip) ?? {}; 
+  const {log} = getInteractionLogEventsForClip(doc, clip) ?? {}; 
 
 
   if (!log) {

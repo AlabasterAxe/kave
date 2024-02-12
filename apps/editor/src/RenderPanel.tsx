@@ -8,7 +8,6 @@ import { useEffect, useState } from "react";
 import { useAppDispatch, useAppSelector } from "./store/hooks";
 import { updateRenderSettings } from "./store/project";
 import { selectActiveCompositionId, selectDocument } from "./store/store";
-import { set } from "immer/dist/internal";
 
 async function run(rqst: RunRequest) {
   const resp = await fetch("http://localhost:20001/run", {
@@ -94,17 +93,20 @@ export function RenderPanel() {
 
   const render = async () => {
     if (activeCompositionId && project) {
+      const {log, devicePixelRatio, resolution} = getInteractionLogEventsForComposition(
+        project,
+        activeCompositionId
+      );
       const { runId } = await run({
-        events: getInteractionLogEventsForComposition(
-          project,
-          activeCompositionId
-        ),
+        events: log,
         render: true,
         target,
         authTarget,
         username,
         password,
         magnification,
+        devicePixelRatio,
+        resolution,
       });
       setRunId(runId);
     }
@@ -135,37 +137,39 @@ export function RenderPanel() {
   };
 
   const cancel = async () => {
-    if (activeCompositionId && project) {
-      const { runId } = await run({
-        events: getInteractionLogEventsForComposition(
-          project,
-          activeCompositionId
-        ),
-        render: true,
-        target,
-        authTarget,
-        username,
-        password,
-        magnification,
-      });
-      setRunId(runId);
+    if (runId && runStatus) {
+      const resp = await fetch(
+        "http://localhost:20001/cancel",
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({ runId }),
+        }
+      );
+      const runInfo = await resp.json();
+      setRunStatus(runInfo);
     }
+    
   };
 
   const preview = async () => {
     if (activeCompositionId && project) {
+      const {log, devicePixelRatio, resolution} = getInteractionLogEventsForComposition(
+        project,
+        activeCompositionId
+      )
       const { runId } = await run({
-        events: getInteractionLogEventsForComposition(
-          project,
-          activeCompositionId
-        ),
+        events: log,
         render: false,
         target,
         authTarget,
         username,
         password,
+        devicePixelRatio,
+        resolution,
       });
-
       setRunId(runId);
     }
   };
@@ -253,7 +257,7 @@ export function RenderPanel() {
           </td>
         </tr>
         <tr>
-          <td className="font-bold">Magnification:</td>
+          <td className="font-bold" title="This is the amount to magnify the recorded video.">Magnification:</td>
           <td>
             <select
               className="border-2 border-black"
@@ -277,6 +281,7 @@ export function RenderPanel() {
             </select>
           </td>
         </tr>
+        
       </table>
 
       <div className="flex flex-row">
@@ -296,6 +301,7 @@ export function RenderPanel() {
       {runStatus && (
         <div className="flex flex-row items-center">
           <progress
+            className="flex-1"
             id="file"
             value={runStatus.frameIndex}
             max={runStatus.totalFrameCount}

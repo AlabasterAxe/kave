@@ -200,27 +200,6 @@ const sideEffectMiddleware =
           });
         }
         break;
-      case replaceDocument.type:
-        for (const file of postState.document?.present?.files ?? []) {
-          if (
-            file.type === FileType.interaction_log &&
-            file.fileUri &&
-            !file.userInteractionLog
-          ) {
-            fetch(file.fileUri!)
-              .then((response) => response.text())
-              .then((text) => {
-                const userInteractionLog = JSON.parse(text);
-                store.dispatch(
-                  loadInteractionFile({
-                    fileId: file.id,
-                    interactionLog: { log: userInteractionLog },
-                  })
-                );
-              });
-          }
-        }
-        break;
       default:
         break;
     }

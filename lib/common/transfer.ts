@@ -17,4 +17,6 @@ export interface RunRequest {
   password?: string;
   authTarget?: string;
   magnification?: number;
+  devicePixelRatio?: number;
+  resolution?: { x: number, y: number };
 }

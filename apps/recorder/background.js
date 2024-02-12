@@ -13,7 +13,6 @@ function injectLogger() {
   let recording = false;
 
   chrome.storage.onChanged.addListener(({ status }) => {
-    console.log(status);
     switch (status?.newValue) {
       case "start":
         startTime = Date.now();
@@ -22,7 +21,7 @@ function injectLogger() {
         break;
       case "stop":
         recording = false;
-        chrome.storage.local.set({ log: log });
+        chrome.storage.local.set({ log, devicePixelRatio });
         break;
     }
   });

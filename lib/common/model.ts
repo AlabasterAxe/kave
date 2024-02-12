@@ -27,6 +27,8 @@ export interface UserInteraction {
 
 export interface UserInteractionLog {
   log: UserInteraction[];
+  devicePixelRatio: number;
+  resolution: {x: number, y: number};
 }
 
 export interface FileBase {

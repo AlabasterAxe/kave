@@ -443,7 +443,7 @@ export function replaceInteractionLogRange(file: InteractionLogFile, startTimeSe
 
   logWithRemovedSection.push(...eventsWithinRange);
   logWithRemovedSection.sort((a, b) => a.time - b.time);
-  return { ...file, userInteractionLog: { log: logWithRemovedSection } };
+  return { ...file, userInteractionLog: { ...file.userInteractionLog!, log: logWithRemovedSection } };
 }
 
 const getTightenedClips = (

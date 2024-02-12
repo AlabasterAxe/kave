@@ -53,14 +53,14 @@ export function getInteractionLogForSourceId(
   export function getInteractionLogEventsForClip(
     project: KaveDoc | null,
     clip: Clip
-  ): UserInteraction[] {
+  ): {log: UserInteraction[], devicePixelRatio: number, resolution: {x: number, y: number}} | undefined {
     if (!project) {
-      return [];
+      return;
     }
     const sequence = project.sequences.find((f) => f.id === clip.sourceId);
   
     if (!sequence) {
-      return [];
+      return;
     }
   
     let interactionLogFile: InteractionLogFile | undefined;
@@ -74,12 +74,19 @@ export function getInteractionLogForSourceId(
     });
   
     if (!interactionLogFile || !track) {
-      return [];
+      return;
+    }
+    const devicePixelRatio = interactionLogFile.userInteractionLog?.devicePixelRatio;
+    const resolution = interactionLogFile.userInteractionLog?.resolution;
+
+    if (!devicePixelRatio || !resolution) {
+      throw new Error("No device pixel ratio or resolution found in interaction log");
     }
   
     const sequenceTrackOffset = -track.alignmentSeconds; 
     const interactionLogStartTime = interactionLogFile.userInteractionLog?.log[0]?.time ?? 0;
     const clipInteractionLogOffsetSeconds = clip.sourceOffsetSeconds + sequenceTrackOffset + interactionLogStartTime / 1000;
+
 
     const events = [];
     for (const event of interactionLogFile.userInteractionLog?.log ?? []) {
@@ -96,13 +103,13 @@ export function getInteractionLogForSourceId(
         });
     }
   
-    return events;
+    return {log: events, devicePixelRatio, resolution};
   }
 
 export function getInteractionLogEventsForComposition(
     project: KaveDoc,
     compositionId: string
-  ): UserInteraction[] {
+  ): {log: UserInteraction[], devicePixelRatio: number, resolution: {x: number, y: number}} {
     const composition = project.compositions.find((c) => c.id === compositionId);
   
     if (!composition) {
@@ -110,12 +117,26 @@ export function getInteractionLogEventsForComposition(
     }
   
     const events: UserInteraction[] = [];
+    let devicePixelRatio: number | undefined;
+    let resolution: {x: number, y: number} | undefined;
     let clipCompositionOffset = 0;
     for (const clip of composition.clips) {
-      const log = getInteractionLogEventsForClip(project, clip) ?? {}
-  
+      const {log, devicePixelRatio: clipDpr, resolution: clipResolution} = getInteractionLogEventsForClip(project, clip) ?? {}
+
       if (!log) {
         continue;
+      }
+
+      if (!devicePixelRatio) {
+        devicePixelRatio = clipDpr;
+      } else if (devicePixelRatio !== clipDpr) {
+        throw new Error("Device pixel ratio mismatch");
+      }
+
+      if (!resolution) {
+        resolution = clipResolution;
+      } else if (resolution.x !== clipResolution?.x || resolution.y !== clipResolution?.y) {
+        throw new Error("Device pixel ratio mismatch");
       }
   
       for (const event of log ?? []) {
@@ -126,6 +147,10 @@ export function getInteractionLogEventsForComposition(
       }
       clipCompositionOffset += clip.durationSeconds;
     }
+
+    if (!devicePixelRatio || !resolution) {
+      throw new Error("No clips found in composition");
+    }
   
-    return events;
+    return {log: events, devicePixelRatio, resolution };
   }

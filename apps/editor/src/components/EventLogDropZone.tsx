@@ -49,9 +49,7 @@ export default function FileDropZone({
             case "json":
               files.push(
                 {
-                  userInteractionLog: {
-                      log: JSON.parse(await file.text()) 
-                  },
+                  userInteractionLog: JSON.parse(await file.text()),
                   type: FileType.interaction_log,
                   id: uuidv4()
               });

@@ -7,7 +7,13 @@ import express from "express";
 import fileUpload from "express-fileupload";
 import bodyParser from "body-parser";
 import cors from "cors";
-import { RunInfo, RunRequest, RunStatus, UserInteraction, WheelEventPayload } from "kave-common";
+import {
+  RunInfo,
+  RunRequest,
+  RunStatus,
+  UserInteraction,
+  WheelEventPayload,
+} from "kave-common";
 import "isomorphic-fetch";
 import { FALSE_CURSOR_CODE } from "./false-cursor";
 
@@ -49,7 +55,11 @@ function getKey(key: string): any {
   }
 }
 
-async function performEvent(driver: WebDriver, event: any, {browserZoom}: {browserZoom: number}) {
+async function performEvent(
+  driver: WebDriver,
+  event: any,
+  { browserZoom }: { browserZoom: number }
+) {
   switch (event.type) {
     case "mousemove":
       await driver
@@ -69,14 +79,18 @@ async function performEvent(driver: WebDriver, event: any, {browserZoom}: {brows
         .catch(() => {});
       break;
     case "wheel":
-        await (driver
-          .actions() as any)
-          .scroll(0, 0, Math.round(event.payload.deltaX * browserZoom), Math.round(event.payload.deltaY * browserZoom))
-          .perform()
-          .catch((e: any) => {
-            console.log("bad?", e);
-          });
-        break;
+      await (driver.actions() as any)
+        .scroll(
+          0,
+          0,
+          Math.round(event.payload.deltaX * browserZoom),
+          Math.round(event.payload.deltaY * browserZoom)
+        )
+        .perform()
+        .catch((e: any) => {
+          console.log("bad?", e);
+        });
+      break;
     case "mouseup":
       await driver
         .actions()
@@ -114,17 +128,31 @@ async function sleep(ms: number) {
   return new Promise((resolve) => setTimeout(resolve, ms));
 }
 
-function interpolate(controlPoint1: UserInteraction, controlPoint2: UserInteraction, controlPoint3: UserInteraction, controlPoint4: UserInteraction, t: number) {
+function interpolate(
+  controlPoint1: UserInteraction,
+  controlPoint2: UserInteraction,
+  controlPoint3: UserInteraction,
+  controlPoint4: UserInteraction,
+  t: number
+) {
   return {
-    x: controlPoint1.x * (1 - t) ** 3 + 3 * controlPoint2.x * t * (1 - t) ** 2 + 3 * controlPoint3.x * t ** 2 * (1 - t) + controlPoint4.x * t ** 3,
-    y: controlPoint1.y * (1 - t) ** 3 + 3 * controlPoint2.y * t * (1 - t) ** 2 + 3 * controlPoint3.y * t ** 2 * (1 - t) + controlPoint4.y * t ** 3
+    x:
+      controlPoint1.x * (1 - t) ** 3 +
+      3 * controlPoint2.x * t * (1 - t) ** 2 +
+      3 * controlPoint3.x * t ** 2 * (1 - t) +
+      controlPoint4.x * t ** 3,
+    y:
+      controlPoint1.y * (1 - t) ** 3 +
+      3 * controlPoint2.y * t * (1 - t) ** 2 +
+      3 * controlPoint3.y * t ** 2 * (1 - t) +
+      controlPoint4.y * t ** 3,
   };
 }
 
 function simplifyEvents(events: UserInteraction[]) {
   const result = [];
 
-  let currentEventTypeStreak: string | undefined; 
+  let currentEventTypeStreak: string | undefined;
   let acc: UserInteraction | undefined;
   for (const event of events) {
     switch (event.type) {
@@ -141,7 +169,20 @@ function simplifyEvents(events: UserInteraction[]) {
         break;
       case "wheel":
         if (currentEventTypeStreak === "wheel") {
-          acc = { ...acc!, payload: { deltaX: (acc!.payload as WheelEventPayload).deltaX + (event.payload as WheelEventPayload).deltaX, deltaY: (acc!.payload as WheelEventPayload).deltaY + (event.payload as WheelEventPayload).deltaY, deltaZ: (acc!.payload as WheelEventPayload).deltaZ + (event.payload as WheelEventPayload).deltaZ } };
+          acc = {
+            ...acc!,
+            payload: {
+              deltaX:
+                (acc!.payload as WheelEventPayload).deltaX +
+                (event.payload as WheelEventPayload).deltaX,
+              deltaY:
+                (acc!.payload as WheelEventPayload).deltaY +
+                (event.payload as WheelEventPayload).deltaY,
+              deltaZ:
+                (acc!.payload as WheelEventPayload).deltaZ +
+                (event.payload as WheelEventPayload).deltaZ,
+            },
+          };
         } else {
           if (acc) {
             result.push(acc);
@@ -158,7 +199,6 @@ function simplifyEvents(events: UserInteraction[]) {
         currentEventTypeStreak = undefined;
         result.push(event);
     }
-
   }
   if (acc) {
     result.push(acc);
@@ -171,11 +211,16 @@ async function processEvents(
   runId: string,
   driver: WebDriver,
   events: any[],
-  { render, magnification = 1 }: { render: boolean, magnification?: number }
+  { render, magnification = 1 }: { render: boolean; magnification?: number }
 ) {
-  const frameCount = (events[events.length - 1].time - events[0].time) / (1000 / FRAMERATE);
+  const frameCount =
+    (events[events.length - 1].time - events[0].time) / (1000 / FRAMERATE);
 
-  const status = { totalFrameCount: Math.floor(frameCount), frameIndex: 0, status: RunStatus.running };
+  const status = {
+    totalFrameCount: Math.floor(frameCount),
+    frameIndex: 0,
+    status: RunStatus.running,
+  };
   renderJobs.set(runId, status);
 
   let totalEventsPerformed = 0;
@@ -192,8 +237,8 @@ async function processEvents(
   let prevMouseMoveEvent: UserInteraction | undefined;
 
   if (render) {
-    await execAsync('rm -rf ./frames');
-    await execAsync('mkdir ./frames');
+    await execAsync("rm -rf ./frames");
+    await execAsync("mkdir ./frames");
   }
 
   while (eventIndex < events.length) {
@@ -215,7 +260,7 @@ async function processEvents(
     }
 
     for (const event of simplifyEvents(eventsToPerform)) {
-      await performEvent(driver, event, {browserZoom: 2 * magnification});
+      await performEvent(driver, event, { browserZoom: 2 * magnification });
       totalEventsPerformed++;
       eventsPerformed++;
       if (currentEvent?.type === "mousemove") {
@@ -242,17 +287,36 @@ async function processEvents(
       if (nextMouseMoveEvent && interpolateMouseMove) {
         const firstControlPoint = prevPrevMouseMoveEvent ?? prevMouseMoveEvent;
         const lastControlPoint = nextNextMouseMoveEvent ?? nextMouseMoveEvent;
-        const t = (currentTime - firstControlPoint.time) / (lastControlPoint.time - firstControlPoint.time);
-        const interpolatedCoordinate = interpolate(prevPrevMouseMoveEvent ?? prevMouseMoveEvent, prevMouseMoveEvent, nextMouseMoveEvent, nextNextMouseMoveEvent ?? nextMouseMoveEvent, t);
-        performEvent(driver, { type: "mousemove", x: interpolatedCoordinate.x, y: interpolatedCoordinate.y }, {browserZoom: 2 * magnification});
+        const t =
+          (currentTime - firstControlPoint.time) /
+          (lastControlPoint.time - firstControlPoint.time);
+        const interpolatedCoordinate = interpolate(
+          prevPrevMouseMoveEvent ?? prevMouseMoveEvent,
+          prevMouseMoveEvent,
+          nextMouseMoveEvent,
+          nextNextMouseMoveEvent ?? nextMouseMoveEvent,
+          t
+        );
+        performEvent(
+          driver,
+          {
+            type: "mousemove",
+            x: interpolatedCoordinate.x,
+            y: interpolatedCoordinate.y,
+          },
+          { browserZoom: 2 * magnification }
+        );
       }
-      
     }
     if (eventsPerformed > 0) {
       console.log("performed", eventsPerformed, "events");
     }
     if (render) {
-      if (eventsPerformed > 0 || lastRealFrame === undefined || !optimizeRender) {
+      if (
+        eventsPerformed > 0 ||
+        lastRealFrame === undefined ||
+        !optimizeRender
+      ) {
         lastRealFrame = status.frameIndex;
         previousPromise = writeFile(
           `./frames/${zeroPad(status.frameIndex++, 5)}.png`,
@@ -265,7 +329,10 @@ async function processEvents(
         const newFrame = status.frameIndex++;
         previousPromise.then(() =>
           execAsync(
-            `ln -f ./frames/${zeroPad(lastFrame, 5)}.png ./frames/${zeroPad(newFrame, 5)}.png`
+            `ln -f ./frames/${zeroPad(lastFrame, 5)}.png ./frames/${zeroPad(
+              newFrame,
+              5
+            )}.png`
           )
         );
       }
@@ -295,42 +362,58 @@ const ZOOM_200_PERCENT = 3.8017840169239308;
 const ZOOM_400_PERCENT = 7.6035680338478615;
 const ZOOM_500_PERCENT = 8.827469119589406;
 
-function getZoomLevel(magnification: number) {
-  switch (magnification) {
+function getZoomLevel(originalZoomLevel: number, magnification: number) {
+  switch (originalZoomLevel) {
     case 1:
-      return ZOOM_200_PERCENT;
+      switch (magnification) {
+        case 1:
+          return ZOOM_100_PERCENT;
+        case 2:
+          return ZOOM_200_PERCENT;
+        default:
+          throw new Error(`invalid zoomLevel/magnification combo: ${originalZoomLevel} ${magnification}`);
+      }
     case 2:
-      return ZOOM_400_PERCENT;
-    case 2.5:
-      return ZOOM_500_PERCENT;
-    default:
-      return ZOOM_200_PERCENT;
+      switch (magnification) {
+        case 1:
+          return ZOOM_200_PERCENT;
+        case 2:
+          return ZOOM_400_PERCENT;
+        case 2.5:
+          return ZOOM_500_PERCENT;
+        default:
+          throw new Error(`invalid zoomLevel/magnification combo: ${originalZoomLevel} ${magnification}`);
+      }
   }
 }
 
-async function run(runId: string, {
-  events,
-  render,
-  target,
-  username,
-  password,
-  authTarget,
-  magnification=1,
-}: RunRequest) {
-
+async function run(
+  runId: string,
+  {
+    events,
+    render,
+    target,
+    username,
+    password,
+    authTarget,
+    magnification = 1,
+    devicePixelRatio = 1,
+    resolution = { x: 2560, y: 1440 },
+  }: RunRequest
+) {
   const opts = new Options();
   if (render) {
     opts.addArguments("--headless=new");
   }
   opts.windowSize({
-    width: render ? 2560 * magnification : 2560,
-    height: (render ? 1440 * magnification : 1440) + 85,
+    width: render ? resolution.x * magnification : resolution.x,
+    height: (render ? resolution.y * magnification : resolution.y) + 85,
   });
 
   opts.setUserPreferences({
     partition: {
       default_zoom_level: {
-        x: render ? getZoomLevel(magnification) : ZOOM_200_PERCENT,
+        x: render ? getZoomLevel(devicePixelRatio, magnification) : getZoomLevel(devicePixelRatio, 1),
       },
     },
   });
@@ -361,7 +444,9 @@ async function run(runId: string, {
     const parsedResponse = await resp.json();
 
     await driver.executeScript(
-      `window.localStorage.setItem('logged_in_user', '${JSON.stringify(parsedResponse)}');
+      `window.localStorage.setItem('logged_in_user', '${JSON.stringify(
+        parsedResponse
+      )}');
        window.localStorage.setItem('students_displayed_columns', '["exam","examLevel","questionsAnswered","questionsCorrect","percentCorrect"]');
       `
     );
@@ -389,6 +474,7 @@ app.use(bodyParser.urlencoded({ extended: true }));
 
 app.use(fileUpload());
 app.use(cors());
+
 
 app.post("/run", (req, res) => {
   const runId = Math.random().toString(36).substring(7);
@@ -427,7 +513,10 @@ app.post("/play", (req, res) => {
   if (job) {
     if (job.status === RunStatus.paused) {
       job.status = RunStatus.running;
-    } else if (job.status === RunStatus.cancelled || job.status === RunStatus.finished) {
+    } else if (
+      job.status === RunStatus.cancelled ||
+      job.status === RunStatus.finished
+    ) {
       res.sendStatus(400);
       return;
     }
@@ -437,7 +526,7 @@ app.post("/play", (req, res) => {
 });
 
 app.get("/status", (req, res) => {
-  const runId = (req.query as any)["runId"]
+  const runId = (req.query as any)["runId"];
 
   if (!runId) {
     res.sendStatus(400);

@@ -1,8 +1,16 @@
 const saveButton = document.getElementById("save-button");
 
 saveButton.onclick = async () => {
-  const { log } = await chrome.storage.local.get(["log"]);
-  const blob = new Blob([JSON.stringify(log)]);
+  const { log, devicePixelRatio } = await chrome.storage.local.get(["log", "devicePixelRatio"]);
+  const window = await chrome.windows.getCurrent();
+  const blob = new Blob([JSON.stringify({
+    log,
+    devicePixelRatio,
+    resolution: {
+      x: window.width,
+      y: window.height - 85,
+    }
+  })]);
   const url = URL.createObjectURL(blob);
   const link = document.createElement("a");
   link.href = url;
@@ -29,4 +37,10 @@ recordButton.onclick = () => {
     recordButton.innerText = "Stop";
   }
   recording = !recording;
+  chrome.windows.getCurrent().then((window)=>{
+    chrome.windows.update(window.id, {
+      height: Math.floor(Math.min(window.height, window.width * .5625) + 85),
+      width: Math.floor(Math.min(window.width, window.height * 1.7778)),
+    });
+  });
 };
