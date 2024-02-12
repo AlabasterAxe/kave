@@ -84,6 +84,7 @@ function initialProject(): KaveDoc {
       username: "",
       password: "",
       magnification: 1,
+      originalZoom: 1,
     },
   };
 }
@@ -127,6 +128,7 @@ export function blankProject(projectId: string): KaveDoc {
       username: "",
       password: "",
       magnification: 1,
+      originalZoom: 1,
     },
   };
 }
@@ -199,6 +201,7 @@ function newProject(): KaveDoc {
       username: "",
       password: "",
       magnification: 1,
+      originalZoom: 1,
     },
   };
 }
@@ -271,6 +274,7 @@ function take_7(): KaveDoc {
       username: "",
       password: "",
       magnification: 1,
+      originalZoom: 1,
     },
   };
 }

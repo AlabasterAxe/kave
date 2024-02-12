@@ -1,4 +1,4 @@
-import { FileType, InteractionLogFile, KaveFile, UserInteraction } from "kave-common";
+import { FileType, KaveFile } from "kave-common";
 import { useCallback, useEffect, useRef, useState } from "react";
 import { v4 as uuidv4 } from "uuid";
 import "./EventLogDropZone.css";

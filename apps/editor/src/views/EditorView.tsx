@@ -1,15 +1,14 @@
-import { useEffect, useState } from "react";
-import { NavLink, Navigate, useNavigate, useParams } from "react-router-dom";
-import { v4 as uuidv4 } from "uuid";
+import { useEffect } from "react";
+import { useParams } from "react-router-dom";
+import { TextContent } from "vanilla-jsoneditor";
 import { RenderPanel } from "../RenderPanel";
+import FileDropZone, { FileDropEvent } from "../components/EventLogDropZone";
+import JsonEditor from "../components/JsonEditor";
 import Player from "../components/Player";
 import { Timeline } from "../components/timeline/Timeline";
 import { useAppDispatch, useAppSelector } from "../store/hooks";
-import { selectPersistedDocument, setActiveProject } from "../store/store";
-import FileDropZone, { FileDropEvent } from "../components/EventLogDropZone";
 import { addFileToDefaultSequence, replaceDocument } from "../store/project";
-import JsonEditor from "../components/JsonEditor";
-import { TextContent } from "vanilla-jsoneditor";
+import { selectPersistedDocument, setActiveProject } from "../store/store";
 
 function EditorView() {
   const { id } = useParams();

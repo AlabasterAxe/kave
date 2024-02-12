@@ -1,13 +1,11 @@
-import { useEffect, useRef, useState } from "react";
-import { DraggableCore } from "react-draggable";
 import {
   Clip,
-  InteractionLogFile,
   KeyEventPayload,
   TimelineViewport,
   UserInteraction,
-  getInteractionLogEventsForClip,
+  getInteractionLogEventsForClip
 } from "kave-common";
+import { useRef, useState } from "react";
 import { useAppDispatch, useAppSelector } from "../../../store/hooks";
 import { setSelection } from "../../../store/selection";
 import { selectDocument, selectSelection } from "../../../store/store";
@@ -158,7 +156,6 @@ function InteractionTrack(props: InteractionLogProps & { interactionType: string
   const selection = useAppSelector(selectSelection);
   const doc = useAppSelector(selectDocument);
   const {
-    clipCompositionOffset,
     viewport,
     clipDurationSeconds,
     onDragStart,

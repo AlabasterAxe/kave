@@ -1,7 +1,7 @@
 import {
   Clip,
-  KaveFile,
   FileType,
+  KaveFile,
   Sequence,
   TimelineViewport,
 } from "kave-common";
@@ -42,7 +42,6 @@ export default function ClipComponent(props: ClipProps) {
     return <div>Invalid Clip</div>;
   }
 
-  let videoTrack = null;
   let interactionTrack = null;
   for (const track of seq.tracks) {
     const trackFile = document?.files.find(

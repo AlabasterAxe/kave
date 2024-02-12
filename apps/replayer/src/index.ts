@@ -1,12 +1,10 @@
-import { Builder, By, Key, WebDriver, until } from "selenium-webdriver";
-import { Options } from "selenium-webdriver/chrome";
-import { writeFile } from "fs/promises";
+import bodyParser from "body-parser";
 import { exec } from "child_process";
-import { promisify } from "util";
+import cors from "cors";
 import express from "express";
 import fileUpload from "express-fileupload";
-import bodyParser from "body-parser";
-import cors from "cors";
+import { writeFile } from "fs/promises";
+import "isomorphic-fetch";
 import {
   RunInfo,
   RunRequest,
@@ -14,7 +12,9 @@ import {
   UserInteraction,
   WheelEventPayload,
 } from "kave-common";
-import "isomorphic-fetch";
+import { Builder, Key, WebDriver } from "selenium-webdriver";
+import { Options } from "selenium-webdriver/chrome";
+import { promisify } from "util";
 import { FALSE_CURSOR_CODE } from "./false-cursor";
 
 const execAsync = promisify(exec);

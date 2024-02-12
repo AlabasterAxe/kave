@@ -5,28 +5,27 @@ import {
   ConfigureStoreOptions,
   Store,
 } from "@reduxjs/toolkit";
+import { create } from "jsondiffpatch";
+import { getClipForTime, getInteractionLogForSourceId, KaveDoc, Project, UserInteraction } from "kave-common";
+import { thunk, ThunkAction, ThunkDispatch } from "redux-thunk";
+import undoable, { ActionCreators, StateWithHistory } from "redux-undo";
+import { upsertLocalStoreProject } from "../persistence/local-storage-utils";
+import { Trimerger } from "../persistence/trimerge-sync";
 import { playbackSlice, PlaybackState } from "./playback";
 import {
   deleteSection,
   documentSlice,
-  tightenSection,
-  replaceDocument,
-  smoothInteractions,
-  RouterState,
-  routerSlice,
-  setActiveProjectId,
   projectsSlice,
+  replaceDocument,
+  routerSlice,
+  RouterState,
+  setActiveProjectId,
   setTempDoc,
+  smoothInteractions,
   tempDocumentSlice,
-  loadInteractionFile,
+  tightenSection
 } from "./project";
-import { thunk, ThunkAction, ThunkDispatch } from "redux-thunk";
 import { selectionSlice, SelectionState, setSelection } from "./selection";
-import undoable, { ActionCreators, StateWithHistory } from "redux-undo";
-import { Trimerger } from "../persistence/trimerge-sync";
-import { create } from "jsondiffpatch";
-import { Project, KaveDoc, UserInteraction, FileType, getClipForTime, getInteractionLogForSourceId } from "kave-common";
-import { upsertLocalStoreProject } from "../persistence/local-storage-utils";
 
 export const selectActiveCompositionId = (state: RootState) =>
   state.router.activeCompositionId;

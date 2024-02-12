@@ -1,7 +1,8 @@
 import { useCallback, useEffect } from "react";
-import { BrowserRouter, Outlet, Route, RouterProvider, Routes, createBrowserRouter, createRoutesFromElements } from "react-router-dom";
+import { Outlet } from "react-router-dom";
 import { ActionCreators } from "redux-undo";
 import "./App.css";
+import { Header } from "./components/Header";
 import { useAppDispatch, useAppSelector } from "./store/hooks";
 import {
   PlaybackStateSource,
@@ -17,7 +18,6 @@ import {
   simplifySelectedMouseInteractions,
   tightenSelection,
 } from "./store/store";
-import { Header } from "./components/Header";
 
 function App() {
   const dispatch = useAppDispatch();

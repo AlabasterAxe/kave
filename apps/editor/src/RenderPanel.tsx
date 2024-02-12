@@ -40,6 +40,9 @@ export function RenderPanel() {
   const [magnification, setMagnification] = useState<number>(
     project?.renderSettings?.magnification ?? 1
   );
+  const [originalZoom, setOriginalZoom] = useState<number>(
+    project?.renderSettings?.originalZoom ?? 1
+  );
   const [runId, setRunId] = useState<string | undefined>();
   const [runStatus, setRunStatus] = useState<RunInfo | undefined>();
 
@@ -90,6 +93,12 @@ export function RenderPanel() {
       setMagnification(project.renderSettings.magnification);
     }
   }, [project?.renderSettings?.magnification]);
+
+  useEffect(() => {
+    if (project?.renderSettings?.originalZoom !== undefined) {
+      setOriginalZoom(project.renderSettings.originalZoom);
+    }
+  }, [project?.renderSettings?.originalZoom]);
 
   const render = async () => {
     if (activeCompositionId && project) {
@@ -254,6 +263,30 @@ export function RenderPanel() {
                 );
               }}
             />
+          </td>
+        </tr>
+        <tr>
+          <td className="font-bold" title="This is the amount to magnify the recorded video.">Original Zoom:</td>
+          <td>
+            <select
+              className="border-2 border-black"
+              value={originalZoom}
+              onInput={(e) => {
+                setOriginalZoom(Number((e.target as HTMLSelectElement).value));
+              }}
+              onChange={(e) => {
+                dispatch(
+                  updateRenderSettings({
+                    originalZoom: Number(
+                      (e.target as HTMLSelectElement).value
+                    ),
+                  })
+                );
+              }}
+            >
+              <option value="1">1x</option>
+              <option value="2">2x</option>
+            </select>
           </td>
         </tr>
         <tr>

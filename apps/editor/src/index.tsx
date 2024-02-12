@@ -1,13 +1,13 @@
 import React from "react";
 import { createRoot } from "react-dom/client";
-import "./index.css";
+import { Provider } from "react-redux";
+import { Route, RouterProvider, createBrowserRouter, createRoutesFromElements } from "react-router-dom";
 import App from "./App";
+import "./index.css";
 import reportWebVitals from "./reportWebVitals";
 import { store } from "./store/store";
-import { Provider } from "react-redux";
-import { Route, RouterProvider, Routes, createBrowserRouter, createRoutesFromElements } from "react-router-dom";
-import { ProjectListView } from "./views/ProjectListView";
 import EditorView from "./views/EditorView";
+import { ProjectListView } from "./views/ProjectListView";
 
 const appRootElement = document.getElementById("root");
 const root = createRoot(appRootElement!);

@@ -91,6 +91,7 @@ export type RenderSettings = Readonly<{
     username: string;
     password: string;
     magnification: number;
+    originalZoom: number;
 }>;
 
 export type KaveDoc = Readonly<{
