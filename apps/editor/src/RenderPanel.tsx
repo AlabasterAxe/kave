@@ -116,6 +116,7 @@ export function RenderPanel() {
         magnification,
         devicePixelRatio,
         resolution,
+        originalZoom,
       });
       setRunId(runId);
     }
@@ -178,6 +179,7 @@ export function RenderPanel() {
         password,
         devicePixelRatio,
         resolution,
+        originalZoom,
       });
       setRunId(runId);
     }

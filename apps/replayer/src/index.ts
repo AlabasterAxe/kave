@@ -20,6 +20,7 @@ import { FALSE_CURSOR_CODE } from "./false-cursor";
 const execAsync = promisify(exec);
 
 const FRAMERATE = 30;
+const NATIVE_DEVICE_PIXEL_RATIO = 1;
 const port = process.env.PORT || 20001;
 const optimizeRender = true;
 const interpolateMouseMove = true;
@@ -362,28 +363,41 @@ const ZOOM_200_PERCENT = 3.8017840169239308;
 const ZOOM_400_PERCENT = 7.6035680338478615;
 const ZOOM_500_PERCENT = 8.827469119589406;
 
-function getZoomLevel(originalZoomLevel: number, magnification: number) {
-  switch (originalZoomLevel) {
+// if originalZoom is 100 and devicePixelRatio is 2, then we know that the "native" devicePixelRatio is 2.
+// so the native device pixel ratio is devicePixelRatio / originalZoom.
+// so for the equivalent zoom level, we need to divide the zoom level by the native device pixel ratio.
+function getZoomLevel(
+  devicePixelRatio: number,
+  magnification: number,
+  originalZoom: number
+) {
+  const sourceNativeDevicePixelRatio = devicePixelRatio / originalZoom;
+  const sourceTargetDevicePixelRatioRatio =
+    sourceNativeDevicePixelRatio / NATIVE_DEVICE_PIXEL_RATIO;
+
+  const targetZoomLevel =
+    (devicePixelRatio * magnification) / sourceTargetDevicePixelRatioRatio;
+  switch (targetZoomLevel) {
+    case 0.25:
+      return ZOOM_25_PERCENT;
+    case 0.75:
+      return ZOOM_75_PERCENT;
     case 1:
-      switch (magnification) {
-        case 1:
-          return ZOOM_100_PERCENT;
-        case 2:
-          return ZOOM_200_PERCENT;
-        default:
-          throw new Error(`invalid zoomLevel/magnification combo: ${originalZoomLevel} ${magnification}`);
-      }
+      return ZOOM_100_PERCENT;
+    case 1.5:
+      return ZOOM_150_PERCENT;
     case 2:
-      switch (magnification) {
-        case 1:
-          return ZOOM_200_PERCENT;
-        case 2:
-          return ZOOM_400_PERCENT;
-        case 2.5:
-          return ZOOM_500_PERCENT;
-        default:
-          throw new Error(`invalid zoomLevel/magnification combo: ${originalZoomLevel} ${magnification}`);
-      }
+      return ZOOM_200_PERCENT;
+    case 2.5:
+      return ZOOM_500_PERCENT;
+    case 4:
+      return ZOOM_400_PERCENT;
+    case 5:
+      return ZOOM_500_PERCENT;
+    default:
+      throw new Error(
+        `invalid zoomLevel/magnification combo: ${devicePixelRatio} ${magnification}`
+      );
   }
 }
 
@@ -398,6 +412,7 @@ async function run(
     authTarget,
     magnification = 1,
     devicePixelRatio = 1,
+    originalZoom = 1,
     resolution = { x: 2560, y: 1440 },
   }: RunRequest
 ) {
@@ -413,7 +428,9 @@ async function run(
   opts.setUserPreferences({
     partition: {
       default_zoom_level: {
-        x: render ? getZoomLevel(devicePixelRatio, magnification) : getZoomLevel(devicePixelRatio, 1),
+        x: render
+          ? getZoomLevel(devicePixelRatio, magnification, originalZoom)
+          : getZoomLevel(devicePixelRatio, 1, originalZoom),
       },
     },
   });
@@ -474,7 +491,6 @@ app.use(bodyParser.urlencoded({ extended: true }));
 
 app.use(fileUpload());
 app.use(cors());
-
 
 app.post("/run", (req, res) => {
   const runId = Math.random().toString(36).substring(7);
