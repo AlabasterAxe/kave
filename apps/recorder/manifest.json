@@ -18,7 +18,8 @@
         "128": "icon.png"
     },
     "host_permissions": [
-        "http://localhost/*"
+        "http://localhost/*",
+        "https://weekly.mathchops.com"
     ],
     "manifest_version": 3
 }

@@ -123,7 +123,7 @@ chrome.tabs.onUpdated.addListener(function (tabId, changeInfo, tab) {
   console.log('running');
   console.log(changeInfo);
   if (changeInfo.status == "complete") {
-    if (tab.url.startsWith("http://localhost")) {
+    if (tab.url.startsWith("http://localhost") || tab.url.startsWith("https://weekly.mathchops.com")) {
       chrome.scripting.executeScript({
         target: { tabId },
         function: injectLogger,
