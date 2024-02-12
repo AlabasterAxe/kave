@@ -14,9 +14,9 @@ export default function FileDropZone({
 }) {
   const [dropZoneVisible, setDropZoneVisible] = useState<boolean>(false);
 
-  const allowDrag = useCallback((e: any) => {
+  function allowDrag(e: any) {
     e.preventDefault();
-  }, [])
+  }
   const dropZoneRef = useRef<HTMLDivElement>(null);
 
   const showDropZone = useCallback(() => {
@@ -72,7 +72,7 @@ export default function FileDropZone({
         files 
       });
     },
-    [hideDropZone, onFileDrop]
+    [hideDropZone]
   );
 
   useEffect(() => {
@@ -86,16 +86,15 @@ export default function FileDropZone({
     if (!dropZoneRef.current) {
       return;
     }
-    const dropZone = dropZoneRef.current;
-    dropZone.addEventListener("dragenter", allowDrag);
-    dropZone.addEventListener("dragover", allowDrag);
-    dropZone.addEventListener("dragleave", hideDropZone);
-    dropZone.addEventListener("drop", handleDrop);
+    dropZoneRef.current.addEventListener("dragenter", allowDrag);
+    dropZoneRef.current.addEventListener("dragover", allowDrag);
+    dropZoneRef.current.addEventListener("dragleave", hideDropZone);
+    dropZoneRef.current.addEventListener("drop", handleDrop);
     return () => {
-      dropZone.removeEventListener("dragenter", allowDrag);
-      dropZone.removeEventListener("dragover", allowDrag);
-      dropZone.removeEventListener("dragleave", hideDropZone);
-      dropZone.removeEventListener("drop", handleDrop);
+      dropZoneRef.current?.removeEventListener("dragenter", allowDrag);
+      dropZoneRef.current?.removeEventListener("dragover", allowDrag);
+      dropZoneRef.current?.removeEventListener("dragleave", hideDropZone);
+      dropZoneRef.current?.removeEventListener("drop", handleDrop);
     };
   }, [dropZoneRef, allowDrag, hideDropZone, handleDrop]);
   // 2
