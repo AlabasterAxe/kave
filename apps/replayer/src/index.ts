@@ -25,6 +25,9 @@ const port = process.env.PORT || 20001;
 const optimizeRender = true;
 const interpolateMouseMove = true;
 
+// this is the time after a click that we'll force rendering frames even if there are no other events.
+const clickEnvelopeMs = 100;
+
 const renderJobs = new Map<string, RunInfo>();
 
 function getKey(key: string): any {
@@ -260,6 +263,7 @@ async function processEvents(
       currentEvent = events[eventIndex++];
     }
 
+    let forceRenderUntil: number | undefined; 
     for (const event of simplifyEvents(eventsToPerform)) {
       await performEvent(driver, event, { browserZoom: 2 * magnification });
       totalEventsPerformed++;
@@ -268,6 +272,8 @@ async function processEvents(
         prevPrevMouseMoveEvent = prevMouseMoveEvent;
         prevMouseMoveEvent = currentEvent;
         performedMouseMove = true;
+      } else if (currentEvent?.type === "mouseup") {
+        forceRenderUntil = currentTime + clickEnvelopeMs;
       }
     }
 
@@ -316,7 +322,8 @@ async function processEvents(
       if (
         eventsPerformed > 0 ||
         lastRealFrame === undefined ||
-        !optimizeRender
+        !optimizeRender ||
+        (forceRenderUntil !== undefined && forceRenderUntil > currentTime)
       ) {
         lastRealFrame = status.frameIndex;
         previousPromise = writeFile(
@@ -348,7 +355,10 @@ async function processEvents(
     } else {
       currentTime += timeStep;
     }
-    console.log(currentTime);
+
+    if (forceRenderUntil !== undefined && currentTime > forceRenderUntil) {
+      forceRenderUntil = undefined;
+    }
   }
   status.status = RunStatus.finished;
   console.log("done! performed", totalEventsPerformed, "events");

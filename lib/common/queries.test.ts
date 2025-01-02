@@ -33,6 +33,8 @@ function getDummyDoc(): KaveDoc {
               y: 4,
             },
           ],
+          devicePixelRatio: 1,
+          resolution: { x: 1920, y: 1080 },
         },
       },
     ],
@@ -77,6 +79,7 @@ function getDummyDoc(): KaveDoc {
       username: "",
       password: "",
       magnification: 0,
+      originalZoom: 1,
     },
   };
   return dummyDoc;
