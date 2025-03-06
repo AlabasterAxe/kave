@@ -121,7 +121,7 @@ function Player() {
     if (canvasRef.current && context) {
       let videoContext = ctx;
       if (!videoContext) {
-        videoContext = new VideoContext(
+        videoContext = new (VideoContext as any).VideoContext(
           canvasRef.current,
           (err: any) =>
             console.error(
@@ -131,7 +131,7 @@ function Player() {
           { aspectRatio: composition?.resolution ? composition?.resolution.x / composition?.resolution.y : 16/9 }
         );
       }
-      if (!composition || !project) {
+      if (!composition || !project || !videoContext) {
         return;
       }
       setUpTimeline(videoContext, composition, project);

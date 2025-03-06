@@ -7,11 +7,11 @@ export default defineConfig({
     react(),
   ],
   optimizeDeps: {
-    include: ["kave-common"],
+    include: ["kave-common", "videocontext"],
   },
   build: {
     commonjsOptions: {
-      include: [/node_modules/, /kave-common/],
+      include: [/node_modules/, /kave-common/, /videocontext/],
     },
   },
 });
