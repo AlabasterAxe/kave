@@ -5,25 +5,28 @@ import {
   ConfigureStoreOptions,
   Store,
 } from "@reduxjs/toolkit";
-import { create } from "jsondiffpatch";
-import { getClipForTime, getInteractionLogForSourceId, KaveDoc, Project, UserInteraction } from "kave-common";
+import {
+  getClipForTime,
+  getInteractionLogForSourceId,
+  KaveDoc,
+  Project,
+  UserInteraction,
+} from "kave-common";
 import { thunk, ThunkAction, ThunkDispatch } from "redux-thunk";
 import undoable, { ActionCreators, StateWithHistory } from "redux-undo";
 import { upsertLocalStoreProject } from "../persistence/local-storage-utils";
-import { Trimerger } from "../persistence/trimerge-sync";
 import { playbackSlice, PlaybackState } from "./playback";
 import {
   deleteSection,
   documentSlice,
   projectsSlice,
-  replaceDocument,
   routerSlice,
   RouterState,
   setActiveProjectId,
   setTempDoc,
   smoothInteractions,
   tempDocumentSlice,
-  tightenSection
+  tightenSection,
 } from "./project";
 import { selectionSlice, SelectionState, setSelection } from "./selection";
 
@@ -47,7 +50,7 @@ export const selectProjects = (state: RootState) => state.projects;
 export const selectSelection = (state: RootState) => state.selection.selection;
 
 export function selectCursorLocation(
-  state: RootState
+  state: RootState,
 ): { x: number; y: number } | undefined {
   const activeCompositionId = selectActiveCompositionId(state);
   const playback = selectPlayback(state);
@@ -59,7 +62,7 @@ export function selectCursorLocation(
 
   const { clip, offset: clipPlayheadOffset } =
     getClipForTime(project, activeCompositionId, playback.currentTimeSeconds) ??
-    {};
+      {};
 
   if (!clip || !clipPlayheadOffset) {
     return undefined;
@@ -72,8 +75,8 @@ export function selectCursorLocation(
   }
 
   const sourcePlayheadOffset = clip.sourceOffsetSeconds + clipPlayheadOffset;
-  const interactionLogPlayheadOffset =
-    sourcePlayheadOffset - interactionLogSourceOffset;
+  const interactionLogPlayheadOffset = sourcePlayheadOffset -
+    interactionLogSourceOffset;
   let lastInteractionLogEvent: UserInteraction | undefined;
   const MARGIN_SECONDS = 2;
   for (const event of file.userInteractionLog.log) {
@@ -96,7 +99,7 @@ export function selectCursorLocation(
 }
 
 export function selectSelectionUserInteractions(
-  state: RootState
+  state: RootState,
 ): UserInteraction[] {
   const activeCompositionId = selectActiveCompositionId(state);
   const project = selectDocument(state);
@@ -108,10 +111,10 @@ export function selectSelectionUserInteractions(
 
   const { clip: startClip, offset: selectionStartClipOffset } =
     getClipForTime(project, activeCompositionId, selection.startTimeSeconds) ??
-    {};
+      {};
   const { clip: endClip, offset: selectionEndClipOffset } =
     getClipForTime(project, activeCompositionId, selection.endTimeSeconds) ??
-    {};
+      {};
 
   // TODO: this can probably be handled better
   if (
@@ -127,10 +130,10 @@ export function selectSelectionUserInteractions(
   if (
     startClip?.id !== endClip?.id ||
     Math.abs(
-      selectionEndClipOffset -
-        selectionStartClipOffset -
-        (selection.endTimeSeconds - selection.startTimeSeconds)
-    ) > 0.1
+        selectionEndClipOffset -
+          selectionStartClipOffset -
+          (selection.endTimeSeconds - selection.startTimeSeconds),
+      ) > 0.1
   ) {
     throw new Error("mismatched clips");
   }
@@ -141,14 +144,14 @@ export function selectSelectionUserInteractions(
     return [];
   }
 
-  const sourceSelectionStartOffset =
-    startClip.sourceOffsetSeconds + selectionStartClipOffset;
-  const sourceSelectionEndOffset =
-    startClip.sourceOffsetSeconds + selectionEndClipOffset;
-  const interactionLogSelectionStartOffset =
-    sourceSelectionStartOffset - interactionLogSourceOffset;
-  const interactionLogSelectionEndOffset =
-    sourceSelectionEndOffset - interactionLogSourceOffset;
+  const sourceSelectionStartOffset = startClip.sourceOffsetSeconds +
+    selectionStartClipOffset;
+  const sourceSelectionEndOffset = startClip.sourceOffsetSeconds +
+    selectionEndClipOffset;
+  const interactionLogSelectionStartOffset = sourceSelectionStartOffset -
+    interactionLogSourceOffset;
+  const interactionLogSelectionEndOffset = sourceSelectionEndOffset -
+    interactionLogSourceOffset;
   const result: UserInteraction[] = [];
   for (const event of file.userInteractionLog.log) {
     const eventTimeSeconds = event.time / 1000;
@@ -164,10 +167,6 @@ export function selectSelectionUserInteractions(
 
   return result;
 }
-
-const diffPatcher = create({ textDiff: { minLength: 20 } });
-
-const trimerger = new Trimerger(diffPatcher);
 
 export interface RootState {
   playback: PlaybackState;
@@ -215,14 +214,8 @@ export const store = configureStore({
     projects: projectsSlice.reducer,
     tempDocument: tempDocumentSlice.reducer,
   },
-  middleware: [thunk, trimerger.middleware, sideEffectMiddleware],
+  middleware: [thunk, sideEffectMiddleware],
 } as ConfigureStoreOptions);
-
-trimerger.subscribeDoc((document) => {
-  if (document) {
-    store.dispatch(replaceDocument({ project: document }));
-  }
-});
 
 export function deleteSelection({
   compositionId,
@@ -240,7 +233,7 @@ export function deleteSelection({
         compositionId: compositionId,
         startTimeSeconds: startTimeSeconds,
         endTimeSeconds: endTimeSeconds,
-      })
+      }),
     );
     dispatch(setSelection(undefined));
   };
@@ -248,10 +241,9 @@ export function deleteSelection({
 
 export async function setActiveProject(
   dispatch: (action: any) => void,
-  projectId: string
+  projectId: string,
 ): Promise<void> {
   dispatch(ActionCreators.clearHistory());
-  await trimerger.setActiveProject(projectId);
   dispatch(setActiveProjectId(projectId));
 }
 
@@ -271,7 +263,7 @@ export function tightenSelection({
         compositionId: compositionId,
         startTimeSeconds: startTimeSeconds,
         endTimeSeconds: endTimeSeconds,
-      })
+      }),
     );
     dispatch(setSelection(undefined));
   };
@@ -292,7 +284,7 @@ export function simplifySelectedMouseInteractions({
         compositionId: compositionId,
         startTimeSeconds: startTimeSeconds,
         endTimeSeconds: endTimeSeconds,
-      })
+      }),
     );
     dispatch(setSelection(undefined));
   };

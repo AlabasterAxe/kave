@@ -15,7 +15,7 @@ declare module "videocontext" {
     CONTENT = "content",
     NOCONTENT = "nocontent",
   }
-  export default class VideoContext {
+  export class VideoContext {
     /**
      * Initialise the VideoContext and render to the specific canvas. A 2nd parameter can be passed to the constructor which is a function that get's called if the VideoContext fails to initialise.
      *
@@ -36,7 +36,6 @@ declare module "videocontext" {
      * videoNode.start(0);
      * videoNode.stop(10);
      * ctx.play();
-     *
      */
     constructor(
       canvas: HTMLCanvasElement,
@@ -46,7 +45,7 @@ declare module "videocontext" {
         endOnLastSourceEnd: true,
         useVideoElementCache: true,
         videoElementCacheSize: 6,
-      }
+      },
     );
 
     get id(): string;
@@ -65,7 +64,7 @@ declare module "videocontext" {
     registerTimelineCallback(
       time: number,
       func: Function,
-      ordering: number = 0
+      ordering: number = 0,
     );
 
     /**
@@ -105,7 +104,6 @@ declare module "videocontext" {
      * ctx.registerCallback(VideoContext.EVENTS.UPDATE, updateCallback);
      * //then unregister it
      * ctx.unregisterCallback(updateCallback);
-     *
      */
     unregisterCallback(func: Function);
 
@@ -113,14 +111,12 @@ declare module "videocontext" {
      * Get the canvas that the VideoContext is using.
      *
      * @return {HTMLCanvasElement} The canvas that the VideoContext is using.
-     *
      */
     get element(): HTMLCanvasElement;
 
     /**
      * Get the current state.
      * @return {STATE} The number representing the state.
-     *
      */
     get state(): number {
       return this._state;
@@ -141,7 +137,6 @@ declare module "videocontext" {
      * videoNode.stop(20);
      * ctx.currentTime = 10; // seek 10 seconds in
      * ctx.play();
-     *
      */
     set currentTime(currentTime: number);
 
@@ -160,7 +155,6 @@ declare module "videocontext" {
      * videoNode.stop(10);
      * ctx.play();
      * setTimeout(() => console.log(ctx.currentTime),1000); //should print roughly 1.0
-     *
      */
     get currentTime(): number;
 
@@ -198,7 +192,6 @@ declare module "videocontext" {
      * videoNode.start(0);
      * videoNode.stop(10);
      * videoNode.connect(ctx.destination);
-     *
      */
     get destination(): DestinationNode;
 
@@ -295,7 +288,7 @@ declare module "videocontext" {
       src: string | HTMLVideoElement | MediaStream,
       sourceOffset: number = 0,
       preloadTime: number = 4,
-      videoElementAttributes: any = {}
+      videoElementAttributes: any = {},
     ): VideoNode;
 
     /**
@@ -315,7 +308,7 @@ declare module "videocontext" {
       src: string | HTMLAudioElement | MediaStream,
       sourceOffset: number = 0,
       preloadTime: number = 4,
-      audioElementAttributes: any = {}
+      audioElementAttributes: any = {},
     ): AudioNode;
 
     /**
@@ -325,10 +318,10 @@ declare module "videocontext" {
       src,
       sourceOffset: number = 0,
       preloadTime: number = 4,
-      videoElementAttributes: any = {}
+      videoElementAttributes: any = {},
     ) {
       this._deprecate(
-        "Warning: createVideoSourceNode will be deprecated in v1.0, please switch to using VideoContext.video()"
+        "Warning: createVideoSourceNode will be deprecated in v1.0, please switch to using VideoContext.video()",
       );
       return this.video(src, sourceOffset, preloadTime, videoElementAttributes);
     }
@@ -354,7 +347,7 @@ declare module "videocontext" {
     image(
       src: string | Image | ImageBitmap,
       preloadTime: number = 4,
-      imageElementAttributes: any = {}
+      imageElementAttributes: any = {},
     ): ImageNode;
 
     /**
@@ -364,7 +357,7 @@ declare module "videocontext" {
       src,
       sourceOffset = 0,
       preloadTime = 4,
-      imageElementAttributes = {}
+      imageElementAttributes = {},
     ): ImageNode;
 
     /**
@@ -380,7 +373,7 @@ declare module "videocontext" {
     createCanvasSourceNode(
       canvas: HTMLCanvasElement,
       sourceOffset: number = 0,
-      preloadTime: number = 4
+      preloadTime: number = 4,
     ): CanvasNode;
 
     /**
@@ -455,7 +448,6 @@ declare module "videocontext" {
      *
      * //Don't do anything exciting, just connect it to the output.
      * trackNode.connect(ctx.destination);
-     *
      */
     compositor(definition: object): CompositingNode;
 
@@ -579,7 +571,6 @@ declare module "videocontext" {
      *     requestAnimationFrame(update);
      * }
      * update();
-     *
      */
     update(dt: number);
 

@@ -5,7 +5,7 @@ import {
   useRef,
   useState,
 } from "react";
-import VideoContext from "videocontext";
+import { VideoContext } from "videocontext";
 import { Composition, FileType, KaveDoc, UserInteraction } from "kave-common";
 import { useAppDispatch, useAppSelector } from "../store/hooks";
 import {
@@ -93,7 +93,7 @@ interface PlayerViewportState {
 function Player() {
   const canvasRef: MutableRefObject<HTMLCanvasElement | null> = useRef(null);
   const playheadTimeSeconds: MutableRefObject<number> = useRef(0);
-  const [ctx, setContext] = useState<VideoContext | null>(null);
+  const [ctx, setContext] = useState< VideoContext | null>(null);
   const activeCompositionId = useAppSelector(selectActiveCompositionId);
   const playback = useAppSelector(selectPlayback);
   const project = useAppSelector(selectDocument);
