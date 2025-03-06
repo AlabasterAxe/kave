@@ -22,7 +22,11 @@ importers:
         version: 1.9.7(react-redux@9.2.0(@types/react@18.3.18)(react@18.3.1)(redux@5.0.1))(react@18.3.1)
       '@tailwindcss/aspect-ratio':
         specifier: ^0.2.1
+<<<<<<< HEAD
         version: 0.2.2(@tailwindcss/postcss7-compat@2.2.17(ts-node@10.9.2(@swc/core@1.11.5)(@types/node@12.20.55)(typescript@5.8.2)))
+=======
+        version: 0.2.2(@tailwindcss/postcss7-compat@2.2.17(ts-node@10.9.2(@types/node@12.20.55)(typescript@5.8.2)))
+>>>>>>> 8c59a46 (misc stuff trying to get it working)
       '@testing-library/react':
         specifier: ^11.1.0
         version: 11.2.7(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
@@ -41,6 +45,12 @@ importers:
       '@types/react-dom':
         specifier: ^18.2.18
         version: 18.3.5(@types/react@18.3.18)
+<<<<<<< HEAD
+=======
+      eslint:
+        specifier: ^4.18.2
+        version: 4.19.1
+>>>>>>> 8c59a46 (misc stuff trying to get it working)
       gl-matrix:
         specifier: ^3.4.3
         version: 3.4.3
@@ -72,8 +82,13 @@ importers:
         specifier: ^6.21.3
         version: 6.30.0(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
       react-scripts:
+<<<<<<< HEAD
         specifier: 5.0.1
         version: 5.0.1(@babel/plugin-syntax-flow@7.26.0(@babel/core@7.26.9))(@babel/plugin-transform-react-jsx@7.25.9(@babel/core@7.26.9))(@swc/core@1.11.5)(@types/babel__core@7.20.5)(eslint@9.21.0(jiti@1.21.7))(react@18.3.1)(sass@1.85.1)(ts-node@10.9.2(@swc/core@1.11.5)(@types/node@12.20.55)(typescript@5.8.2))(type-fest@0.21.3)(typescript@5.8.2)
+=======
+        specifier: ^5.0.1
+        version: 5.0.1(@babel/plugin-syntax-flow@7.26.0(@babel/core@7.26.9))(@babel/plugin-transform-react-jsx@7.25.9(@babel/core@7.26.9))(@types/babel__core@7.20.5)(eslint@4.19.1)(react@18.3.1)(sass@1.85.1)(ts-node@10.9.2(@types/node@12.20.55)(typescript@5.8.2))(type-fest@0.21.3)(typescript@5.8.2)
+>>>>>>> 8c59a46 (misc stuff trying to get it working)
       redux:
         specifier: ^5.0.1
         version: 5.0.1
@@ -122,6 +137,7 @@ importers:
         version: 7.0.39
       tailwindcss:
         specifier: npm:@tailwindcss/postcss7-compat
+<<<<<<< HEAD
         version: '@tailwindcss/postcss7-compat@2.2.17(ts-node@10.9.2(@swc/core@1.11.5)(@types/node@12.20.55)(typescript@5.8.2))'
       ts-jest:
         specifier: ^29.1.2
@@ -129,6 +145,15 @@ importers:
       ts-loader:
         specifier: 8.2.0
         version: 8.2.0(typescript@5.8.2)(webpack@5.98.0(@swc/core@1.11.5))
+=======
+        version: '@tailwindcss/postcss7-compat@2.2.17(ts-node@10.9.2(@types/node@12.20.55)(typescript@5.8.2))'
+      ts-jest:
+        specifier: ^29.2.6
+        version: 29.2.6(@babel/core@7.26.9)(@jest/types@29.6.3)(jest@27.5.1(ts-node@10.9.2(@types/node@12.20.55)(typescript@5.8.2)))(typescript@5.8.2)
+      ts-loader:
+        specifier: ^9.5.2
+        version: 9.5.2(typescript@5.8.2)(webpack@5.98.0)
+>>>>>>> 8c59a46 (misc stuff trying to get it working)
 
   apps/replayer:
     dependencies:
@@ -156,6 +181,7 @@ importers:
       mocha:
         specifier: ^10.2.0
         version: 10.8.2
+<<<<<<< HEAD
       puppeteer:
         specifier: ^24.3.1
         version: 24.3.1(typescript@5.8.2)
@@ -167,6 +193,10 @@ importers:
         version: 2.4.1(puppeteer-extra@3.3.6(puppeteer-core@24.3.1)(puppeteer@24.3.1(typescript@5.8.2)))
       selenium-webdriver:
         specifier: ^4.29.0
+=======
+      selenium-webdriver:
+        specifier: ^4.16.0
+>>>>>>> 8c59a46 (misc stuff trying to get it working)
         version: 4.29.0
     devDependencies:
       '@types/body-parser':
@@ -181,21 +211,35 @@ importers:
       '@types/isomorphic-fetch':
         specifier: ^0.0.39
         version: 0.0.39
+<<<<<<< HEAD
       '@types/prompt-sync':
         specifier: ^4.2.3
         version: 4.2.3
       '@types/selenium-webdriver':
         specifier: ^4.1.28
+=======
+      '@types/node':
+        specifier: ^22.13.9
+        version: 22.13.9
+      '@types/selenium-webdriver':
+        specifier: ^4.1.21
+>>>>>>> 8c59a46 (misc stuff trying to get it working)
         version: 4.1.28
       nodemon:
         specifier: ^3.0.3
         version: 3.1.9
+<<<<<<< HEAD
       prompt-sync:
         specifier: ^4.2.0
         version: 4.2.0
       ts-node:
         specifier: ^10.9.1
         version: 10.9.2(@swc/core@1.11.5)(@types/node@22.13.9)(typescript@5.8.2)
+=======
+      ts-node:
+        specifier: ^10.9.1
+        version: 10.9.2(@types/node@22.13.9)(typescript@5.8.2)
+>>>>>>> 8c59a46 (misc stuff trying to get it working)
 
   lib/VideoContext:
     dependencies:
@@ -295,7 +339,11 @@ importers:
         version: 29.7.0
       ts-jest:
         specifier: ^29.1.2
+<<<<<<< HEAD
         version: 29.2.6(@babel/core@7.26.9)(@jest/types@29.6.3)(jest@27.5.1(ts-node@10.9.2(@swc/core@1.11.5)(@types/node@12.20.55)(typescript@4.9.5)))(typescript@4.9.5)
+=======
+        version: 29.2.6(@babel/core@7.26.9)(@jest/types@29.6.3)(jest@27.5.1(ts-node@10.9.2(@types/node@12.20.55)(typescript@4.9.5)))(typescript@4.9.5)
+>>>>>>> 8c59a46 (misc stuff trying to get it working)
       typescript:
         specifier: ^4.4.4
         version: 4.9.5
@@ -1170,6 +1218,7 @@ packages:
     resolution: {integrity: sha512-CCZCDJuduB9OUkFkY2IgppNZMi2lBQgD2qzwXkEia16cge2pijY/aXi96CJMquDMn3nJdlPV1A5KrJEXwfLNzQ==}
     engines: {node: ^12.0.0 || ^14.0.0 || >=16.0.0}
 
+<<<<<<< HEAD
   '@eslint/config-array@0.19.2':
     resolution: {integrity: sha512-GNKqxfHG2ySmJOBSHg7LxeUx4xpuCoFjacmlCoYWEbaPXLwvfIjixRI12xCQZeULksQb23uiA8F40w5TojpV7w==}
     engines: {node: ^18.18.0 || ^20.9.0 || >=21.1.0}
@@ -1194,6 +1243,8 @@ packages:
     resolution: {integrity: sha512-JubJ5B2pJ4k4yGxaNLdbjrnk9d/iDz6/q8wOilpIowd6PJPgaxCuHBnBszq7Ce2TyMrywm5r4PnKm6V3iiZF+g==}
     engines: {node: ^18.18.0 || ^20.9.0 || >=21.1.0}
 
+=======
+>>>>>>> 8c59a46 (misc stuff trying to get it working)
   '@fortawesome/fontawesome-common-types@6.7.2':
     resolution: {integrity: sha512-Zs+YeHUC5fkt7Mg1l6XTniei3k4bwG/yo3iFUtZWd/pMx9g3fdvkSK9E0FOC+++phXOka78uJcYb8JaFkW52Xg==}
     engines: {node: '>=6'}
@@ -1215,6 +1266,7 @@ packages:
   '@hapi/topo@5.1.0':
     resolution: {integrity: sha512-foQZKJig7Ob0BMAYBfcJk8d77QtOe7Wo4ox7ff1lQYoNNAb6jwcY1ncdoy2e9wQZzvNy7ODZCYJkK8kzmcAnAg==}
 
+<<<<<<< HEAD
   '@humanfs/core@0.19.1':
     resolution: {integrity: sha512-5DyQ4+1JEUzejeK1JGICcideyfUbGixgS9jNgex5nqkW+cY7WZhxBigmieN5Qnw9ZosSNVC9KQKyb+GUaGyKUA==}
     engines: {node: '>=18.18.0'}
@@ -1235,6 +1287,8 @@ packages:
     resolution: {integrity: sha512-xeO57FpIu4p1Ri3Jq/EXq4ClRm86dVF2z/+kvFnyqVYRavTZmaFaUBbWCOuuTh0o/g7DSsk6kc2vrS4Vl5oPOQ==}
     engines: {node: '>=18.18'}
 
+=======
+>>>>>>> 8c59a46 (misc stuff trying to get it working)
   '@isaacs/cliui@8.0.2':
     resolution: {integrity: sha512-O8jcjabXaleOG9DQ0+ARXWZBTfnP4WNAqzuiJK7ll44AmxGKv/J2M4TPjxjY3znBCfvBXFzucm1twdyFybFqEA==}
     engines: {node: '>=12'}
@@ -1550,11 +1604,14 @@ packages:
       webpack-plugin-serve:
         optional: true
 
+<<<<<<< HEAD
   '@puppeteer/browsers@2.7.1':
     resolution: {integrity: sha512-MK7rtm8JjaxPN7Mf1JdZIZKPD2Z+W7osvrC1vjpvfOX1K0awDIHYbNi89f7eotp7eMUn2shWnt03HwVbriXtKQ==}
     engines: {node: '>=18'}
     hasBin: true
 
+=======
+>>>>>>> 8c59a46 (misc stuff trying to get it working)
   '@reduxjs/toolkit@1.9.7':
     resolution: {integrity: sha512-t7v8ZPxhhKgOKtU+uyJT13lu4vL7az5aFi4IdoDs/eS548edn2M8Ik9h8fxgvMjGoAUVFSt6ZC1P5cWmQ014QQ==}
     peerDependencies:
@@ -1721,6 +1778,7 @@ packages:
     resolution: {integrity: sha512-DOBOK255wfQxguUta2INKkzPj6AIS6iafZYiYmHn6W3pHlycSRRlvWKCfLDG10fXfLWqE3DJHgRUOyJYmARa7g==}
     engines: {node: '>=10'}
 
+<<<<<<< HEAD
   '@swc/core-darwin-arm64@1.11.5':
     resolution: {integrity: sha512-GEd1hzEx0mSGkJYMFMGLnrGgjL2rOsOsuYWyjyiA3WLmhD7o+n/EWBDo6mzD/9aeF8dzSPC0TnW216gJbvrNzA==}
     engines: {node: '>=10'}
@@ -1796,6 +1854,8 @@ packages:
   '@swc/types@0.1.19':
     resolution: {integrity: sha512-WkAZaAfj44kh/UFdAQcrMP1I0nwRqpt27u+08LMBYMqmQfwwMofYoMh/48NGkMMRfC4ynpfwRbJuu8ErfNloeA==}
 
+=======
+>>>>>>> 8c59a46 (misc stuff trying to get it working)
   '@tailwindcss/aspect-ratio@0.2.2':
     resolution: {integrity: sha512-yjvYH1qKQapYUVz0rCRAQ29KlKuiDsWJF/0d24lpTPWtTKBimcKWHiAMjZOILbnRd25PogILsbOyFFVOjFd6Ow==}
     peerDependencies:
@@ -1827,9 +1887,12 @@ packages:
     resolution: {integrity: sha512-RbzJvlNzmRq5c3O09UipeuXno4tA1FE6ikOjxZK0tuxVv3412l64l5t1W5pj4+rJq9vpkm/kwiR07aZXnsKPxw==}
     engines: {node: '>= 6'}
 
+<<<<<<< HEAD
   '@tootallnate/quickjs-emscripten@0.23.0':
     resolution: {integrity: sha512-C5Mc6rdnsaJDjO3UpGW/CQTHtCKaYlScZTly4JIu97Jxo/odCiH0ITnDXSJPTOrEKk/ycSZ0AOgTmkDtkOsvIA==}
 
+=======
+>>>>>>> 8c59a46 (misc stuff trying to get it working)
   '@trysound/sax@0.2.0':
     resolution: {integrity: sha512-L7z9BgrNEcYyUYtF+HaEfiS5ebkh9jXqbszz7pC0hRBPaatV0XjSD3+eHrpqFemQfgwiFF0QPIarnIihIDn7OA==}
     engines: {node: '>=10.13.0'}
@@ -1879,9 +1942,12 @@ packages:
   '@types/cors@2.8.17':
     resolution: {integrity: sha512-8CGDvrBj1zgo2qE+oS3pOCyYNqCPryMWY2bGfwA0dcfopWGgxs+78df0Rs3rc9THP4JkOhLsAa+15VdpAqkcUA==}
 
+<<<<<<< HEAD
   '@types/debug@4.1.12':
     resolution: {integrity: sha512-vIChWdVG3LG1SMxEvI/AK+FWJthlrqlTu7fbrlywTkkaONwk/UAGaULXRlf8vkzFBLVm0zkMdCquhL5aOjhXPQ==}
 
+=======
+>>>>>>> 8c59a46 (misc stuff trying to get it working)
   '@types/eslint-scope@3.7.7':
     resolution: {integrity: sha512-MzMFlSLBqNF2gcHWO0G1vP/YQyfvrxZ0bF+u7mzUdZ1/xK4A4sru+nraZz5i3iEIk1l1uyicaDVTB4QbbEkAYg==}
 
@@ -1960,9 +2026,12 @@ packages:
   '@types/mime@1.3.5':
     resolution: {integrity: sha512-/pyBZWSLD2n0dcHE3hq8s8ZvcETHtEuF+3E7XVt0Ig2nvsVQXdghHVcEkIWjy9A0wKfTn97a/PSDYohKIlnP/w==}
 
+<<<<<<< HEAD
   '@types/ms@2.1.0':
     resolution: {integrity: sha512-GsCCIZDE/p3i96vtEqx+7dBUGXrc7zeSK3wwPHIaRThS+9OhWIXRqzs4d6k1SVU8g91DrNRWxWUGhp5KXQb2VA==}
 
+=======
+>>>>>>> 8c59a46 (misc stuff trying to get it working)
   '@types/node-forge@1.3.11':
     resolution: {integrity: sha512-FQx220y22OKNTqaByeBGqHWYz4cl94tpcxeFdvBo3wjG6XPBuZ0BNgNZRV5J5TFmmcsJ4IzsLkmGRiQbnYsBEQ==}
 
@@ -1978,9 +2047,12 @@ packages:
   '@types/prettier@2.7.3':
     resolution: {integrity: sha512-+68kP9yzs4LMp7VNh8gdzMSPZFL44MLGqiHWvttYJe+6qnuVr4Ek9wSBQoveqY/r+LwjCcU29kNVkidwim+kYA==}
 
+<<<<<<< HEAD
   '@types/prompt-sync@4.2.3':
     resolution: {integrity: sha512-Ox77gCSx0YyeakGt/qfOZUSFNSSi+sh3ABoGOiCwiO2KODx492BJnUm9oIXS+AHJtqp12iM4RduY6viTJ9bYwA==}
 
+=======
+>>>>>>> 8c59a46 (misc stuff trying to get it working)
   '@types/prop-types@15.7.14':
     resolution: {integrity: sha512-gNMvNH49DJ7OJYv+KAKn0Xp45p8PLl6zo2YnvDIbTd4J6MER2BmWN49TG7n9LvkyihINxeKW8+3bfS2yDC9dzQ==}
 
@@ -2070,9 +2142,12 @@ packages:
   '@types/yargs@17.0.33':
     resolution: {integrity: sha512-WpxBCKWPLr4xSsHgz511rFJAM+wS28w2zEO1QDNY5zM/S8ok70NNfztH0xwhqKyaK0OHCbN98LDAZuy1ctxDkA==}
 
+<<<<<<< HEAD
   '@types/yauzl@2.10.3':
     resolution: {integrity: sha512-oJoftv0LSuaDZE3Le4DbKX+KS9G36NzOeSap90UIK0yMA/NhKJhqlSGtNDORNRaIbQfzjXDrQa0ytJ6mNRGz/Q==}
 
+=======
+>>>>>>> 8c59a46 (misc stuff trying to get it working)
   '@typescript-eslint/eslint-plugin@5.62.0':
     resolution: {integrity: sha512-TiZzBSJja/LbhNPvk6yc0JrX9XqhQ0hdh6M2svYfsHGejaKFIAGd9MQ+ERIMzLGlN/kZoYIgdxFV0PuljTKXag==}
     engines: {node: ^12.22.0 || ^14.17.0 || >=16.0.0}
@@ -2267,11 +2342,14 @@ packages:
   acorn-jsx@3.0.1:
     resolution: {integrity: sha512-AU7pnZkguthwBjKgCg6998ByQNIMjbuDQZ8bb78QAFZwPfmKia8AIzgY/gWgqCjnht8JLdXmB4YxA0KaV60ncQ==}
 
+<<<<<<< HEAD
   acorn-jsx@5.3.2:
     resolution: {integrity: sha512-rq9s+JNhf0IChjtDXxllJ7g41oZk5SlXtp0LHwyA5cejwn7vKmKp4pPri6YEePv2PU65sAsegbXtIinmDFDXgQ==}
     peerDependencies:
       acorn: ^6.0.0 || ^7.0.0 || ^8.0.0
 
+=======
+>>>>>>> 8c59a46 (misc stuff trying to get it working)
   acorn-node@1.8.2:
     resolution: {integrity: sha512-8mt+fslDufLYntIoPAaIMUe/lrbrehIiwmR3t2k9LljIzoigEPF27eLk2hy8zSGzmR/ogr7zbRKINMo1u0yh5A==}
 
@@ -2324,10 +2402,13 @@ packages:
     resolution: {integrity: sha512-RZNwNclF7+MS/8bDg70amg32dyeZGZxiDuQmZxKLAlQjr3jGyLx+4Kkk58UO7D2QdgFIQCovuSuZESne6RG6XQ==}
     engines: {node: '>= 6.0.0'}
 
+<<<<<<< HEAD
   agent-base@7.1.3:
     resolution: {integrity: sha512-jRR5wdylq8CkOe6hei19GGZnxM6rBGwFl3Bg0YItGDimvjGtAvdZk4Pu6Cl4u4Igsws4a1fd1Vq3ezrhn4KmFw==}
     engines: {node: '>= 14'}
 
+=======
+>>>>>>> 8c59a46 (misc stuff trying to get it working)
   ajv-errors@1.0.1:
     resolution: {integrity: sha512-DCRfO/4nQ+89p/RK43i8Ezd41EqdGIU4ld7nGF8OQ14oc/we5rEntLCUa7+jrn3nn83BosfwZA0wb4pon2o8iQ==}
     peerDependencies:
@@ -2606,10 +2687,13 @@ packages:
   ast-types-flow@0.0.8:
     resolution: {integrity: sha512-OH/2E5Fg20h2aPrbe+QL8JZQFko0YZaF+j4mnQ7BGhfavO7OpSLa8a0y9sBwomHdSbkhTS8TQNayBfnW5DwbvQ==}
 
+<<<<<<< HEAD
   ast-types@0.13.4:
     resolution: {integrity: sha512-x1FCFnFifvYDDzTaLII71vG5uvDwgtmDTEVWAxrgeiR8VjMONcCXJx7E+USjDtHlwFmt9MysbqgF9b9Vjr6w+w==}
     engines: {node: '>=4'}
 
+=======
+>>>>>>> 8c59a46 (misc stuff trying to get it working)
   astral-regex@1.0.0:
     resolution: {integrity: sha512-+Ryf6g3BKoRc7jfp7ad8tM4TtMiaWvbF/1/sQcZPkkS7ag3D5nMBCe2UfOTONtAkaG0tO0ij3C5Lwmf1EiyjHg==}
     engines: {node: '>=4'}
@@ -2674,9 +2758,12 @@ packages:
     resolution: {integrity: sha512-qIj0G9wZbMGNLjLmg1PT6v2mE9AH2zlnADJD/2tC6E00hgmhUOfEB6greHPAfLRSufHqROIUTkw6E+M3lH0PTQ==}
     engines: {node: '>= 0.4'}
 
+<<<<<<< HEAD
   b4a@1.6.7:
     resolution: {integrity: sha512-OnAYlL5b7LEkALw87fUVafQw5rVR9RjwGd4KUwNQ6DrrNmaVaUCgLipfVlzrPQ4tWOR9P0IXGNOx50jYCCdSJg==}
 
+=======
+>>>>>>> 8c59a46 (misc stuff trying to get it working)
   babel-cli@6.26.0:
     resolution: {integrity: sha512-wau+BDtQfuSBGQ9PzzFL3REvR9Sxnd4LKwtcHAiPjhugA7K/80vpHXafj+O5bAqJOuSefjOx5ZJnNSR2J1Qw6Q==}
     hasBin: true
@@ -2961,6 +3048,7 @@ packages:
   balanced-match@1.0.2:
     resolution: {integrity: sha512-3oSeUO0TMV67hN1AmbXsK4yaqU7tjiHlbxRDZOpH0KW9+CeX4bRAaX0Anxt0tx2MrpRpWwQaPwIlISEJhYU5Pw==}
 
+<<<<<<< HEAD
   bare-events@2.5.4:
     resolution: {integrity: sha512-+gFfDkR8pj4/TrWCGUGWmJIkBwuxPS5F+a5yWjOHQt2hHvNZd5YLzadjmDUtFmMM4y429bnKLa8bYBMHcYdnQA==}
 
@@ -2986,6 +3074,8 @@ packages:
       bare-events:
         optional: true
 
+=======
+>>>>>>> 8c59a46 (misc stuff trying to get it working)
   base64-js@1.5.1:
     resolution: {integrity: sha512-AKpaYlHn8t4SVbOHCy+b5+KKgvR4vrsD8vbvrbiQJps7fKDTkjkDry6ji0rUJjC0kzbNePLwzxq8iypo41qeWA==}
 
@@ -3001,10 +3091,13 @@ packages:
     resolution: {integrity: sha512-NF+epuEdnUYVlGuhaxbbq+dvJttwLnGY+YixlXlME5KpQ5W3CnXA5cVTneY3SPbPDRkcjMbifrwmFYcClgOZeg==}
     engines: {node: '>= 0.8'}
 
+<<<<<<< HEAD
   basic-ftp@5.0.5:
     resolution: {integrity: sha512-4Bcg1P8xhUuqcii/S0Z9wiHIrQVPMermM1any+MX5GeGD7faD3/msQUDGLol9wOcz4/jbg/WJnGqoJF6LiBdtg==}
     engines: {node: '>=10.0.0'}
 
+=======
+>>>>>>> 8c59a46 (misc stuff trying to get it working)
   batch@0.6.1:
     resolution: {integrity: sha512-x+VAiMRL6UPkx+kudNvxTl6hB2XNNCG2r+7wixVfIYwu/2HKRXimwQyaumLjMveWvT2Hkd/cAJw+QBMfJ/EKVw==}
 
@@ -3293,11 +3386,14 @@ packages:
     resolution: {integrity: sha512-rNjApaLzuwaOTjCiT8lSDdGN1APCiqkChLMJxJPWLunPAt5fy8xgU9/jNOchV84wfIxrA0lRQB7oCT8jrn/wrQ==}
     engines: {node: '>=6.0'}
 
+<<<<<<< HEAD
   chromium-bidi@2.1.2:
     resolution: {integrity: sha512-vtRWBK2uImo5/W2oG6/cDkkHSm+2t6VHgnj+Rcwhb0pP74OoUb4GipyRX/T/y39gYQPhioP0DPShn+A7P6CHNw==}
     peerDependencies:
       devtools-protocol: '*'
 
+=======
+>>>>>>> 8c59a46 (misc stuff trying to get it working)
   ci-info@1.6.0:
     resolution: {integrity: sha512-vsGdkwSCDpWmP80ncATX7iea5DWQemg1UgCW5J8tqjU3lYw4FBYuj89J0CTVomA7BEfvSZd84GmHko+MxFQU2A==}
 
@@ -3359,6 +3455,7 @@ packages:
   cliui@7.0.4:
     resolution: {integrity: sha512-OcRE68cOsVMXp1Yvonl/fzkQOyjLSu/8bhPDfQt0e0/Eb283TKP20Fs2MqoPsr9SwA595rRCA+QMzYc9nBP+JQ==}
 
+<<<<<<< HEAD
   cliui@8.0.1:
     resolution: {integrity: sha512-BSeNnyus75C4//NQ9gQt1/csTXyo/8Sb+afLAkzAptFuMsod9HFokGNudZpi/oQV73hnVK+sR+5PVRMd+Dr7YQ==}
     engines: {node: '>=12'}
@@ -3367,6 +3464,8 @@ packages:
     resolution: {integrity: sha512-we+NuQo2DHhSl+DP6jlUiAhyAjBQrYnpOk15rN6c6JSPScjiCLh8IbSU+VTcph6YS3o7mASE8a0+gbZ7ChLpgg==}
     engines: {node: '>=0.10.0'}
 
+=======
+>>>>>>> 8c59a46 (misc stuff trying to get it working)
   clsx@1.2.1:
     resolution: {integrity: sha512-EcR6r5a8bj6pu3ycsa/E/cKVGuTgZJZdsyUYHOksG/UHIiKfjxzRxYJpyVBwYaQeOvghal9fcc4PidlgzugAQg==}
     engines: {node: '>=6'}
@@ -3584,6 +3683,7 @@ packages:
     resolution: {integrity: sha512-AdmX6xUzdNASswsFtmwSt7Vj8po9IuqXm0UXz7QKPuEUmPB4XyjGfaAr2PSuELMwkRMVH1EpIkX5bTZGRB3eCA==}
     engines: {node: '>=10'}
 
+<<<<<<< HEAD
   cosmiconfig@9.0.0:
     resolution: {integrity: sha512-itvL5h8RETACmOTFc4UfIyB2RfEHi71Ax6E/PivVxq9NseKbOWpeyHEOIbmAw1rs8Ak0VursQNww7lf7YtUwzg==}
     engines: {node: '>=14'}
@@ -3593,6 +3693,8 @@ packages:
       typescript:
         optional: true
 
+=======
+>>>>>>> 8c59a46 (misc stuff trying to get it working)
   create-ecdh@4.0.4:
     resolution: {integrity: sha512-mf+TCx8wWc9VpuxfP2ht0iSISLZnt0JgWlrOKZiNqyUZWnjIaCIVNQArMHnCZKfEYRg6IM7A+NeJoN8gf/Ws0A==}
 
@@ -3788,10 +3890,13 @@ packages:
     resolution: {integrity: sha512-jRFi8UDGo6j+odZiEpjazZaWqEal3w/basFjQHQEwVtZJGDpxbH1MeYluwCS8Xq5wmLJooDlMgvVarmWfGM44g==}
     engines: {node: '>=0.10'}
 
+<<<<<<< HEAD
   data-uri-to-buffer@6.0.2:
     resolution: {integrity: sha512-7hvf7/GW8e86rW0ptuwS3OcBGDjIi6SZva7hCyWC0yYry2cOPmLIjXAUHI6DK2HsnwJd9ifmt57i8eV2n4YNpw==}
     engines: {node: '>= 14'}
 
+=======
+>>>>>>> 8c59a46 (misc stuff trying to get it working)
   data-urls@1.1.0:
     resolution: {integrity: sha512-YTWYI9se1P55u58gL5GkQHW4P6VJBJ5iBT+B5a7i2Tjadhv52paJG0qHX4A0OR6/t52odI64KP2YvFpkDOi3eQ==}
 
@@ -3919,10 +4024,13 @@ packages:
   defined@1.0.1:
     resolution: {integrity: sha512-hsBd2qSVCRE+5PmNdHt1uzyrFu5d3RwmFDKzyNZMFq/EwDNJF7Ee5+D5oEKF0hU6LhtoUF1macFvOe4AskQC1Q==}
 
+<<<<<<< HEAD
   degenerator@5.0.1:
     resolution: {integrity: sha512-TllpMR/t0M5sqCXfj85i4XaAzxmS5tVA16dqvdkMwGmzI+dXLXnw3J+3Vdv7VKw+ThlTMboK6i9rnZ6Nntj5CQ==}
     engines: {node: '>= 14'}
 
+=======
+>>>>>>> 8c59a46 (misc stuff trying to get it working)
   delayed-stream@1.0.0:
     resolution: {integrity: sha512-ZySD7Nf91aLB0RxL4KGrKHBXl7Eds1DAmEdcoVawXnLD7SDhpNgtuII2aAkg7a7QS41jxPSZ17p4VdGnMHk3MQ==}
     engines: {node: '>=0.4.0'}
@@ -3979,9 +4087,12 @@ packages:
     engines: {node: '>=0.8.0'}
     hasBin: true
 
+<<<<<<< HEAD
   devtools-protocol@0.0.1402036:
     resolution: {integrity: sha512-JwAYQgEvm3yD45CHB+RmF5kMbWtXBaOGwuxa87sZogHcLCv8c/IqnThaoQ1y60d7pXWjSKWQphPEc+1rAScVdg==}
 
+=======
+>>>>>>> 8c59a46 (misc stuff trying to get it working)
   didyoumean@1.2.2:
     resolution: {integrity: sha512-gxtyfqMg7GKyhQmb056K7M3xszy/myH8w+B4RT+QXBQsvAOdc3XymqDDPHx1BgPgsdAA5SIifona89YtRATDzw==}
 
@@ -4165,10 +4276,13 @@ packages:
   entities@2.2.0:
     resolution: {integrity: sha512-p92if5Nz619I0w+akJrLZH0MX0Pb5DX39XOwQTtXSdQQOaYH03S1uIQp4mhOZtAXrxq4ViO67YTiLBo2638o9A==}
 
+<<<<<<< HEAD
   env-paths@2.2.1:
     resolution: {integrity: sha512-+h1lkLKhZMTYjog1VEpJNG7NZJWcuc2DDk/qsqSTRRCOXiLjeQ1d1/udrUGhqMxUgAlwKNZ0cf2uqan5GLuS2A==}
     engines: {node: '>=6'}
 
+=======
+>>>>>>> 8c59a46 (misc stuff trying to get it working)
   errno@0.1.8:
     resolution: {integrity: sha512-dJ6oBr5SQ1VSd9qkk7ByRgb/1SH4JZjCHSW/mr63/QcXO9zLVxvJ6Oy13nio03rxpSnVDDjFor75SjVeZWPW/A==}
     hasBin: true
@@ -4359,10 +4473,13 @@ packages:
     resolution: {integrity: sha512-2NxwbF/hZ0KpepYN0cNbo+FN6XoK7GaHlQhgx/hIZl6Va0bF45RQOOwhLIy8lQDbuCiadSLCBnH2CFYquit5bw==}
     engines: {node: '>=8.0.0'}
 
+<<<<<<< HEAD
   eslint-scope@8.2.0:
     resolution: {integrity: sha512-PHlWUfG6lvPc3yvP5A4PNyBL1W8fkDUccmI21JUu/+GKZBoH/W5u6usENXUrWFRsyoW5ACUjFGgAFQp5gUlb/A==}
     engines: {node: ^18.18.0 || ^20.9.0 || >=21.1.0}
 
+=======
+>>>>>>> 8c59a46 (misc stuff trying to get it working)
   eslint-visitor-keys@1.3.0:
     resolution: {integrity: sha512-6J72N8UNa462wa/KFODt/PJ3IU60SDpC3QXC1Hjc1BXXpfL2C9R5+AU7jhe0F6GREqVMh4Juu+NY7xn+6dipUQ==}
     engines: {node: '>=4'}
@@ -4375,10 +4492,13 @@ packages:
     resolution: {integrity: sha512-wpc+LXeiyiisxPlEkUzU6svyS1frIO3Mgxj1fdy7Pm8Ygzguax2N3Fa/D/ag1WqbOprdI+uY6wMUl8/a2G+iag==}
     engines: {node: ^12.22.0 || ^14.17.0 || >=16.0.0}
 
+<<<<<<< HEAD
   eslint-visitor-keys@4.2.0:
     resolution: {integrity: sha512-UyLnSehNt62FFhSwjZlHmeokpRK59rcz29j+F1/aDgbkbRTk7wIc9XzdoasMUbRNKDM0qQt/+BJ4BrpFeABemw==}
     engines: {node: ^18.18.0 || ^20.9.0 || >=21.1.0}
 
+=======
+>>>>>>> 8c59a46 (misc stuff trying to get it working)
   eslint-webpack-plugin@3.2.0:
     resolution: {integrity: sha512-avrKcGncpPbPSUHX6B3stNGzkKFto3eL+DKM4+VyMrVnhPc3vRczVlCq3uhuFOdRvDHTVXuzwk1ZKUrqDQHQ9w==}
     engines: {node: '>= 12.13.0'}
@@ -4392,6 +4512,7 @@ packages:
     deprecated: This version is no longer supported. Please see https://eslint.org/version-support for other options.
     hasBin: true
 
+<<<<<<< HEAD
   eslint@9.21.0:
     resolution: {integrity: sha512-KjeihdFqTPhOMXTt7StsDxriV4n66ueuF/jfPNC3j/lduHwr/ijDwJMsF+wyMJethgiKi5wniIE243vi07d3pg==}
     engines: {node: ^18.18.0 || ^20.9.0 || >=21.1.0}
@@ -4406,6 +4527,8 @@ packages:
     resolution: {integrity: sha512-0QYC8b24HWY8zjRnDTL6RiHfDbAWn63qb4LMj1Z4b076A4une81+z03Kg7l7mn/48PUTqoLptSXez8oknU8Clg==}
     engines: {node: ^18.18.0 || ^20.9.0 || >=21.1.0}
 
+=======
+>>>>>>> 8c59a46 (misc stuff trying to get it working)
   espree@3.5.4:
     resolution: {integrity: sha512-yAcIQxtmMiB/jL32dzEp2enBeidsB7xWPLNiw3IIkpVds1P+h7qF9YwJq1yUNzp2OKXgAprs4F61ih66UsoD1A==}
     engines: {node: '>=0.10.0'}
@@ -4554,11 +4677,14 @@ packages:
     resolution: {integrity: sha512-xoh5G1W/PB0/27lXgMQyIhP5DSY/LhoCsOyZgb+6iMmRtCwVBo55uKaMoEYrDCKQhWvqEip5ZPKAc6eFNyf/MA==}
     hasBin: true
 
+<<<<<<< HEAD
   extract-zip@2.0.1:
     resolution: {integrity: sha512-GDhU9ntwuKyGXdZBUgTIe+vXnWj0fppUEtMDL0+idd5Sta8TGpHssn/eusA9mrPr9qNDym6SxAYZjNvCn/9RBg==}
     engines: {node: '>= 10.17.0'}
     hasBin: true
 
+=======
+>>>>>>> 8c59a46 (misc stuff trying to get it working)
   extsprintf@1.3.0:
     resolution: {integrity: sha512-11Ndz7Nv+mvAC1j0ktTa7fAb0vLyGGX+rMHNBYQviQDGU0Hw7lhctJANqbPhu9nV9/izT/IntTgZ7Im/9LJs9g==}
     engines: {'0': node >=0.6.0}
@@ -4569,9 +4695,12 @@ packages:
   fast-deep-equal@3.1.3:
     resolution: {integrity: sha512-f3qQ9oQy9j2AhBe/H9VC91wLmKBCCU/gDOnKNAYG5hswO7BLKj09Hc5HYNz9cGI++xlpDCIgDaitVs03ATR84Q==}
 
+<<<<<<< HEAD
   fast-fifo@1.3.2:
     resolution: {integrity: sha512-/d9sfos4yxzpwkDkuN7k2SqFKtYNmCTzgfEpz82x34IM9/zc8KGxQoXg1liNC/izpRM/MBdt44Nmx41ZWqk+FQ==}
 
+=======
+>>>>>>> 8c59a46 (misc stuff trying to get it working)
   fast-glob@3.3.3:
     resolution: {integrity: sha512-7MptL8U0cqcFdzIzwOTHoilX9x5BrNqye7Z/LuC7kCMRio1EMSyqRK3BEAUD7sXRq4iT4AzTVuZdhgQ2TCvYLg==}
     engines: {node: '>=8.6.0'}
@@ -4614,10 +4743,13 @@ packages:
     resolution: {integrity: sha512-uXP/zGzxxFvFfcZGgBIwotm+Tdc55ddPAzF7iHshP4YGaXMww7rSF9peD9D1sui5ebONg5UobsZv+FfgEpGv/w==}
     engines: {node: '>=0.10.0'}
 
+<<<<<<< HEAD
   file-entry-cache@8.0.0:
     resolution: {integrity: sha512-XXTUwCvisa5oacNGRP9SfNtYBNAMi+RPwBFmblZEF7N7swHYQS6/Zfk7SRwx4D5j3CH211YNRco1DEMNVfZCnQ==}
     engines: {node: '>=16.0.0'}
 
+=======
+>>>>>>> 8c59a46 (misc stuff trying to get it working)
   file-loader@6.2.0:
     resolution: {integrity: sha512-qo3glqyTa61Ytg4u73GultjHGjdRyig3tG6lPtyX/jOEJvHif9uB0/OCI2Kif6ctF3caQTW2G5gym21oAsI4pw==}
     engines: {node: '>= 10.13.0'}
@@ -4705,17 +4837,23 @@ packages:
     resolution: {integrity: sha512-VwyB3Lkgacfik2vhqR4uv2rvebqmDvFu4jlN/C1RzWoJEo8I7z4Q404oiqYCkq41mni8EzQnm95emU9seckwtg==}
     engines: {node: '>=0.10.0'}
 
+<<<<<<< HEAD
   flat-cache@4.0.1:
     resolution: {integrity: sha512-f7ccFPK3SXFHpx15UIGyRJ/FJQctuKZ0zVuN3frBo4HnK3cay9VEW0R6yPYFHC0AgqhukPzKjq22t5DmAyqGyw==}
     engines: {node: '>=16'}
 
+=======
+>>>>>>> 8c59a46 (misc stuff trying to get it working)
   flat@5.0.2:
     resolution: {integrity: sha512-b6suED+5/3rTpUBdG1gupIl8MPFCAMA0QXwmljLhvCUKcUvdE4gWky9zpuGCcXHOsz4J9wPGNWq6OKpmIzz3hQ==}
     hasBin: true
 
+<<<<<<< HEAD
   flatted@3.3.3:
     resolution: {integrity: sha512-GX+ysw4PBCz0PzosHDepZGANEuFCMLrnRTiEy9McGjmkCQYwRq4A/X786G/fjM/+OjsWSU1ZrY5qyARZmO/uwg==}
 
+=======
+>>>>>>> 8c59a46 (misc stuff trying to get it working)
   flush-write-stream@1.1.1:
     resolution: {integrity: sha512-3Z4XhFZ3992uIq0XOqb9AreonueSYphE6oYbpt5+3u06JWklbsPkNv3ZKkP9Bz/r+1MWCaMoSQ28P85+1Yc77w==}
 
@@ -4732,10 +4870,13 @@ packages:
     resolution: {integrity: sha512-dKx12eRCVIzqCxFGplyFKJMPvLEWgmNtUrpTiJIR5u97zEhRG8ySrtboPHZXx7daLxQVrl643cTzbab2tkQjxg==}
     engines: {node: '>= 0.4'}
 
+<<<<<<< HEAD
   for-in@0.1.8:
     resolution: {integrity: sha512-F0to7vbBSHP8E3l6dCjxNOLuSFAACIxFy3UehTUlG7svlXi37HHsDkyVcHo0Pq8QwrE+pXvWSVX3ZT1T9wAZ9g==}
     engines: {node: '>=0.10.0'}
 
+=======
+>>>>>>> 8c59a46 (misc stuff trying to get it working)
   for-in@1.0.2:
     resolution: {integrity: sha512-7EwmXrOjyL+ChxMhmG5lnW9MPt1aIeZEwKhQzoBUdTV0N3zuwWDZYVJatDvZ2OyzPUvdIAZDsCetk3coyMfcnQ==}
     engines: {node: '>=0.10.0'}
@@ -4889,10 +5030,13 @@ packages:
     resolution: {integrity: sha512-GMat4EJ5161kIy2HevLlr4luNjBgvmj413KaQA7jt4V8B4RDsfpHk7WQ9GVqfYyyx8OS/L66Kox+rJRNklLK7w==}
     engines: {node: '>=6'}
 
+<<<<<<< HEAD
   get-stream@5.2.0:
     resolution: {integrity: sha512-nBF+F1rAZVCu/p7rjzgA+Yb4lfYXrpl7a6VmJrU8wF9I1CKvP/QwPNZHnOlwbTkY6dvtFIzFMSyQXbLoTQPRpA==}
     engines: {node: '>=8'}
 
+=======
+>>>>>>> 8c59a46 (misc stuff trying to get it working)
   get-stream@6.0.1:
     resolution: {integrity: sha512-ts6Wi+2j3jQjqi70w5AlN8DFnkSwC+MqmxEzdEALB2qXZYV3X/b1CTfgPLGJNMeAWxdPfU8FO1ms3NUfaHCPYg==}
     engines: {node: '>=10'}
@@ -4901,10 +5045,13 @@ packages:
     resolution: {integrity: sha512-w9UMqWwJxHNOvoNzSJ2oPF5wvYcvP7jUvYzhp67yEhTi17ZDBBC1z9pTdGuzjD+EFIqLSYRweZjqfiPzQ06Ebg==}
     engines: {node: '>= 0.4'}
 
+<<<<<<< HEAD
   get-uri@6.0.4:
     resolution: {integrity: sha512-E1b1lFFLvLgak2whF2xDBcOy6NLVGZBqqjJjsIhvopKfWWEi64pLVTWWehV8KlLerZkfNTA95sTe2OdJKm1OzQ==}
     engines: {node: '>= 14'}
 
+=======
+>>>>>>> 8c59a46 (misc stuff trying to get it working)
   get-value@2.0.6:
     resolution: {integrity: sha512-Ln0UQDlxH1BapMu3GPtf7CuYNwRZf2gwCuPqbyG6pB8WfmFpzqcy4xtAaAMUhnNqjMKTiCPZG2oMT3YSx8U2NA==}
     engines: {node: '>=0.10.0'}
@@ -4983,10 +5130,13 @@ packages:
     resolution: {integrity: sha512-AhO5QUcj8llrbG09iWhPU2B204J1xnPeL8kQmVorSsy+Sjj1sk8gIyh6cUocGmH4L0UuhAJy+hJMRA4mgA4mFQ==}
     engines: {node: '>=8'}
 
+<<<<<<< HEAD
   globals@14.0.0:
     resolution: {integrity: sha512-oahGvuMGQlPw/ivIYBjVSrWAfWLBeku5tpPE2fOPLi+WHffIWbuh2tCjhyQhTBPMf5E9jDEH4FOmTYgYwbKwtQ==}
     engines: {node: '>=18'}
 
+=======
+>>>>>>> 8c59a46 (misc stuff trying to get it working)
   globals@9.18.0:
     resolution: {integrity: sha512-S0nG3CLEQiY/ILxqtztTWH/3iRRdyBLw6KMDxnKMchrtbj2OFmehVh0WUCfW3DUrIgx/qFrJPICrq4Z4sTR9UQ==}
     engines: {node: '>=0.10.0'}
@@ -5202,10 +5352,13 @@ packages:
     resolution: {integrity: sha512-k0zdNgqWTGA6aeIRVpvfVob4fL52dTfaehylg0Y4UvSySvOq/Y+BOyPrgpUrA7HylqvU8vIZGsRuXmspskV0Tg==}
     engines: {node: '>= 6'}
 
+<<<<<<< HEAD
   http-proxy-agent@7.0.2:
     resolution: {integrity: sha512-T1gkAiYYDWYx3V5Bmyu7HcfcvL7mUrTWiM6yOfa3PIphViJ/gFPbvidQ+veqSOHci/PxBcDabeUNCzpOODJZig==}
     engines: {node: '>= 14'}
 
+=======
+>>>>>>> 8c59a46 (misc stuff trying to get it working)
   http-proxy-middleware@2.0.7:
     resolution: {integrity: sha512-fgVY8AV7qU7z/MmXJ/rxwbrtQH4jBQ9m7kp3llF0liB7glmFeVZFBepQb32T3y8n8k2+AEYuMPCpinYW+/CuRA==}
     engines: {node: '>=12.0.0'}
@@ -5234,10 +5387,13 @@ packages:
     resolution: {integrity: sha512-dFcAjpTQFgoLMzC2VwU+C/CbS7uRL0lWmxDITmqm7C+7F0Odmj6s9l6alZc6AELXhrnggM2CeWSXHGOdX2YtwA==}
     engines: {node: '>= 6'}
 
+<<<<<<< HEAD
   https-proxy-agent@7.0.6:
     resolution: {integrity: sha512-vK9P5/iUfdl95AI+JVyUuIcVtd4ofvtrOr3HNtM2yxC9bnMbEdp3x01OhQNnjb8IJYi38VlTE3mBXwcfvywuSw==}
     engines: {node: '>= 14'}
 
+=======
+>>>>>>> 8c59a46 (misc stuff trying to get it working)
   human-signals@2.1.0:
     resolution: {integrity: sha512-B4FFZ6q/T2jhhksgkbEW3HBvWIfDW85snkQgawt07S7J5QXTk6BkNV+0yAeZrM5QpMAdYlocGoljn0sJ/WQkFw==}
     engines: {node: '>=10.17.0'}
@@ -5366,10 +5522,13 @@ packages:
     resolution: {integrity: sha512-wPVv/y/QQ/Uiirj/vh3oP+1Ww+AWehmi1g5fFWGPF6IpCBCDVrhgHRMvrLfdYcwDh3QJbGXDW4JAuzxElLSqKA==}
     engines: {node: '>=4'}
 
+<<<<<<< HEAD
   ip-address@9.0.5:
     resolution: {integrity: sha512-zHtQzGojZXTwZTHQqra+ETKd4Sn3vgi7uBmlPoXVWZqYvuKmtI0l/VZTjqGmJY9x88GGOaZ9+G9ES8hC4T4X8g==}
     engines: {node: '>= 12'}
 
+=======
+>>>>>>> 8c59a46 (misc stuff trying to get it working)
   ipaddr.js@1.9.1:
     resolution: {integrity: sha512-0KI/607xoxSToH7GjN1FfSbLoU0+btTicjsQSWQlh/hZykN8KpmMf7uYwPW3R+akZ6R/w18ZlXSHBYXiYUPO3g==}
     engines: {node: '>= 0.10'}
@@ -6206,9 +6365,12 @@ packages:
   jsbn@0.1.1:
     resolution: {integrity: sha512-UVU9dibq2JcFWxQPA6KCqj5O42VOmAY3zQUfEKxU0KpTGXwNoCjkX1e13eHNvw/xPynt6pU0rZ1htjWTNTSXsg==}
 
+<<<<<<< HEAD
   jsbn@1.1.0:
     resolution: {integrity: sha512-4bYVV3aAMtDTTu4+xsDYa6sy9GyJ69/amsu9sYF2zqjiEoZA5xJi3BrfX3uY+/IekIu7MwdObdbDWpoZdBv3/A==}
 
+=======
+>>>>>>> 8c59a46 (misc stuff trying to get it working)
   jsdoc@3.6.11:
     resolution: {integrity: sha512-8UCU0TYeIYD9KeLzEcAu2q8N/mx9O3phAGl32nmHlE0LpaJL71mMkP4d+QE5zWfNt50qheHtOZ0qoxVrsX5TUg==}
     engines: {node: '>=12.0.0'}
@@ -6244,9 +6406,12 @@ packages:
     engines: {node: '>=6'}
     hasBin: true
 
+<<<<<<< HEAD
   json-buffer@3.0.1:
     resolution: {integrity: sha512-4bV5BfR2mqfQTJm+V5tPPdf+ZpuhiIvTuAB5g8kcrXOZpTT/QwwVRWBywX1ozr6lEuPdbHxwaJlm9G6mI2sfSQ==}
 
+=======
+>>>>>>> 8c59a46 (misc stuff trying to get it working)
   json-parse-better-errors@1.0.2:
     resolution: {integrity: sha512-mrqyZKfX5EhL7hvqcV6WG1yYjnjeuYDzDhhcAAUrq8Po85NBQBJP+ZDUT75qZQ98IkUoBqdkExkukOU7Ts2wrw==}
 
@@ -6335,6 +6500,7 @@ packages:
     resolution: {integrity: sha512-iYSchDJ+liQ8iwbSI2QqsQOvqv58eJCEanyJPJi+Khyu8smkcKSFUCbPwzFcL7YVtZ6eONjqRX/38caJ7QjRAQ==}
     engines: {node: '>= 0.6'}
 
+<<<<<<< HEAD
   keyv@4.5.4:
     resolution: {integrity: sha512-oxVHkHR/EJf2CNXnWxRLW6mg7JyCCUcG0DtEGmL2ctUo1PNTin1PUil+r/+4r5MpVgC/fn1kjsx7mjSujKqIpw==}
 
@@ -6342,6 +6508,8 @@ packages:
     resolution: {integrity: sha512-0u8i1NZ/mg0b+W3MGGw5I7+6Eib2nx72S/QvXa0hYjEkjTknYmEYQJwGu3mLC0BrhtJjtQafTkyRUQ75Kx0LVg==}
     engines: {node: '>=0.10.0'}
 
+=======
+>>>>>>> 8c59a46 (misc stuff trying to get it working)
   kind-of@3.2.2:
     resolution: {integrity: sha512-NOW9QQXMoZGg/oqnVNoNTTIFEIid1627WCffUBJEdMxYApq7mNE7CpzucIPc+ZQg25Phej7IJSmX3hO+oblOtQ==}
     engines: {node: '>=0.10.0'}
@@ -6440,6 +6608,7 @@ packages:
     resolution: {integrity: sha512-cc8oEVoctTvsFZ/Oje/kGnHbpWHYBe8IAJe4C0QNc3t8uM/0Y8+erSz/7Y1ALuXTEZTMvxXwO6YbX1ey3ujiZw==}
     engines: {node: '> 0.8'}
 
+<<<<<<< HEAD
   lazy-cache@0.2.7:
     resolution: {integrity: sha512-gkX52wvU/R8DVMMt78ATVPFMJqfW8FPz1GZ1sVHBVQHmu/WvhIWE4cE1GBzhJNFicDeYhnwp6Rl35BcAIM3YOQ==}
     engines: {node: '>=0.10.0'}
@@ -6448,6 +6617,8 @@ packages:
     resolution: {integrity: sha512-RE2g0b5VGZsOCFOCgP7omTRYFqydmZkBwl5oNnQ1lDYC57uyO9KqNnNVxT7COSHTxrRCWVcAVOcbjk+tvh/rgQ==}
     engines: {node: '>=0.10.0'}
 
+=======
+>>>>>>> 8c59a46 (misc stuff trying to get it working)
   lcid@2.0.0:
     resolution: {integrity: sha512-avPEb8P8EGnwXKClwsNUgryVjllcRqtMYa49NTsbQagYuT1DcXnl1915oxWjoyGrXR6zH/Y0Zc96xWsPcoDKeA==}
     engines: {node: '>=6'}
@@ -6468,10 +6639,13 @@ packages:
     resolution: {integrity: sha512-0OO4y2iOHix2W6ujICbKIaEQXvFQHue65vUG3pb5EUomzPI90z9hsA1VsO/dbIIpC53J8gxM9Q4Oho0jrCM/yA==}
     engines: {node: '>= 0.8.0'}
 
+<<<<<<< HEAD
   levn@0.4.1:
     resolution: {integrity: sha512-+bT2uH4E5LGE7h/n3evcS/sQlJXCpIp6ym8OWJ5eV6+67Dsql/LaaT7qJBAt2rzfoa/5QBGBhxDix1dMt2kQKQ==}
     engines: {node: '>= 0.8.0'}
 
+=======
+>>>>>>> 8c59a46 (misc stuff trying to get it working)
   lie@3.3.0:
     resolution: {integrity: sha512-UaiMJzeWRlEujzAuw5LokY1L5ecNQYZKfmyZ9L7wDHb/p5etKaxXhohBcrw0EYby+G/NA52vRSN4N39dxHAIwQ==}
 
@@ -6581,9 +6755,12 @@ packages:
   lodash.memoize@4.1.2:
     resolution: {integrity: sha512-t7j+NzmgnQzTAYXcsHYLgimltOV1MXHtlOWf6GjL9Kj8GK5FInw5JotxvbOs+IvV1/Dzo04/fCGfLVs7aXb4Ag==}
 
+<<<<<<< HEAD
   lodash.merge@4.6.2:
     resolution: {integrity: sha512-0KpjqXRVvrYyCsX1swR/XTK0va6VQkQM6MNo7PqW77ByjAhoARA8EfrP1N4+KlKj8YS0ZUCtRT/YUuhyYDujIQ==}
 
+=======
+>>>>>>> 8c59a46 (misc stuff trying to get it working)
   lodash.once@4.1.1:
     resolution: {integrity: sha512-Sb487aTOCr9drQVL8pIxOzVhafOjZN9UU54hiN8PU3uAiSV7lx1yYNpbNmex2PK6dSJoNTSJUUswT651yww3Mg==}
 
@@ -6647,10 +6824,13 @@ packages:
   lru-cache@5.1.1:
     resolution: {integrity: sha512-KpNARQA3Iwv+jTA0utUVVbrh+Jlrr1Fv0e56GGzAFOXN7dk/FviaDW8LHmK52DlcH4WP2n6gI8vN1aesBFgo9w==}
 
+<<<<<<< HEAD
   lru-cache@7.18.3:
     resolution: {integrity: sha512-jumlc0BIUrS3qJGgIkWZsyfAM7NCWiBcCDhnd+3NNM5KbBmLTgHVfWBcg6W+rLUsIpzpERPsvwUP7CckAQSOoA==}
     engines: {node: '>=12'}
 
+=======
+>>>>>>> 8c59a46 (misc stuff trying to get it working)
   lws-basic-auth@0.1.1:
     resolution: {integrity: sha512-npPpqkOFzJzB9yJ2pGXmiYOswH+0n86ro75WhromeGuNo0GfE18ZLI/VCOVWmBbeXp2pcnPIMUAdkNSgukpAww==}
     engines: {node: '>=7.6'}
@@ -6826,10 +7006,13 @@ packages:
     resolution: {integrity: sha512-S3UwM3yj5mtUSEfP41UZmt/0SCoVYUcU1rkXv+BQ5Ig8ndL4sPoJNBUJERafdPb5jjHJGuMgytgKvKIf58XNBw==}
     engines: {node: '>= 0.10.0'}
 
+<<<<<<< HEAD
   merge-deep@3.0.3:
     resolution: {integrity: sha512-qtmzAS6t6grwEkNrunqTBdn0qKwFgNWvlxUbAV8es9M7Ot1EbyApytCnvE0jALPa46ZpKDUo527kKiaWplmlFA==}
     engines: {node: '>=0.10.0'}
 
+=======
+>>>>>>> 8c59a46 (misc stuff trying to get it working)
   merge-descriptors@1.0.3:
     resolution: {integrity: sha512-gaNvAS7TZ897/rVaZ0nMtAyxNyi/pdbjbAwUpFQpN70GqnVfOiXpeUUMKRBmzXaSQ8DdTX4/0ms62r2K+hE6mQ==}
 
@@ -6925,17 +7108,23 @@ packages:
     resolution: {integrity: sha512-x471SsVjUtBRtcvd4BzKE9kFC+/2TeWgKCgw0bZcw1b9l2X3QX5vCWgF+KaZaYm87Ss//rHnWryupDrgLvmSkA==}
     engines: {node: '>=4.0.0'}
 
+<<<<<<< HEAD
   mitt@3.0.1:
     resolution: {integrity: sha512-vKivATfr97l2/QBCYAkXYDbrIWPM2IIKEl7YPhjCvKlG3kE2gm+uBo6nEXK3M5/Ffh/FLpKExzOQ3JJoJGFKBw==}
 
+=======
+>>>>>>> 8c59a46 (misc stuff trying to get it working)
   mixin-deep@1.3.2:
     resolution: {integrity: sha512-WRoDn//mXBiJ1H40rqa3vH0toePwSsGb45iInWlTySa+Uu4k3tYUSxa2v1KqAiLtvlrSzaExqS1gtk96A9zvEA==}
     engines: {node: '>=0.10.0'}
 
+<<<<<<< HEAD
   mixin-object@2.0.1:
     resolution: {integrity: sha512-ALGF1Jt9ouehcaXaHhn6t1yGWRqGaHkPFndtFVHfZXOvkIZ/yoGaSi0AHVTafb3ZBGg4dr/bDwnaEKqCXzchMA==}
     engines: {node: '>=0.10.0'}
 
+=======
+>>>>>>> 8c59a46 (misc stuff trying to get it working)
   mkdirp@0.5.6:
     resolution: {integrity: sha512-FP+p8RB8OWpF3YZBCrP5gtADmtXApB5AMLn+vdyA+PyxCjrCs00mjyUozssO33cwDeT3wNGdLxJ5M//YqtHAJw==}
     hasBin: true
@@ -7013,10 +7202,13 @@ packages:
   neo-async@2.6.2:
     resolution: {integrity: sha512-Yd3UES5mWCSqR+qNT93S3UoYUkqAZ9lLg8a7g9rimsWmYGK8cVToA4/sF3RrshdyV3sAGMXVUmpMYOw+dLpOuw==}
 
+<<<<<<< HEAD
   netmask@2.0.2:
     resolution: {integrity: sha512-dBpDMdxv9Irdq66304OLfEmQ9tbNRFnFTuZiLo+bD+r332bBmMJ8GBLXklIXXgxd3+v9+KUnZaUR5PJMa75Gsg==}
     engines: {node: '>= 0.4.0'}
 
+=======
+>>>>>>> 8c59a46 (misc stuff trying to get it working)
   nice-try@1.0.5:
     resolution: {integrity: sha512-1nh45deeb5olNY7eX82BkPO7SSxR5SSYJiPTrTdFUVYwAl8CKMA5N9PjTYkHiRjisVcxcQ1HXdLhx2qxxJzLNQ==}
 
@@ -7230,10 +7422,13 @@ packages:
     resolution: {integrity: sha512-+IW9pACdk3XWmmTXG8m3upGUJst5XRGzxMRjXzAuJ1XnIFNvfhjjIuYkDvysnPQ7qzqVzLt78BCruntqRhWQbA==}
     engines: {node: '>= 0.8.0'}
 
+<<<<<<< HEAD
   optionator@0.9.4:
     resolution: {integrity: sha512-6IpQ7mKUxRcZNLIObR0hz7lxsapSSIYNZJwXPGeF0mTVqGKFIXj1DQcMoT22S3ROcLyY/rz0PWaWZ9ayWmad9g==}
     engines: {node: '>= 0.8.0'}
 
+=======
+>>>>>>> 8c59a46 (misc stuff trying to get it working)
   os-browserify@0.3.0:
     resolution: {integrity: sha512-gjcpUc3clBf9+210TRaDWbf+rZZZEshZ+DlXMRCeAjp0xhTrnQsKHypIy1J3d5hKdUzj69t708EHtU8P6bUn0A==}
 
@@ -7323,6 +7518,7 @@ packages:
     resolution: {integrity: sha512-R4nPAVTAU0B9D35/Gk3uJf/7XYbQcyohSKdvAxIRSNghFl4e71hVoGnBNQz9cWaXxO2I10KTC+3jMdvvoKw6dQ==}
     engines: {node: '>=6'}
 
+<<<<<<< HEAD
   pac-proxy-agent@7.2.0:
     resolution: {integrity: sha512-TEB8ESquiLMc0lV8vcd5Ql/JAKAoyzHFXaStwjkzpOpC5Yv+pIzLfHvjTSdf3vpa2bMiUQrg9i6276yn8666aA==}
     engines: {node: '>= 14'}
@@ -7331,6 +7527,8 @@ packages:
     resolution: {integrity: sha512-5NPgf87AT2STgwa2ntRMr45jTKrYBGkVU36yT0ig/n/GMAa3oPqhZfIQ2kMEimReg0+t9kZViDVZ83qfVUlckg==}
     engines: {node: '>= 14'}
 
+=======
+>>>>>>> 8c59a46 (misc stuff trying to get it working)
   package-json-from-dist@1.0.1:
     resolution: {integrity: sha512-UEZIS3/by4OC8vL3P2dTXRETpebLI2NiI5vIrjaD/5UtrkFX/tNbwjTSRAGC/+7CAo2pIcBaRgWmcBBHcsaCIw==}
 
@@ -8024,10 +8222,13 @@ packages:
     resolution: {integrity: sha512-ESF23V4SKG6lVSGZgYNpbsiaAkdab6ZgOxe52p7+Kid3W3u3bxR4Vfd/o21dmN7jSt0IwgZ4v5MUd26FEtXE9w==}
     engines: {node: '>= 0.8.0'}
 
+<<<<<<< HEAD
   prelude-ls@1.2.1:
     resolution: {integrity: sha512-vkcDPrRZo1QZLbn5RLGPpg/WmIQ65qoWWhcGKf/b5eplkkarX0m9z8ppCat4mlOqUsWpyNuYgO3VRyrYHSzX5g==}
     engines: {node: '>= 0.8.0'}
 
+=======
+>>>>>>> 8c59a46 (misc stuff trying to get it working)
   preserve@0.2.0:
     resolution: {integrity: sha512-s/46sYeylUfHNjI+sA/78FAHlmIuKqI9wNnzEOGehAlUUYeObv5C2mOinXBjyUyWmJ2SfcS2/ydApH4hTF4WXQ==}
     engines: {node: '>=0.10.0'}
@@ -8107,9 +8308,12 @@ packages:
   promise@8.3.0:
     resolution: {integrity: sha512-rZPNPKTOYVNEEKFaq1HqTgOwZD+4/YHS5ukLzQCypkj+OkYx7iv0mA91lJlpPPZ8vMau3IIGj5Qlwrx+8iiSmg==}
 
+<<<<<<< HEAD
   prompt-sync@4.2.0:
     resolution: {integrity: sha512-BuEzzc5zptP5LsgV5MZETjDaKSWfchl5U9Luiu8SKp7iZWD5tZalOxvNcZRwv+d2phNFr8xlbxmFNcRKfJOzJw==}
 
+=======
+>>>>>>> 8c59a46 (misc stuff trying to get it working)
   prompts@0.1.14:
     resolution: {integrity: sha512-rxkyiE9YH6zAz/rZpywySLKkpaj0NMVyNw1qhsubdbjjSgcayjTShDreZGlFMcGSu5sab3bAKPfFk78PB90+8w==}
     engines: {node: '>= 6'}
@@ -8125,6 +8329,7 @@ packages:
     resolution: {integrity: sha512-llQsMLSUDUPT44jdrU/O37qlnifitDP+ZwrmmZcoSKyLKvtZxpyV0n2/bD/N4tBAAZ/gJEdZU7KMraoK1+XYAg==}
     engines: {node: '>= 0.10'}
 
+<<<<<<< HEAD
   proxy-agent@6.5.0:
     resolution: {integrity: sha512-TmatMXdr2KlRiA2CyDu8GqR8EjahTG3aY3nXjdzFyoZbmB8hrBsTyMezhULIXKnC0jpfjlmiZ3+EaCzoInSu/A==}
     engines: {node: '>= 14'}
@@ -8132,6 +8337,8 @@ packages:
   proxy-from-env@1.1.0:
     resolution: {integrity: sha512-D+zkORCbA9f1tdWRK0RaCR3GPv50cMxcrz4X8k5LTSUD1Dkw47mKJEZQNunItRTkWwgtaUSo1RVFRIG9ZXiFYg==}
 
+=======
+>>>>>>> 8c59a46 (misc stuff trying to get it working)
   prr@1.0.1:
     resolution: {integrity: sha512-yPw4Sng1gWghHQWj0B3ZggWUm4qVbPwPFcRG8KyxiU7J2OHFSoEHKS+EZ3fv5l1t9CyCiop6l/ZYeWbrgoQejw==}
 
@@ -8168,6 +8375,7 @@ packages:
     resolution: {integrity: sha512-vYt7UD1U9Wg6138shLtLOvdAu+8DsC/ilFtEVHcH+wydcSpNE20AfSOduf6MkRFahL5FY7X1oU7nKVZFtfq8Fg==}
     engines: {node: '>=6'}
 
+<<<<<<< HEAD
   puppeteer-core@24.3.1:
     resolution: {integrity: sha512-585ccfcTav4KmlSmYbwwOSeC8VdutQHn2Fuk0id/y/9OoeO7Gg5PK1aUGdZjEmos0TAq+pCpChqFurFbpNd3wA==}
     engines: {node: '>=18'}
@@ -8228,6 +8436,8 @@ packages:
     engines: {node: '>=18'}
     hasBin: true
 
+=======
+>>>>>>> 8c59a46 (misc stuff trying to get it working)
   purgecss@4.1.3:
     resolution: {integrity: sha512-99cKy4s+VZoXnPxaoM23e5ABcP851nC2y2GROkkjS8eJaJtlciGavd7iYAw2V84WeBqggZ12l8ef44G99HmTaw==}
     hasBin: true
@@ -8926,10 +9136,13 @@ packages:
     resolution: {integrity: sha512-QMEp5B7cftE7APOjk5Y6xgrbWu+WkLVQwk8JNjZ8nKRciZaByEW6MubieAiToS7+dwvrjGhH8jRXz3MVd0AYqQ==}
     hasBin: true
 
+<<<<<<< HEAD
   shallow-clone@0.1.2:
     resolution: {integrity: sha512-J1zdXCky5GmNnuauESROVu31MQSnLoYvlyEn6j2Ztk6Q5EHFIhxkMhYcv6vuDzl2XEzoRr856QwzMgWM/TmZgw==}
     engines: {node: '>=0.10.0'}
 
+=======
+>>>>>>> 8c59a46 (misc stuff trying to get it working)
   shebang-command@1.2.0:
     resolution: {integrity: sha512-EV3L1+UQWGor21OmnvojK36mhg+TyIKDh3iFBKBohr5xeXIhNBcx8oWdgkTEEQ+BEFFYdLRuqMfd5L84N1V5Vg==}
     engines: {node: '>=0.10.0'}
@@ -9017,10 +9230,13 @@ packages:
     resolution: {integrity: sha512-POqxBK6Lb3q6s047D/XsDVNPnF9Dl8JSaqe9h9lURl0OdNqy/ujDrOiIHtsqXMGbWWTIomRzAMaTyawAU//Reg==}
     engines: {node: '>=4'}
 
+<<<<<<< HEAD
   smart-buffer@4.2.0:
     resolution: {integrity: sha512-94hK0Hh8rPqQl2xXc3HsaBoOXKV20MToPkcXvwbISWLEs+64sBq5kFgn2kJDHb1Pry9yrP0dxrCI9RRci7RXKg==}
     engines: {node: '>= 6.0.0', npm: '>= 3.0.0'}
 
+=======
+>>>>>>> 8c59a46 (misc stuff trying to get it working)
   snapdragon-node@2.1.1:
     resolution: {integrity: sha512-O27l4xaMYt/RSQ5TR3vpWCAB5Kb/czIcqUFOM/C4fYcLnbZUc1PkjTAMjof2pBWaSTwOUd6qUHcFGVGj7aIwnw==}
     engines: {node: '>=0.10.0'}
@@ -9036,6 +9252,7 @@ packages:
   sockjs@0.3.24:
     resolution: {integrity: sha512-GJgLTZ7vYb/JtPSSZ10hsOYIvEYsjbNU+zPdIHcUaWVNUEPivzxku31865sSSud0Da0W4lEeOPlmw93zLQchuQ==}
 
+<<<<<<< HEAD
   socks-proxy-agent@8.0.5:
     resolution: {integrity: sha512-HehCEsotFqbPW9sJ8WVYB6UbmIMv7kUUORIF2Nncq4VQvBfNBLibW9YZR5dlYCSUhwcD628pRllm7n+E+YTzJw==}
     engines: {node: '>= 14'}
@@ -9044,6 +9261,8 @@ packages:
     resolution: {integrity: sha512-D3YaD0aRxR3mEcqnidIs7ReYJFVzWdd6fXJYUM8ixcQcJRGTka/b3saV0KflYhyVJXKhb947GndU35SxYNResQ==}
     engines: {node: '>= 10.0.0', npm: '>= 3.0.0'}
 
+=======
+>>>>>>> 8c59a46 (misc stuff trying to get it working)
   source-list-map@2.0.1:
     resolution: {integrity: sha512-qnQ7gVMxGNxsiL4lEuJwe/To8UnK7fAnmbGEEH8RpLouuKbeEm0lhbQVFIrNSuB+G7tVrAlVsZgETT5nljf+Iw==}
 
@@ -9123,9 +9342,12 @@ packages:
   sprintf-js@1.0.3:
     resolution: {integrity: sha512-D9cPgkvLlV3t3IzL0D0YLvGA9Ahk4PcvVwUbN0dSGr1aP0Nrt4AEnTUbuGvquEC0mA64Gqt1fzirlRs5ibXx8g==}
 
+<<<<<<< HEAD
   sprintf-js@1.1.3:
     resolution: {integrity: sha512-Oo+0REFV59/rz3gfJNKQiBlwfHaSESl1pcGyABQsnnIfWOFt6JNj5gCog2U6MLZ//IGYD+nA8nI+mTShREReaA==}
 
+=======
+>>>>>>> 8c59a46 (misc stuff trying to get it working)
   sshpk@1.18.0:
     resolution: {integrity: sha512-2p2KJZTSqQ/I3+HX42EpYOa2l3f8Erv8MWKsy2I9uf4wA7yFIkXRffYdsx86y6z4vHtV8u7g+pPlr8/4ouAxsQ==}
     engines: {node: '>=0.10.0'}
@@ -9215,9 +9437,12 @@ packages:
     resolution: {integrity: sha512-Mcc5wHehp9aXz1ax6bZUyY5afg9u2rv5cqQI3mRrYkGC8rW2hM02jWuwjtL++LS5qinSyhj2QfLyNsuc+VsExg==}
     engines: {node: '>=10.0.0'}
 
+<<<<<<< HEAD
   streamx@2.22.0:
     resolution: {integrity: sha512-sLh1evHOzBy/iWRiR6d1zRcLao4gGZr3C1kzNz4fopCOKJb6xD9ub8Mpi9Mr1R6id5o43S+d93fI48UC5uM9aw==}
 
+=======
+>>>>>>> 8c59a46 (misc stuff trying to get it working)
   string-length@2.0.0:
     resolution: {integrity: sha512-Qka42GGrS8Mm3SZ+7cH8UXiIWI867/b/Z/feQSpQx/rbfB8UGknGEZVaUQMOUVj+soY6NpWAxily63HI1OckVQ==}
     engines: {node: '>=4'}
@@ -9450,12 +9675,15 @@ packages:
     resolution: {integrity: sha512-GNzQvQTOIP6RyTfE2Qxb8ZVlNmw0n88vp1szwWRimP02mnTsx3Wtn5qRdqY9w2XduFNUgvOwhNnQsjwCp+kqaQ==}
     engines: {node: '>=6'}
 
+<<<<<<< HEAD
   tar-fs@3.0.8:
     resolution: {integrity: sha512-ZoROL70jptorGAlgAYiLoBLItEKw/fUxg9BSYK/dF/GAGYFJOJJJMvjPAKDJraCXFwadD456FCuvLWgfhMsPwg==}
 
   tar-stream@3.1.7:
     resolution: {integrity: sha512-qJj60CXt7IU1Ffyc3NJMjh6EkuCFej46zUqJ4J7pqYlThyd9bO0XBTmcOIhSzZJVWfsLks0+nle/j538YAW9RQ==}
 
+=======
+>>>>>>> 8c59a46 (misc stuff trying to get it working)
   temp-dir@2.0.0:
     resolution: {integrity: sha512-aoBAniQmmwtcKp/7BzsH8Cxzv8OL736p7v1ihGb5e9DJ9kTwGWHrQrVB5+lfVDzfGrdRzXch+ig7LHaY1JTOrg==}
     engines: {node: '>=8'}
@@ -9515,9 +9743,12 @@ packages:
     resolution: {integrity: sha512-cAGWPIyOHU6zlmg88jwm7VRyXnMN7iV68OGAbYDk/Mh/xC/pzVPlQtY6ngoIH/5/tciuhGfvESU8GrHrcxD56w==}
     engines: {node: '>=8'}
 
+<<<<<<< HEAD
   text-decoder@1.2.3:
     resolution: {integrity: sha512-3/o9z3X0X0fTupwsYvR03pJ/DjWuqqrfwBgTQzdWDiQSm9KitAyz/9WqsT2JQW7KV2m+bC2ol/zqpW37NHxLaA==}
 
+=======
+>>>>>>> 8c59a46 (misc stuff trying to get it working)
   text-table@0.2.0:
     resolution: {integrity: sha512-N+8UisAXDGk8PFXP4HAzVR9nbfmVJ3zYLAWiTIoqC5v5isinhr+r5uaO8+7r3BMfuNIufIsA7RdpVgacC2cSpw==}
 
@@ -9661,12 +9892,21 @@ packages:
       esbuild:
         optional: true
 
+<<<<<<< HEAD
   ts-loader@8.2.0:
     resolution: {integrity: sha512-ebXBFrNyMSmbWgjnb3WBloUBK+VSx1xckaXsMXxlZRDqce/OPdYBVN5efB0W3V0defq0Gcy4YuzvPGqRgjj85A==}
     engines: {node: '>=10.0.0'}
     peerDependencies:
       typescript: '*'
       webpack: '*'
+=======
+  ts-loader@9.5.2:
+    resolution: {integrity: sha512-Qo4piXvOTWcMGIgRiuFa6nHNm+54HbYaZCKqc9eeZCLRy3XqafQgwX2F7mofrbJG3g7EEb+lkiR+z2Lic2s3Zw==}
+    engines: {node: '>=12.0.0'}
+    peerDependencies:
+      typescript: '*'
+      webpack: ^5.0.0
+>>>>>>> 8c59a46 (misc stuff trying to get it working)
 
   ts-node@10.9.2:
     resolution: {integrity: sha512-f0FFpIdcHgn8zcPSbf1dRevwt047YMnaiJM3u2w2RewrB+fob/zePZcrOyQoLMMO7aBIddLcQIEK5dYjkLnGrQ==}
@@ -9714,10 +9954,13 @@ packages:
     resolution: {integrity: sha512-ZCmOJdvOWDBYJlzAoFkC+Q0+bUyEOS1ltgp1MGU03fqHG+dbi9tBFU2Rd9QKiDZFAYrhPh2JUf7rZRIuHRKtOg==}
     engines: {node: '>= 0.8.0'}
 
+<<<<<<< HEAD
   type-check@0.4.0:
     resolution: {integrity: sha512-XleUoc9uwGXqjWwXaUTZAmzMcFZ5858QA2vvx1Ur5xIcixXIP+8LnFDgRplU30us6teqdlskFfu+ae4K79Ooew==}
     engines: {node: '>= 0.8.0'}
 
+=======
+>>>>>>> 8c59a46 (misc stuff trying to get it working)
   type-detect@4.0.8:
     resolution: {integrity: sha512-0fr/mIH1dlO+x7TlcMy+bIDqKPsw/70tVyeHW787goQjhmqaZe10uwLujubK9q9Lg6Fiho1KUKDYz0Z7k7g5/g==}
     engines: {node: '>=4'}
@@ -9754,9 +9997,12 @@ packages:
     resolution: {integrity: sha512-3KS2b+kL7fsuk/eJZ7EQdnEmQoaho/r6KUef7hxvltNA5DR8NAUM+8wJMbJyZ4G9/7i3v5zPBIMN5aybAh2/Jg==}
     engines: {node: '>= 0.4'}
 
+<<<<<<< HEAD
   typed-query-selector@2.12.0:
     resolution: {integrity: sha512-SbklCd1F0EiZOyPiW192rrHZzZ5sBijB6xM+cpmrwDqObvdtunOHHIk9fCGsoK5JVIYXoyEp4iEdE3upFH3PAg==}
 
+=======
+>>>>>>> 8c59a46 (misc stuff trying to get it working)
   typedarray-to-buffer@3.1.5:
     resolution: {integrity: sha512-zdu8XMNEDepKKR+XYOXAVPtWui0ly0NtohUscw+UmaHiAWT8hrV1rr//H6V+0DvJ3OQ19S979M0laLfX8rm82Q==}
 
@@ -10375,10 +10621,13 @@ packages:
     resolution: {integrity: sha512-D1mvvtDG0L5ft/jGWkLpG1+m0eQxOfaBvTNELraWj22wSVUMWxZUvYgJYcKh6jGGIkJFhH4IZPQhR4TKpc8mBw==}
     engines: {node: '>=10'}
 
+<<<<<<< HEAD
   yargs@17.7.2:
     resolution: {integrity: sha512-7dSzzRQ++CKnNI/krKnYRV7JKKPUXMEh61soaHKg9mrWEhzFWhFnxPxGl+69cD1Ou63C13NUPCnmIcrvqCuM6w==}
     engines: {node: '>=12'}
 
+=======
+>>>>>>> 8c59a46 (misc stuff trying to get it working)
   yauzl@2.10.0:
     resolution: {integrity: sha512-p4a9I6X6nu6IhoGmBqAcbJy1mlC4j27vEPZX9F4L4/vZT3Lyq1VkFHw/V/PUcB9Buo+DG3iHkT0x3Qya58zc3g==}
 
@@ -10394,9 +10643,12 @@ packages:
     resolution: {integrity: sha512-rVksvsnNCdJ/ohGc6xgPwyN8eheCxsiLM8mxuE/t/mOVqJewPuO1miLpTHQiRgTKCLexL4MeAFVagts7HmNZ2Q==}
     engines: {node: '>=10'}
 
+<<<<<<< HEAD
   zod@3.24.2:
     resolution: {integrity: sha512-lY7CDW43ECgW9u1TcT3IoXHflywfVqDYze4waEz812jR/bZ8FHDsl7pFQoSZTz5N+2NqRXs8GBwnAwo3ZNxqhQ==}
 
+=======
+>>>>>>> 8c59a46 (misc stuff trying to get it working)
 snapshots:
 
   '@alloc/quick-lru@5.2.0': {}
@@ -10434,18 +10686,30 @@ snapshots:
       '@babel/traverse': 7.26.9
       '@babel/types': 7.26.9
       convert-source-map: 2.0.0
+<<<<<<< HEAD
       debug: 4.4.0(supports-color@7.2.0)
+=======
+      debug: 4.4.0(supports-color@8.1.1)
+>>>>>>> 8c59a46 (misc stuff trying to get it working)
       gensync: 1.0.0-beta.2
       json5: 2.2.3
       semver: 6.3.1
     transitivePeerDependencies:
       - supports-color
 
+<<<<<<< HEAD
   '@babel/eslint-parser@7.26.8(@babel/core@7.26.9)(eslint@9.21.0(jiti@1.21.7))':
     dependencies:
       '@babel/core': 7.26.9
       '@nicolo-ribaudo/eslint-scope-5-internals': 5.1.1-v1
       eslint: 9.21.0(jiti@1.21.7)
+=======
+  '@babel/eslint-parser@7.26.8(@babel/core@7.26.9)(eslint@4.19.1)':
+    dependencies:
+      '@babel/core': 7.26.9
+      '@nicolo-ribaudo/eslint-scope-5-internals': 5.1.1-v1
+      eslint: 4.19.1
+>>>>>>> 8c59a46 (misc stuff trying to get it working)
       eslint-visitor-keys: 2.1.0
       semver: 6.3.1
 
@@ -10494,7 +10758,11 @@ snapshots:
       '@babel/core': 7.26.9
       '@babel/helper-compilation-targets': 7.26.5
       '@babel/helper-plugin-utils': 7.26.5
+<<<<<<< HEAD
       debug: 4.4.0(supports-color@7.2.0)
+=======
+      debug: 4.4.0(supports-color@8.1.1)
+>>>>>>> 8c59a46 (misc stuff trying to get it working)
       lodash.debounce: 4.0.8
       resolve: 1.22.10
     transitivePeerDependencies:
@@ -11287,7 +11555,11 @@ snapshots:
       '@babel/parser': 7.26.9
       '@babel/template': 7.26.9
       '@babel/types': 7.26.9
+<<<<<<< HEAD
       debug: 4.4.0(supports-color@7.2.0)
+=======
+      debug: 4.4.0(supports-color@8.1.1)
+>>>>>>> 8c59a46 (misc stuff trying to get it working)
       globals: 11.12.0
     transitivePeerDependencies:
       - supports-color
@@ -11475,13 +11747,20 @@ snapshots:
     transitivePeerDependencies:
       - supports-color
 
+<<<<<<< HEAD
   '@eslint-community/eslint-utils@4.4.1(eslint@9.21.0(jiti@1.21.7))':
     dependencies:
       eslint: 9.21.0(jiti@1.21.7)
+=======
+  '@eslint-community/eslint-utils@4.4.1(eslint@4.19.1)':
+    dependencies:
+      eslint: 4.19.1
+>>>>>>> 8c59a46 (misc stuff trying to get it working)
       eslint-visitor-keys: 3.4.3
 
   '@eslint-community/regexpp@4.12.1': {}
 
+<<<<<<< HEAD
   '@eslint/config-array@0.19.2':
     dependencies:
       '@eslint/object-schema': 2.1.6
@@ -11548,6 +11827,26 @@ snapshots:
 
   '@humanwhocodes/retry@0.4.2': {}
 
+=======
+  '@fortawesome/fontawesome-common-types@6.7.2': {}
+
+  '@fortawesome/free-regular-svg-icons@6.7.2':
+    dependencies:
+      '@fortawesome/fontawesome-common-types': 6.7.2
+
+  '@fortawesome/free-solid-svg-icons@6.7.2':
+    dependencies:
+      '@fortawesome/fontawesome-common-types': 6.7.2
+
+  '@hapi/bourne@3.0.0': {}
+
+  '@hapi/hoek@9.3.0': {}
+
+  '@hapi/topo@5.1.0':
+    dependencies:
+      '@hapi/hoek': 9.3.0
+
+>>>>>>> 8c59a46 (misc stuff trying to get it working)
   '@isaacs/cliui@8.0.2':
     dependencies:
       string-width: 5.1.2
@@ -11576,7 +11875,11 @@ snapshots:
   '@jest/console@27.5.1':
     dependencies:
       '@jest/types': 27.5.1
+<<<<<<< HEAD
       '@types/node': 12.20.55
+=======
+      '@types/node': 22.13.9
+>>>>>>> 8c59a46 (misc stuff trying to get it working)
       chalk: 4.1.2
       jest-message-util: 27.5.1
       jest-util: 27.5.1
@@ -11585,7 +11888,11 @@ snapshots:
   '@jest/console@28.1.3':
     dependencies:
       '@jest/types': 28.1.3
+<<<<<<< HEAD
       '@types/node': 12.20.55
+=======
+      '@types/node': 22.13.9
+>>>>>>> 8c59a46 (misc stuff trying to get it working)
       chalk: 4.1.2
       jest-message-util: 28.1.3
       jest-util: 28.1.3
@@ -11626,21 +11933,33 @@ snapshots:
       - supports-color
       - utf-8-validate
 
+<<<<<<< HEAD
   '@jest/core@27.5.1(ts-node@10.9.2(@swc/core@1.11.5)(@types/node@12.20.55)(typescript@4.9.5))':
+=======
+  '@jest/core@27.5.1(ts-node@10.9.2(@types/node@12.20.55)(typescript@4.9.5))':
+>>>>>>> 8c59a46 (misc stuff trying to get it working)
     dependencies:
       '@jest/console': 27.5.1
       '@jest/reporters': 27.5.1
       '@jest/test-result': 27.5.1
       '@jest/transform': 27.5.1
       '@jest/types': 27.5.1
+<<<<<<< HEAD
       '@types/node': 12.20.55
+=======
+      '@types/node': 22.13.9
+>>>>>>> 8c59a46 (misc stuff trying to get it working)
       ansi-escapes: 4.3.2
       chalk: 4.1.2
       emittery: 0.8.1
       exit: 0.1.2
       graceful-fs: 4.2.11
       jest-changed-files: 27.5.1
+<<<<<<< HEAD
       jest-config: 27.5.1(ts-node@10.9.2(@swc/core@1.11.5)(@types/node@12.20.55)(typescript@4.9.5))
+=======
+      jest-config: 27.5.1(ts-node@10.9.2(@types/node@12.20.55)(typescript@4.9.5))
+>>>>>>> 8c59a46 (misc stuff trying to get it working)
       jest-haste-map: 27.5.1
       jest-message-util: 27.5.1
       jest-regex-util: 27.5.1
@@ -11663,21 +11982,33 @@ snapshots:
       - ts-node
       - utf-8-validate
 
+<<<<<<< HEAD
   '@jest/core@27.5.1(ts-node@10.9.2(@swc/core@1.11.5)(@types/node@12.20.55)(typescript@5.8.2))':
+=======
+  '@jest/core@27.5.1(ts-node@10.9.2(@types/node@12.20.55)(typescript@5.8.2))':
+>>>>>>> 8c59a46 (misc stuff trying to get it working)
     dependencies:
       '@jest/console': 27.5.1
       '@jest/reporters': 27.5.1
       '@jest/test-result': 27.5.1
       '@jest/transform': 27.5.1
       '@jest/types': 27.5.1
+<<<<<<< HEAD
       '@types/node': 12.20.55
+=======
+      '@types/node': 22.13.9
+>>>>>>> 8c59a46 (misc stuff trying to get it working)
       ansi-escapes: 4.3.2
       chalk: 4.1.2
       emittery: 0.8.1
       exit: 0.1.2
       graceful-fs: 4.2.11
       jest-changed-files: 27.5.1
+<<<<<<< HEAD
       jest-config: 27.5.1(ts-node@10.9.2(@swc/core@1.11.5)(@types/node@12.20.55)(typescript@5.8.2))
+=======
+      jest-config: 27.5.1(ts-node@10.9.2(@types/node@12.20.55)(typescript@5.8.2))
+>>>>>>> 8c59a46 (misc stuff trying to get it working)
       jest-haste-map: 27.5.1
       jest-message-util: 27.5.1
       jest-regex-util: 27.5.1
@@ -11713,14 +12044,22 @@ snapshots:
     dependencies:
       '@jest/fake-timers': 27.5.1
       '@jest/types': 27.5.1
+<<<<<<< HEAD
       '@types/node': 12.20.55
+=======
+      '@types/node': 22.13.9
+>>>>>>> 8c59a46 (misc stuff trying to get it working)
       jest-mock: 27.5.1
 
   '@jest/environment@29.7.0':
     dependencies:
       '@jest/fake-timers': 29.7.0
       '@jest/types': 29.6.3
+<<<<<<< HEAD
       '@types/node': 22.13.9
+=======
+      '@types/node': 12.20.55
+>>>>>>> 8c59a46 (misc stuff trying to get it working)
       jest-mock: 29.7.0
 
   '@jest/fake-timers@24.9.0':
@@ -11735,7 +12074,11 @@ snapshots:
     dependencies:
       '@jest/types': 27.5.1
       '@sinonjs/fake-timers': 8.1.0
+<<<<<<< HEAD
       '@types/node': 12.20.55
+=======
+      '@types/node': 22.13.9
+>>>>>>> 8c59a46 (misc stuff trying to get it working)
       jest-message-util: 27.5.1
       jest-mock: 27.5.1
       jest-util: 27.5.1
@@ -11744,7 +12087,11 @@ snapshots:
     dependencies:
       '@jest/types': 29.6.3
       '@sinonjs/fake-timers': 10.3.0
+<<<<<<< HEAD
       '@types/node': 22.13.9
+=======
+      '@types/node': 12.20.55
+>>>>>>> 8c59a46 (misc stuff trying to get it working)
       jest-message-util: 29.7.0
       jest-mock: 29.7.0
       jest-util: 29.7.0
@@ -11779,9 +12126,11 @@ snapshots:
       source-map: 0.6.1
       string-length: 2.0.0
     transitivePeerDependencies:
-      - bufferutil
       - supports-color
+<<<<<<< HEAD
       - utf-8-validate
+=======
+>>>>>>> 8c59a46 (misc stuff trying to get it working)
 
   '@jest/reporters@27.5.1':
     dependencies:
@@ -11790,7 +12139,11 @@ snapshots:
       '@jest/test-result': 27.5.1
       '@jest/transform': 27.5.1
       '@jest/types': 27.5.1
+<<<<<<< HEAD
       '@types/node': 12.20.55
+=======
+      '@types/node': 22.13.9
+>>>>>>> 8c59a46 (misc stuff trying to get it working)
       chalk: 4.1.2
       collect-v8-coverage: 1.0.2
       exit: 0.1.2
@@ -11860,9 +12213,11 @@ snapshots:
       jest-runner: 24.9.0
       jest-runtime: 24.9.0
     transitivePeerDependencies:
-      - bufferutil
       - supports-color
+<<<<<<< HEAD
       - utf-8-validate
+=======
+>>>>>>> 8c59a46 (misc stuff trying to get it working)
 
   '@jest/test-sequencer@27.5.1':
     dependencies:
@@ -11924,7 +12279,11 @@ snapshots:
     dependencies:
       '@types/istanbul-lib-coverage': 2.0.6
       '@types/istanbul-reports': 3.0.4
+<<<<<<< HEAD
       '@types/node': 12.20.55
+=======
+      '@types/node': 22.13.9
+>>>>>>> 8c59a46 (misc stuff trying to get it working)
       '@types/yargs': 15.0.19
       chalk: 4.1.2
 
@@ -11932,7 +12291,11 @@ snapshots:
     dependencies:
       '@types/istanbul-lib-coverage': 2.0.6
       '@types/istanbul-reports': 3.0.4
+<<<<<<< HEAD
       '@types/node': 12.20.55
+=======
+      '@types/node': 22.13.9
+>>>>>>> 8c59a46 (misc stuff trying to get it working)
       '@types/yargs': 16.0.9
       chalk: 4.1.2
 
@@ -11941,7 +12304,11 @@ snapshots:
       '@jest/schemas': 28.1.3
       '@types/istanbul-lib-coverage': 2.0.6
       '@types/istanbul-reports': 3.0.4
+<<<<<<< HEAD
       '@types/node': 12.20.55
+=======
+      '@types/node': 22.13.9
+>>>>>>> 8c59a46 (misc stuff trying to get it working)
       '@types/yargs': 17.0.33
       chalk: 4.1.2
 
@@ -11950,7 +12317,11 @@ snapshots:
       '@jest/schemas': 29.6.3
       '@types/istanbul-lib-coverage': 2.0.6
       '@types/istanbul-reports': 3.0.4
+<<<<<<< HEAD
       '@types/node': 22.13.9
+=======
+      '@types/node': 12.20.55
+>>>>>>> 8c59a46 (misc stuff trying to get it working)
       '@types/yargs': 17.0.33
       chalk: 4.1.2
 
@@ -12085,7 +12456,11 @@ snapshots:
   '@pkgjs/parseargs@0.11.0':
     optional: true
 
+<<<<<<< HEAD
   '@pmmmwh/react-refresh-webpack-plugin@0.5.15(react-refresh@0.11.0)(type-fest@0.21.3)(webpack-dev-server@4.15.2(webpack@5.98.0(@swc/core@1.11.5)))(webpack@5.98.0(@swc/core@1.11.5))':
+=======
+  '@pmmmwh/react-refresh-webpack-plugin@0.5.15(react-refresh@0.11.0)(type-fest@0.21.3)(webpack-dev-server@4.15.2(webpack@5.98.0))(webpack@5.98.0)':
+>>>>>>> 8c59a46 (misc stuff trying to get it working)
     dependencies:
       ansi-html: 0.0.9
       core-js-pure: 3.41.0
@@ -12095,6 +12470,7 @@ snapshots:
       react-refresh: 0.11.0
       schema-utils: 4.3.0
       source-map: 0.7.4
+<<<<<<< HEAD
       webpack: 5.98.0(@swc/core@1.11.5)
     optionalDependencies:
       type-fest: 0.21.3
@@ -12115,6 +12491,15 @@ snapshots:
 
   '@reduxjs/toolkit@1.9.7(react-redux@9.2.0(@types/react@18.3.18)(react@18.3.1)(redux@5.0.1))(react@18.3.1)':
     dependencies:
+=======
+      webpack: 5.98.0
+    optionalDependencies:
+      type-fest: 0.21.3
+      webpack-dev-server: 4.15.2(webpack@5.98.0)
+
+  '@reduxjs/toolkit@1.9.7(react-redux@9.2.0(@types/react@18.3.18)(react@18.3.1)(redux@5.0.1))(react@18.3.1)':
+    dependencies:
+>>>>>>> 8c59a46 (misc stuff trying to get it working)
       immer: 9.0.21
       redux: 4.2.1
       redux-thunk: 2.4.2(redux@4.2.1)
@@ -12294,6 +12679,7 @@ snapshots:
     transitivePeerDependencies:
       - supports-color
 
+<<<<<<< HEAD
   '@swc/core-darwin-arm64@1.11.5':
     optional: true
 
@@ -12354,6 +12740,13 @@ snapshots:
       tailwindcss: '@tailwindcss/postcss7-compat@2.2.17(ts-node@10.9.2(@swc/core@1.11.5)(@types/node@12.20.55)(typescript@5.8.2))'
 
   '@tailwindcss/postcss7-compat@2.2.17(ts-node@10.9.2(@swc/core@1.11.5)(@types/node@12.20.55)(typescript@5.8.2))':
+=======
+  '@tailwindcss/aspect-ratio@0.2.2(@tailwindcss/postcss7-compat@2.2.17(ts-node@10.9.2(@types/node@12.20.55)(typescript@5.8.2)))':
+    dependencies:
+      tailwindcss: '@tailwindcss/postcss7-compat@2.2.17(ts-node@10.9.2(@types/node@12.20.55)(typescript@5.8.2))'
+
+  '@tailwindcss/postcss7-compat@2.2.17(ts-node@10.9.2(@types/node@12.20.55)(typescript@5.8.2))':
+>>>>>>> 8c59a46 (misc stuff trying to get it working)
     dependencies:
       arg: 5.0.2
       autoprefixer: 9.8.8
@@ -12380,7 +12773,11 @@ snapshots:
       postcss: 7.0.39
       postcss-functions: 3.0.0
       postcss-js: 2.0.3
+<<<<<<< HEAD
       postcss-load-config: 3.1.4(postcss@7.0.39)(ts-node@10.9.2(@swc/core@1.11.5)(@types/node@12.20.55)(typescript@5.8.2))
+=======
+      postcss-load-config: 3.1.4(postcss@7.0.39)(ts-node@10.9.2(@types/node@12.20.55)(typescript@5.8.2))
+>>>>>>> 8c59a46 (misc stuff trying to get it working)
       postcss-nested: 4.2.3
       postcss-selector-parser: 6.1.2
       postcss-value-parser: 4.2.0
@@ -12418,6 +12815,7 @@ snapshots:
 
   '@tootallnate/once@1.1.2': {}
 
+<<<<<<< HEAD
   '@tootallnate/quickjs-emscripten@0.23.0': {}
 
   '@trysound/sax@0.2.0': {}
@@ -12432,6 +12830,20 @@ snapshots:
 
   '@types/aria-query@4.2.2': {}
 
+=======
+  '@trysound/sax@0.2.0': {}
+
+  '@tsconfig/node10@1.0.11': {}
+
+  '@tsconfig/node12@1.0.11': {}
+
+  '@tsconfig/node14@1.0.3': {}
+
+  '@tsconfig/node16@1.0.4': {}
+
+  '@types/aria-query@4.2.2': {}
+
+>>>>>>> 8c59a46 (misc stuff trying to get it working)
   '@types/babel__core@7.20.5':
     dependencies:
       '@babel/parser': 7.26.9
@@ -12456,11 +12868,19 @@ snapshots:
   '@types/body-parser@1.19.5':
     dependencies:
       '@types/connect': 3.4.38
+<<<<<<< HEAD
       '@types/node': 12.20.55
 
   '@types/bonjour@3.5.13':
     dependencies:
       '@types/node': 12.20.55
+=======
+      '@types/node': 22.13.9
+
+  '@types/bonjour@3.5.13':
+    dependencies:
+      '@types/node': 22.13.9
+>>>>>>> 8c59a46 (misc stuff trying to get it working)
 
   '@types/busboy@1.5.4':
     dependencies:
@@ -12469,16 +12889,25 @@ snapshots:
   '@types/connect-history-api-fallback@1.5.4':
     dependencies:
       '@types/express-serve-static-core': 5.0.6
+<<<<<<< HEAD
       '@types/node': 12.20.55
 
   '@types/connect@3.4.38':
     dependencies:
       '@types/node': 12.20.55
+=======
+      '@types/node': 22.13.9
+
+  '@types/connect@3.4.38':
+    dependencies:
+      '@types/node': 22.13.9
+>>>>>>> 8c59a46 (misc stuff trying to get it working)
 
   '@types/cors@2.8.17':
     dependencies:
       '@types/node': 22.13.9
 
+<<<<<<< HEAD
   '@types/debug@4.1.12':
     dependencies:
       '@types/ms': 2.1.0
@@ -12490,6 +12919,15 @@ snapshots:
 
   '@types/eslint@8.56.12':
     dependencies:
+=======
+  '@types/eslint-scope@3.7.7':
+    dependencies:
+      '@types/eslint': 9.6.1
+      '@types/estree': 1.0.6
+
+  '@types/eslint@8.56.12':
+    dependencies:
+>>>>>>> 8c59a46 (misc stuff trying to get it working)
       '@types/estree': 1.0.6
       '@types/json-schema': 7.0.15
 
@@ -12516,7 +12954,11 @@ snapshots:
 
   '@types/express-serve-static-core@5.0.6':
     dependencies:
+<<<<<<< HEAD
       '@types/node': 12.20.55
+=======
+      '@types/node': 22.13.9
+>>>>>>> 8c59a46 (misc stuff trying to get it working)
       '@types/qs': 6.9.18
       '@types/range-parser': 1.2.7
       '@types/send': 0.17.4
@@ -12530,7 +12972,11 @@ snapshots:
 
   '@types/graceful-fs@4.1.9':
     dependencies:
+<<<<<<< HEAD
       '@types/node': 12.20.55
+=======
+      '@types/node': 22.13.9
+>>>>>>> 8c59a46 (misc stuff trying to get it working)
 
   '@types/history@4.7.11': {}
 
@@ -12540,7 +12986,11 @@ snapshots:
 
   '@types/http-proxy@1.17.16':
     dependencies:
+<<<<<<< HEAD
       '@types/node': 12.20.55
+=======
+      '@types/node': 22.13.9
+>>>>>>> 8c59a46 (misc stuff trying to get it working)
 
   '@types/isomorphic-fetch@0.0.39': {}
 
@@ -12579,11 +13029,17 @@ snapshots:
 
   '@types/mime@1.3.5': {}
 
+<<<<<<< HEAD
   '@types/ms@2.1.0': {}
 
   '@types/node-forge@1.3.11':
     dependencies:
       '@types/node': 12.20.55
+=======
+  '@types/node-forge@1.3.11':
+    dependencies:
+      '@types/node': 22.13.9
+>>>>>>> 8c59a46 (misc stuff trying to get it working)
 
   '@types/node@12.20.55': {}
 
@@ -12595,8 +13051,11 @@ snapshots:
 
   '@types/prettier@2.7.3': {}
 
+<<<<<<< HEAD
   '@types/prompt-sync@4.2.3': {}
 
+=======
+>>>>>>> 8c59a46 (misc stuff trying to get it working)
   '@types/prop-types@15.7.14': {}
 
   '@types/q@1.5.8': {}
@@ -12627,13 +13086,21 @@ snapshots:
 
   '@types/resolve@1.17.1':
     dependencies:
+<<<<<<< HEAD
       '@types/node': 12.20.55
+=======
+      '@types/node': 22.13.9
+>>>>>>> 8c59a46 (misc stuff trying to get it working)
 
   '@types/retry@0.12.0': {}
 
   '@types/selenium-webdriver@4.1.28':
     dependencies:
+<<<<<<< HEAD
       '@types/node': 12.20.55
+=======
+      '@types/node': 22.13.9
+>>>>>>> 8c59a46 (misc stuff trying to get it working)
       '@types/ws': 8.5.14
 
   '@types/semver@7.5.8': {}
@@ -12641,7 +13108,11 @@ snapshots:
   '@types/send@0.17.4':
     dependencies:
       '@types/mime': 1.3.5
+<<<<<<< HEAD
       '@types/node': 12.20.55
+=======
+      '@types/node': 22.13.9
+>>>>>>> 8c59a46 (misc stuff trying to get it working)
 
   '@types/serve-index@1.9.4':
     dependencies:
@@ -12659,7 +13130,11 @@ snapshots:
 
   '@types/sockjs@0.3.36':
     dependencies:
+<<<<<<< HEAD
       '@types/node': 12.20.55
+=======
+      '@types/node': 22.13.9
+>>>>>>> 8c59a46 (misc stuff trying to get it working)
 
   '@types/stack-utils@1.0.1': {}
 
@@ -12673,7 +13148,11 @@ snapshots:
 
   '@types/ws@8.5.14':
     dependencies:
+<<<<<<< HEAD
       '@types/node': 12.20.55
+=======
+      '@types/node': 22.13.9
+>>>>>>> 8c59a46 (misc stuff trying to get it working)
 
   '@types/yargs-parser@21.0.3': {}
 
@@ -12693,6 +13172,7 @@ snapshots:
     dependencies:
       '@types/yargs-parser': 21.0.3
 
+<<<<<<< HEAD
   '@types/yauzl@2.10.3':
     dependencies:
       '@types/node': 12.20.55
@@ -12707,6 +13187,17 @@ snapshots:
       '@typescript-eslint/utils': 5.62.0(eslint@9.21.0(jiti@1.21.7))(typescript@5.8.2)
       debug: 4.4.0(supports-color@7.2.0)
       eslint: 9.21.0(jiti@1.21.7)
+=======
+  '@typescript-eslint/eslint-plugin@5.62.0(@typescript-eslint/parser@5.62.0(eslint@4.19.1)(typescript@5.8.2))(eslint@4.19.1)(typescript@5.8.2)':
+    dependencies:
+      '@eslint-community/regexpp': 4.12.1
+      '@typescript-eslint/parser': 5.62.0(eslint@4.19.1)(typescript@5.8.2)
+      '@typescript-eslint/scope-manager': 5.62.0
+      '@typescript-eslint/type-utils': 5.62.0(eslint@4.19.1)(typescript@5.8.2)
+      '@typescript-eslint/utils': 5.62.0(eslint@4.19.1)(typescript@5.8.2)
+      debug: 4.4.0(supports-color@8.1.1)
+      eslint: 4.19.1
+>>>>>>> 8c59a46 (misc stuff trying to get it working)
       graphemer: 1.4.0
       ignore: 5.3.2
       natural-compare-lite: 1.4.0
@@ -12717,21 +13208,37 @@ snapshots:
     transitivePeerDependencies:
       - supports-color
 
+<<<<<<< HEAD
   '@typescript-eslint/experimental-utils@5.62.0(eslint@9.21.0(jiti@1.21.7))(typescript@5.8.2)':
     dependencies:
       '@typescript-eslint/utils': 5.62.0(eslint@9.21.0(jiti@1.21.7))(typescript@5.8.2)
       eslint: 9.21.0(jiti@1.21.7)
+=======
+  '@typescript-eslint/experimental-utils@5.62.0(eslint@4.19.1)(typescript@5.8.2)':
+    dependencies:
+      '@typescript-eslint/utils': 5.62.0(eslint@4.19.1)(typescript@5.8.2)
+      eslint: 4.19.1
+>>>>>>> 8c59a46 (misc stuff trying to get it working)
     transitivePeerDependencies:
       - supports-color
       - typescript
 
+<<<<<<< HEAD
   '@typescript-eslint/parser@5.62.0(eslint@9.21.0(jiti@1.21.7))(typescript@5.8.2)':
+=======
+  '@typescript-eslint/parser@5.62.0(eslint@4.19.1)(typescript@5.8.2)':
+>>>>>>> 8c59a46 (misc stuff trying to get it working)
     dependencies:
       '@typescript-eslint/scope-manager': 5.62.0
       '@typescript-eslint/types': 5.62.0
       '@typescript-eslint/typescript-estree': 5.62.0(typescript@5.8.2)
+<<<<<<< HEAD
       debug: 4.4.0(supports-color@7.2.0)
       eslint: 9.21.0(jiti@1.21.7)
+=======
+      debug: 4.4.0(supports-color@8.1.1)
+      eslint: 4.19.1
+>>>>>>> 8c59a46 (misc stuff trying to get it working)
     optionalDependencies:
       typescript: 5.8.2
     transitivePeerDependencies:
@@ -12742,12 +13249,21 @@ snapshots:
       '@typescript-eslint/types': 5.62.0
       '@typescript-eslint/visitor-keys': 5.62.0
 
+<<<<<<< HEAD
   '@typescript-eslint/type-utils@5.62.0(eslint@9.21.0(jiti@1.21.7))(typescript@5.8.2)':
     dependencies:
       '@typescript-eslint/typescript-estree': 5.62.0(typescript@5.8.2)
       '@typescript-eslint/utils': 5.62.0(eslint@9.21.0(jiti@1.21.7))(typescript@5.8.2)
       debug: 4.4.0(supports-color@7.2.0)
       eslint: 9.21.0(jiti@1.21.7)
+=======
+  '@typescript-eslint/type-utils@5.62.0(eslint@4.19.1)(typescript@5.8.2)':
+    dependencies:
+      '@typescript-eslint/typescript-estree': 5.62.0(typescript@5.8.2)
+      '@typescript-eslint/utils': 5.62.0(eslint@4.19.1)(typescript@5.8.2)
+      debug: 4.4.0(supports-color@8.1.1)
+      eslint: 4.19.1
+>>>>>>> 8c59a46 (misc stuff trying to get it working)
       tsutils: 3.21.0(typescript@5.8.2)
     optionalDependencies:
       typescript: 5.8.2
@@ -12760,7 +13276,11 @@ snapshots:
     dependencies:
       '@typescript-eslint/types': 5.62.0
       '@typescript-eslint/visitor-keys': 5.62.0
+<<<<<<< HEAD
       debug: 4.4.0(supports-color@7.2.0)
+=======
+      debug: 4.4.0(supports-color@8.1.1)
+>>>>>>> 8c59a46 (misc stuff trying to get it working)
       globby: 11.1.0
       is-glob: 4.0.3
       semver: 7.7.1
@@ -12770,15 +13290,25 @@ snapshots:
     transitivePeerDependencies:
       - supports-color
 
+<<<<<<< HEAD
   '@typescript-eslint/utils@5.62.0(eslint@9.21.0(jiti@1.21.7))(typescript@5.8.2)':
     dependencies:
       '@eslint-community/eslint-utils': 4.4.1(eslint@9.21.0(jiti@1.21.7))
+=======
+  '@typescript-eslint/utils@5.62.0(eslint@4.19.1)(typescript@5.8.2)':
+    dependencies:
+      '@eslint-community/eslint-utils': 4.4.1(eslint@4.19.1)
+>>>>>>> 8c59a46 (misc stuff trying to get it working)
       '@types/json-schema': 7.0.15
       '@types/semver': 7.5.8
       '@typescript-eslint/scope-manager': 5.62.0
       '@typescript-eslint/types': 5.62.0
       '@typescript-eslint/typescript-estree': 5.62.0(typescript@5.8.2)
+<<<<<<< HEAD
       eslint: 9.21.0(jiti@1.21.7)
+=======
+      eslint: 4.19.1
+>>>>>>> 8c59a46 (misc stuff trying to get it working)
       eslint-scope: 5.1.1
       semver: 7.7.1
     transitivePeerDependencies:
@@ -12989,10 +13519,13 @@ snapshots:
     dependencies:
       acorn: 3.3.0
 
+<<<<<<< HEAD
   acorn-jsx@5.3.2(acorn@8.14.0):
     dependencies:
       acorn: 8.14.0
 
+=======
+>>>>>>> 8c59a46 (misc stuff trying to get it working)
   acorn-node@1.8.2:
     dependencies:
       acorn: 7.4.1
@@ -13026,12 +13559,19 @@ snapshots:
 
   agent-base@6.0.2:
     dependencies:
+<<<<<<< HEAD
       debug: 4.4.0(supports-color@7.2.0)
     transitivePeerDependencies:
       - supports-color
 
   agent-base@7.1.3: {}
 
+=======
+      debug: 4.4.0(supports-color@8.1.1)
+    transitivePeerDependencies:
+      - supports-color
+
+>>>>>>> 8c59a46 (misc stuff trying to get it working)
   ajv-errors@1.0.1(ajv@6.12.6):
     dependencies:
       ajv: 6.12.6
@@ -13302,12 +13842,17 @@ snapshots:
 
   ast-types-flow@0.0.8: {}
 
+<<<<<<< HEAD
   ast-types@0.13.4:
     dependencies:
       tslib: 2.8.1
 
   astral-regex@1.0.0: {}
 
+=======
+  astral-regex@1.0.0: {}
+
+>>>>>>> 8c59a46 (misc stuff trying to get it working)
   async-each@1.0.6:
     optional: true
 
@@ -13366,8 +13911,11 @@ snapshots:
 
   axobject-query@4.1.0: {}
 
+<<<<<<< HEAD
   b4a@1.6.7: {}
 
+=======
+>>>>>>> 8c59a46 (misc stuff trying to get it working)
   babel-cli@6.26.0:
     dependencies:
       babel-core: 6.26.3
@@ -13566,14 +14114,22 @@ snapshots:
       mkdirp: 0.5.6
       webpack: 4.47.0(webpack-cli@3.3.12)
 
+<<<<<<< HEAD
   babel-loader@8.4.1(@babel/core@7.26.9)(webpack@5.98.0(@swc/core@1.11.5)):
+=======
+  babel-loader@8.4.1(@babel/core@7.26.9)(webpack@5.98.0):
+>>>>>>> 8c59a46 (misc stuff trying to get it working)
     dependencies:
       '@babel/core': 7.26.9
       find-cache-dir: 3.3.2
       loader-utils: 2.0.4
       make-dir: 3.1.0
       schema-utils: 2.7.1
+<<<<<<< HEAD
       webpack: 5.98.0(@swc/core@1.11.5)
+=======
+      webpack: 5.98.0
+>>>>>>> 8c59a46 (misc stuff trying to get it working)
 
   babel-messages@6.23.0:
     dependencies:
@@ -13998,6 +14554,7 @@ snapshots:
 
   balanced-match@1.0.2: {}
 
+<<<<<<< HEAD
   bare-events@2.5.4:
     optional: true
 
@@ -14027,6 +14584,10 @@ snapshots:
 
   base64-js@1.5.1: {}
 
+=======
+  base64-js@1.5.1: {}
+
+>>>>>>> 8c59a46 (misc stuff trying to get it working)
   base@0.11.2:
     dependencies:
       cache-base: 1.0.1
@@ -14043,10 +14604,15 @@ snapshots:
     dependencies:
       safe-buffer: 5.1.2
 
+<<<<<<< HEAD
   basic-ftp@5.0.5: {}
 
   batch@0.6.1: {}
 
+=======
+  batch@0.6.1: {}
+
+>>>>>>> 8c59a46 (misc stuff trying to get it working)
   bcrypt-pbkdf@1.0.2:
     dependencies:
       tweetnacl: 0.14.5
@@ -14426,6 +14992,7 @@ snapshots:
 
   chrome-trace-event@1.0.4: {}
 
+<<<<<<< HEAD
   chromium-bidi@2.1.2(devtools-protocol@0.0.1402036):
     dependencies:
       devtools-protocol: 0.0.1402036
@@ -14438,6 +15005,14 @@ snapshots:
 
   ci-info@3.9.0: {}
 
+=======
+  ci-info@1.6.0: {}
+
+  ci-info@2.0.0: {}
+
+  ci-info@3.9.0: {}
+
+>>>>>>> 8c59a46 (misc stuff trying to get it working)
   cipher-base@1.0.6:
     dependencies:
       inherits: 2.0.4
@@ -14503,6 +15078,7 @@ snapshots:
       strip-ansi: 6.0.1
       wrap-ansi: 7.0.0
 
+<<<<<<< HEAD
   cliui@8.0.1:
     dependencies:
       string-width: 4.2.3
@@ -14521,6 +15097,12 @@ snapshots:
 
   co-body@6.2.0:
     dependencies:
+=======
+  clsx@1.2.1: {}
+
+  co-body@6.2.0:
+    dependencies:
+>>>>>>> 8c59a46 (misc stuff trying to get it working)
       '@hapi/bourne': 3.0.0
       inflation: 2.1.0
       qs: 6.14.0
@@ -14739,6 +15321,7 @@ snapshots:
       path-type: 4.0.0
       yaml: 1.10.2
 
+<<<<<<< HEAD
   cosmiconfig@9.0.0(typescript@5.8.2):
     dependencies:
       env-paths: 2.2.1
@@ -14750,6 +15333,10 @@ snapshots:
 
   create-ecdh@4.0.4:
     dependencies:
+=======
+  create-ecdh@4.0.4:
+    dependencies:
+>>>>>>> 8c59a46 (misc stuff trying to get it working)
       bn.js: 4.12.1
       elliptic: 6.6.1
 
@@ -14827,7 +15414,11 @@ snapshots:
       postcss: 8.5.3
       postcss-selector-parser: 6.1.2
 
+<<<<<<< HEAD
   css-loader@6.11.0(webpack@5.98.0(@swc/core@1.11.5)):
+=======
+  css-loader@6.11.0(webpack@5.98.0):
+>>>>>>> 8c59a46 (misc stuff trying to get it working)
     dependencies:
       icss-utils: 5.1.0(postcss@8.5.3)
       postcss: 8.5.3
@@ -14838,9 +15429,15 @@ snapshots:
       postcss-value-parser: 4.2.0
       semver: 7.7.1
     optionalDependencies:
+<<<<<<< HEAD
       webpack: 5.98.0(@swc/core@1.11.5)
 
   css-minimizer-webpack-plugin@3.4.1(webpack@5.98.0(@swc/core@1.11.5)):
+=======
+      webpack: 5.98.0
+
+  css-minimizer-webpack-plugin@3.4.1(webpack@5.98.0):
+>>>>>>> 8c59a46 (misc stuff trying to get it working)
     dependencies:
       cssnano: 5.1.15(postcss@8.5.3)
       jest-worker: 27.5.1
@@ -14848,7 +15445,11 @@ snapshots:
       schema-utils: 4.3.0
       serialize-javascript: 6.0.2
       source-map: 0.6.1
+<<<<<<< HEAD
       webpack: 5.98.0(@swc/core@1.11.5)
+=======
+      webpack: 5.98.0
+>>>>>>> 8c59a46 (misc stuff trying to get it working)
 
   css-prefers-color-scheme@6.0.3(postcss@8.5.3):
     dependencies:
@@ -15021,8 +15622,11 @@ snapshots:
     dependencies:
       assert-plus: 1.0.0
 
+<<<<<<< HEAD
   data-uri-to-buffer@6.0.2: {}
 
+=======
+>>>>>>> 8c59a46 (misc stuff trying to get it working)
   data-urls@1.1.0:
     dependencies:
       abab: 2.0.6
@@ -15152,6 +15756,7 @@ snapshots:
 
   defined@1.0.1: {}
 
+<<<<<<< HEAD
   degenerator@5.0.1:
     dependencies:
       ast-types: 0.13.4
@@ -15166,6 +15771,16 @@ snapshots:
 
   depd@2.0.0: {}
 
+=======
+  delayed-stream@1.0.0: {}
+
+  delegates@1.0.0: {}
+
+  depd@1.1.2: {}
+
+  depd@2.0.0: {}
+
+>>>>>>> 8c59a46 (misc stuff trying to get it working)
   des.js@1.1.0:
     dependencies:
       inherits: 2.0.4
@@ -15201,6 +15816,7 @@ snapshots:
       defined: 1.0.1
       minimist: 1.2.8
 
+<<<<<<< HEAD
   devtools-protocol@0.0.1402036: {}
 
   didyoumean@1.2.2: {}
@@ -15221,6 +15837,26 @@ snapshots:
 
   diff@5.2.0: {}
 
+=======
+  didyoumean@1.2.2: {}
+
+  diff-match-patch@1.0.5: {}
+
+  diff-sequences@24.9.0: {}
+
+  diff-sequences@26.6.2: {}
+
+  diff-sequences@27.5.1: {}
+
+  diff-sequences@29.6.3: {}
+
+  diff@3.5.0: {}
+
+  diff@4.0.2: {}
+
+  diff@5.2.0: {}
+
+>>>>>>> 8c59a46 (misc stuff trying to get it working)
   diffie-hellman@5.0.3:
     dependencies:
       bn.js: 4.12.1
@@ -15373,8 +16009,11 @@ snapshots:
 
   entities@2.2.0: {}
 
+<<<<<<< HEAD
   env-paths@2.2.1: {}
 
+=======
+>>>>>>> 8c59a46 (misc stuff trying to get it working)
   errno@0.1.8:
     dependencies:
       prr: 1.0.1
@@ -15516,6 +16155,7 @@ snapshots:
     optionalDependencies:
       source-map: 0.6.1
 
+<<<<<<< HEAD
   eslint-config-react-app@7.0.1(@babel/plugin-syntax-flow@7.26.0(@babel/core@7.26.9))(@babel/plugin-transform-react-jsx@7.25.9(@babel/core@7.26.9))(eslint@9.21.0(jiti@1.21.7))(jest@27.5.1(ts-node@10.9.2(@swc/core@1.11.5)(@types/node@12.20.55)(typescript@5.8.2)))(typescript@5.8.2):
     dependencies:
       '@babel/core': 7.26.9
@@ -15533,6 +16173,25 @@ snapshots:
       eslint-plugin-react: 7.37.4(eslint@9.21.0(jiti@1.21.7))
       eslint-plugin-react-hooks: 4.6.2(eslint@9.21.0(jiti@1.21.7))
       eslint-plugin-testing-library: 5.11.1(eslint@9.21.0(jiti@1.21.7))(typescript@5.8.2)
+=======
+  eslint-config-react-app@7.0.1(@babel/plugin-syntax-flow@7.26.0(@babel/core@7.26.9))(@babel/plugin-transform-react-jsx@7.25.9(@babel/core@7.26.9))(eslint@4.19.1)(jest@27.5.1(ts-node@10.9.2(@types/node@12.20.55)(typescript@5.8.2)))(typescript@5.8.2):
+    dependencies:
+      '@babel/core': 7.26.9
+      '@babel/eslint-parser': 7.26.8(@babel/core@7.26.9)(eslint@4.19.1)
+      '@rushstack/eslint-patch': 1.10.5
+      '@typescript-eslint/eslint-plugin': 5.62.0(@typescript-eslint/parser@5.62.0(eslint@4.19.1)(typescript@5.8.2))(eslint@4.19.1)(typescript@5.8.2)
+      '@typescript-eslint/parser': 5.62.0(eslint@4.19.1)(typescript@5.8.2)
+      babel-preset-react-app: 10.1.0
+      confusing-browser-globals: 1.0.11
+      eslint: 4.19.1
+      eslint-plugin-flowtype: 8.0.3(@babel/plugin-syntax-flow@7.26.0(@babel/core@7.26.9))(@babel/plugin-transform-react-jsx@7.25.9(@babel/core@7.26.9))(eslint@4.19.1)
+      eslint-plugin-import: 2.31.0(@typescript-eslint/parser@5.62.0(eslint@4.19.1)(typescript@5.8.2))(eslint@4.19.1)
+      eslint-plugin-jest: 25.7.0(@typescript-eslint/eslint-plugin@5.62.0(@typescript-eslint/parser@5.62.0(eslint@4.19.1)(typescript@5.8.2))(eslint@4.19.1)(typescript@5.8.2))(eslint@4.19.1)(jest@27.5.1(ts-node@10.9.2(@types/node@12.20.55)(typescript@5.8.2)))(typescript@5.8.2)
+      eslint-plugin-jsx-a11y: 6.10.2(eslint@4.19.1)
+      eslint-plugin-react: 7.37.4(eslint@4.19.1)
+      eslint-plugin-react-hooks: 4.6.2(eslint@4.19.1)
+      eslint-plugin-testing-library: 5.11.1(eslint@4.19.1)(typescript@5.8.2)
+>>>>>>> 8c59a46 (misc stuff trying to get it working)
     optionalDependencies:
       typescript: 5.8.2
     transitivePeerDependencies:
@@ -15561,12 +16220,21 @@ snapshots:
       rimraf: 2.7.1
       webpack: 4.47.0(webpack-cli@3.3.12)
 
+<<<<<<< HEAD
   eslint-module-utils@2.12.0(@typescript-eslint/parser@5.62.0(eslint@9.21.0(jiti@1.21.7))(typescript@5.8.2))(eslint-import-resolver-node@0.3.9)(eslint@9.21.0(jiti@1.21.7)):
     dependencies:
       debug: 3.2.7(supports-color@7.2.0)
     optionalDependencies:
       '@typescript-eslint/parser': 5.62.0(eslint@9.21.0(jiti@1.21.7))(typescript@5.8.2)
       eslint: 9.21.0(jiti@1.21.7)
+=======
+  eslint-module-utils@2.12.0(@typescript-eslint/parser@5.62.0(eslint@4.19.1)(typescript@5.8.2))(eslint-import-resolver-node@0.3.9)(eslint@4.19.1):
+    dependencies:
+      debug: 3.2.7(supports-color@7.2.0)
+    optionalDependencies:
+      '@typescript-eslint/parser': 5.62.0(eslint@4.19.1)(typescript@5.8.2)
+      eslint: 4.19.1
+>>>>>>> 8c59a46 (misc stuff trying to get it working)
       eslint-import-resolver-node: 0.3.9
     transitivePeerDependencies:
       - supports-color
@@ -15576,6 +16244,7 @@ snapshots:
       eslint: 4.19.1
       globals: 13.24.0
 
+<<<<<<< HEAD
   eslint-plugin-flowtype@8.0.3(@babel/plugin-syntax-flow@7.26.0(@babel/core@7.26.9))(@babel/plugin-transform-react-jsx@7.25.9(@babel/core@7.26.9))(eslint@9.21.0(jiti@1.21.7)):
     dependencies:
       '@babel/plugin-syntax-flow': 7.26.0(@babel/core@7.26.9)
@@ -15585,6 +16254,17 @@ snapshots:
       string-natural-compare: 3.0.1
 
   eslint-plugin-import@2.31.0(@typescript-eslint/parser@5.62.0(eslint@9.21.0(jiti@1.21.7))(typescript@5.8.2))(eslint@9.21.0(jiti@1.21.7)):
+=======
+  eslint-plugin-flowtype@8.0.3(@babel/plugin-syntax-flow@7.26.0(@babel/core@7.26.9))(@babel/plugin-transform-react-jsx@7.25.9(@babel/core@7.26.9))(eslint@4.19.1):
+    dependencies:
+      '@babel/plugin-syntax-flow': 7.26.0(@babel/core@7.26.9)
+      '@babel/plugin-transform-react-jsx': 7.25.9(@babel/core@7.26.9)
+      eslint: 4.19.1
+      lodash: 4.17.21
+      string-natural-compare: 3.0.1
+
+  eslint-plugin-import@2.31.0(@typescript-eslint/parser@5.62.0(eslint@4.19.1)(typescript@5.8.2))(eslint@4.19.1):
+>>>>>>> 8c59a46 (misc stuff trying to get it working)
     dependencies:
       '@rtsao/scc': 1.1.0
       array-includes: 3.1.8
@@ -15593,9 +16273,15 @@ snapshots:
       array.prototype.flatmap: 1.3.3
       debug: 3.2.7(supports-color@7.2.0)
       doctrine: 2.1.0
+<<<<<<< HEAD
       eslint: 9.21.0(jiti@1.21.7)
       eslint-import-resolver-node: 0.3.9
       eslint-module-utils: 2.12.0(@typescript-eslint/parser@5.62.0(eslint@9.21.0(jiti@1.21.7))(typescript@5.8.2))(eslint-import-resolver-node@0.3.9)(eslint@9.21.0(jiti@1.21.7))
+=======
+      eslint: 4.19.1
+      eslint-import-resolver-node: 0.3.9
+      eslint-module-utils: 2.12.0(@typescript-eslint/parser@5.62.0(eslint@4.19.1)(typescript@5.8.2))(eslint-import-resolver-node@0.3.9)(eslint@4.19.1)
+>>>>>>> 8c59a46 (misc stuff trying to get it working)
       hasown: 2.0.2
       is-core-module: 2.16.1
       is-glob: 4.0.3
@@ -15607,12 +16293,17 @@ snapshots:
       string.prototype.trimend: 1.0.9
       tsconfig-paths: 3.15.0
     optionalDependencies:
+<<<<<<< HEAD
       '@typescript-eslint/parser': 5.62.0(eslint@9.21.0(jiti@1.21.7))(typescript@5.8.2)
+=======
+      '@typescript-eslint/parser': 5.62.0(eslint@4.19.1)(typescript@5.8.2)
+>>>>>>> 8c59a46 (misc stuff trying to get it working)
     transitivePeerDependencies:
       - eslint-import-resolver-typescript
       - eslint-import-resolver-webpack
       - supports-color
 
+<<<<<<< HEAD
   eslint-plugin-jest@25.7.0(@typescript-eslint/eslint-plugin@5.62.0(@typescript-eslint/parser@5.62.0(eslint@9.21.0(jiti@1.21.7))(typescript@5.8.2))(eslint@9.21.0(jiti@1.21.7))(typescript@5.8.2))(eslint@9.21.0(jiti@1.21.7))(jest@27.5.1(ts-node@10.9.2(@swc/core@1.11.5)(@types/node@12.20.55)(typescript@5.8.2)))(typescript@5.8.2):
     dependencies:
       '@typescript-eslint/experimental-utils': 5.62.0(eslint@9.21.0(jiti@1.21.7))(typescript@5.8.2)
@@ -15620,11 +16311,24 @@ snapshots:
     optionalDependencies:
       '@typescript-eslint/eslint-plugin': 5.62.0(@typescript-eslint/parser@5.62.0(eslint@9.21.0(jiti@1.21.7))(typescript@5.8.2))(eslint@9.21.0(jiti@1.21.7))(typescript@5.8.2)
       jest: 27.5.1(ts-node@10.9.2(@swc/core@1.11.5)(@types/node@12.20.55)(typescript@5.8.2))
+=======
+  eslint-plugin-jest@25.7.0(@typescript-eslint/eslint-plugin@5.62.0(@typescript-eslint/parser@5.62.0(eslint@4.19.1)(typescript@5.8.2))(eslint@4.19.1)(typescript@5.8.2))(eslint@4.19.1)(jest@27.5.1(ts-node@10.9.2(@types/node@12.20.55)(typescript@5.8.2)))(typescript@5.8.2):
+    dependencies:
+      '@typescript-eslint/experimental-utils': 5.62.0(eslint@4.19.1)(typescript@5.8.2)
+      eslint: 4.19.1
+    optionalDependencies:
+      '@typescript-eslint/eslint-plugin': 5.62.0(@typescript-eslint/parser@5.62.0(eslint@4.19.1)(typescript@5.8.2))(eslint@4.19.1)(typescript@5.8.2)
+      jest: 27.5.1(ts-node@10.9.2(@types/node@12.20.55)(typescript@5.8.2))
+>>>>>>> 8c59a46 (misc stuff trying to get it working)
     transitivePeerDependencies:
       - supports-color
       - typescript
 
+<<<<<<< HEAD
   eslint-plugin-jsx-a11y@6.10.2(eslint@9.21.0(jiti@1.21.7)):
+=======
+  eslint-plugin-jsx-a11y@6.10.2(eslint@4.19.1):
+>>>>>>> 8c59a46 (misc stuff trying to get it working)
     dependencies:
       aria-query: 5.3.2
       array-includes: 3.1.8
@@ -15634,7 +16338,11 @@ snapshots:
       axobject-query: 4.1.0
       damerau-levenshtein: 1.0.8
       emoji-regex: 9.2.2
+<<<<<<< HEAD
       eslint: 9.21.0(jiti@1.21.7)
+=======
+      eslint: 4.19.1
+>>>>>>> 8c59a46 (misc stuff trying to get it working)
       hasown: 2.0.2
       jsx-ast-utils: 3.3.5
       language-tags: 1.0.9
@@ -15643,11 +16351,19 @@ snapshots:
       safe-regex-test: 1.1.0
       string.prototype.includes: 2.0.1
 
+<<<<<<< HEAD
   eslint-plugin-react-hooks@4.6.2(eslint@9.21.0(jiti@1.21.7)):
     dependencies:
       eslint: 9.21.0(jiti@1.21.7)
 
   eslint-plugin-react@7.37.4(eslint@9.21.0(jiti@1.21.7)):
+=======
+  eslint-plugin-react-hooks@4.6.2(eslint@4.19.1):
+    dependencies:
+      eslint: 4.19.1
+
+  eslint-plugin-react@7.37.4(eslint@4.19.1):
+>>>>>>> 8c59a46 (misc stuff trying to get it working)
     dependencies:
       array-includes: 3.1.8
       array.prototype.findlast: 1.2.5
@@ -15655,7 +16371,11 @@ snapshots:
       array.prototype.tosorted: 1.1.4
       doctrine: 2.1.0
       es-iterator-helpers: 1.2.1
+<<<<<<< HEAD
       eslint: 9.21.0(jiti@1.21.7)
+=======
+      eslint: 4.19.1
+>>>>>>> 8c59a46 (misc stuff trying to get it working)
       estraverse: 5.3.0
       hasown: 2.0.2
       jsx-ast-utils: 3.3.5
@@ -15669,10 +16389,17 @@ snapshots:
       string.prototype.matchall: 4.0.12
       string.prototype.repeat: 1.0.0
 
+<<<<<<< HEAD
   eslint-plugin-testing-library@5.11.1(eslint@9.21.0(jiti@1.21.7))(typescript@5.8.2):
     dependencies:
       '@typescript-eslint/utils': 5.62.0(eslint@9.21.0(jiti@1.21.7))(typescript@5.8.2)
       eslint: 9.21.0(jiti@1.21.7)
+=======
+  eslint-plugin-testing-library@5.11.1(eslint@4.19.1)(typescript@5.8.2):
+    dependencies:
+      '@typescript-eslint/utils': 5.62.0(eslint@4.19.1)(typescript@5.8.2)
+      eslint: 4.19.1
+>>>>>>> 8c59a46 (misc stuff trying to get it working)
     transitivePeerDependencies:
       - supports-color
       - typescript
@@ -15692,6 +16419,7 @@ snapshots:
       esrecurse: 4.3.0
       estraverse: 4.3.0
 
+<<<<<<< HEAD
   eslint-scope@8.2.0:
     dependencies:
       esrecurse: 4.3.0
@@ -15709,11 +16437,27 @@ snapshots:
     dependencies:
       '@types/eslint': 8.56.12
       eslint: 9.21.0(jiti@1.21.7)
+=======
+  eslint-visitor-keys@1.3.0: {}
+
+  eslint-visitor-keys@2.1.0: {}
+
+  eslint-visitor-keys@3.4.3: {}
+
+  eslint-webpack-plugin@3.2.0(eslint@4.19.1)(webpack@5.98.0):
+    dependencies:
+      '@types/eslint': 8.56.12
+      eslint: 4.19.1
+>>>>>>> 8c59a46 (misc stuff trying to get it working)
       jest-worker: 28.1.3
       micromatch: 4.0.8
       normalize-path: 3.0.0
       schema-utils: 4.3.0
+<<<<<<< HEAD
       webpack: 5.98.0(@swc/core@1.11.5)
+=======
+      webpack: 5.98.0
+>>>>>>> 8c59a46 (misc stuff trying to get it working)
 
   eslint@4.19.1:
     dependencies:
@@ -15758,6 +16502,7 @@ snapshots:
     transitivePeerDependencies:
       - supports-color
 
+<<<<<<< HEAD
   eslint@9.21.0(jiti@1.21.7):
     dependencies:
       '@eslint-community/eslint-utils': 4.4.1(eslint@9.21.0(jiti@1.21.7))
@@ -15805,6 +16550,8 @@ snapshots:
       acorn-jsx: 5.3.2(acorn@8.14.0)
       eslint-visitor-keys: 4.2.0
 
+=======
+>>>>>>> 8c59a46 (misc stuff trying to get it working)
   espree@3.5.4:
     dependencies:
       acorn: 5.7.4
@@ -16027,6 +16774,7 @@ snapshots:
     transitivePeerDependencies:
       - supports-color
 
+<<<<<<< HEAD
   extract-zip@2.0.1:
     dependencies:
       debug: 4.4.0(supports-color@7.2.0)
@@ -16045,6 +16793,14 @@ snapshots:
 
   fast-fifo@1.3.2: {}
 
+=======
+  extsprintf@1.3.0: {}
+
+  fast-deep-equal@1.1.0: {}
+
+  fast-deep-equal@3.1.3: {}
+
+>>>>>>> 8c59a46 (misc stuff trying to get it working)
   fast-glob@3.3.3:
     dependencies:
       '@nodelib/fs.stat': 2.0.5
@@ -16091,6 +16847,7 @@ snapshots:
       flat-cache: 1.3.4
       object-assign: 4.1.1
 
+<<<<<<< HEAD
   file-entry-cache@8.0.0:
     dependencies:
       flat-cache: 4.0.1
@@ -16100,6 +16857,13 @@ snapshots:
       loader-utils: 2.0.4
       schema-utils: 3.3.0
       webpack: 5.98.0(@swc/core@1.11.5)
+=======
+  file-loader@6.2.0(webpack@5.98.0):
+    dependencies:
+      loader-utils: 2.0.4
+      schema-utils: 3.3.0
+      webpack: 5.98.0
+>>>>>>> 8c59a46 (misc stuff trying to get it working)
 
   file-uri-to-path@1.0.0:
     optional: true
@@ -16215,6 +16979,7 @@ snapshots:
       rimraf: 2.6.3
       write: 0.2.1
 
+<<<<<<< HEAD
   flat-cache@4.0.1:
     dependencies:
       flatted: 3.3.3
@@ -16224,6 +16989,10 @@ snapshots:
 
   flatted@3.3.3: {}
 
+=======
+  flat@5.0.2: {}
+
+>>>>>>> 8c59a46 (misc stuff trying to get it working)
   flush-write-stream@1.1.1:
     dependencies:
       inherits: 2.0.4
@@ -16237,10 +17006,15 @@ snapshots:
     dependencies:
       is-callable: 1.2.7
 
+<<<<<<< HEAD
   for-in@0.1.8: {}
 
   for-in@1.0.2: {}
 
+=======
+  for-in@1.0.2: {}
+
+>>>>>>> 8c59a46 (misc stuff trying to get it working)
   for-own@0.1.5:
     dependencies:
       for-in: 1.0.2
@@ -16252,7 +17026,11 @@ snapshots:
 
   forever-agent@0.6.1: {}
 
+<<<<<<< HEAD
   fork-ts-checker-webpack-plugin@6.5.3(eslint@9.21.0(jiti@1.21.7))(typescript@5.8.2)(webpack@5.98.0(@swc/core@1.11.5)):
+=======
+  fork-ts-checker-webpack-plugin@6.5.3(eslint@4.19.1)(typescript@5.8.2)(webpack@5.98.0):
+>>>>>>> 8c59a46 (misc stuff trying to get it working)
     dependencies:
       '@babel/code-frame': 7.26.2
       '@types/json-schema': 7.0.15
@@ -16268,9 +17046,15 @@ snapshots:
       semver: 7.7.1
       tapable: 1.1.3
       typescript: 5.8.2
+<<<<<<< HEAD
       webpack: 5.98.0(@swc/core@1.11.5)
     optionalDependencies:
       eslint: 9.21.0(jiti@1.21.7)
+=======
+      webpack: 5.98.0
+    optionalDependencies:
+      eslint: 4.19.1
+>>>>>>> 8c59a46 (misc stuff trying to get it working)
 
   form-data@2.3.3:
     dependencies:
@@ -16411,6 +17195,7 @@ snapshots:
     dependencies:
       pump: 3.0.2
 
+<<<<<<< HEAD
   get-stream@5.2.0:
     dependencies:
       pump: 3.0.2
@@ -16431,6 +17216,16 @@ snapshots:
     transitivePeerDependencies:
       - supports-color
 
+=======
+  get-stream@6.0.1: {}
+
+  get-symbol-description@1.1.0:
+    dependencies:
+      call-bound: 1.0.4
+      es-errors: 1.3.0
+      get-intrinsic: 1.3.0
+
+>>>>>>> 8c59a46 (misc stuff trying to get it working)
   get-value@2.0.6: {}
 
   getos@3.2.1:
@@ -16530,10 +17325,15 @@ snapshots:
     dependencies:
       type-fest: 0.20.2
 
+<<<<<<< HEAD
   globals@14.0.0: {}
 
   globals@9.18.0: {}
 
+=======
+  globals@9.18.0: {}
+
+>>>>>>> 8c59a46 (misc stuff trying to get it working)
   globalthis@1.0.4:
     dependencies:
       define-properties: 1.2.1
@@ -16701,7 +17501,11 @@ snapshots:
 
   html-tags@3.3.1: {}
 
+<<<<<<< HEAD
   html-webpack-plugin@5.6.3(webpack@5.98.0(@swc/core@1.11.5)):
+=======
+  html-webpack-plugin@5.6.3(webpack@5.98.0):
+>>>>>>> 8c59a46 (misc stuff trying to get it working)
     dependencies:
       '@types/html-minifier-terser': 6.1.0
       html-minifier-terser: 6.1.0
@@ -16709,7 +17513,11 @@ snapshots:
       pretty-error: 4.0.0
       tapable: 2.2.1
     optionalDependencies:
+<<<<<<< HEAD
       webpack: 5.98.0(@swc/core@1.11.5)
+=======
+      webpack: 5.98.0
+>>>>>>> 8c59a46 (misc stuff trying to get it working)
 
   htmlparser2@6.1.0:
     dependencies:
@@ -16754,6 +17562,7 @@ snapshots:
     dependencies:
       '@tootallnate/once': 1.1.2
       agent-base: 6.0.2
+<<<<<<< HEAD
       debug: 4.4.0(supports-color@7.2.0)
     transitivePeerDependencies:
       - supports-color
@@ -16767,6 +17576,14 @@ snapshots:
 
   http-proxy-middleware@2.0.7(@types/express@4.17.21):
     dependencies:
+=======
+      debug: 4.4.0(supports-color@8.1.1)
+    transitivePeerDependencies:
+      - supports-color
+
+  http-proxy-middleware@2.0.7(@types/express@4.17.21):
+    dependencies:
+>>>>>>> 8c59a46 (misc stuff trying to get it working)
       '@types/http-proxy': 1.17.16
       http-proxy: 1.18.1
       is-glob: 4.0.3
@@ -16802,6 +17619,7 @@ snapshots:
   https-proxy-agent@5.0.1:
     dependencies:
       agent-base: 6.0.2
+<<<<<<< HEAD
       debug: 4.4.0(supports-color@7.2.0)
     transitivePeerDependencies:
       - supports-color
@@ -16815,6 +17633,14 @@ snapshots:
 
   human-signals@2.1.0: {}
 
+=======
+      debug: 4.4.0(supports-color@8.1.1)
+    transitivePeerDependencies:
+      - supports-color
+
+  human-signals@2.1.0: {}
+
+>>>>>>> 8c59a46 (misc stuff trying to get it working)
   husky@0.14.3:
     dependencies:
       is-ci: 1.2.1
@@ -16931,6 +17757,7 @@ snapshots:
 
   invert-kv@2.0.0: {}
 
+<<<<<<< HEAD
   ip-address@9.0.5:
     dependencies:
       jsbn: 1.1.0
@@ -16966,6 +17793,38 @@ snapshots:
     dependencies:
       has-bigints: 1.1.0
 
+=======
+  ipaddr.js@1.9.1: {}
+
+  ipaddr.js@2.2.0: {}
+
+  is-accessor-descriptor@1.0.1:
+    dependencies:
+      hasown: 2.0.2
+
+  is-array-buffer@3.0.5:
+    dependencies:
+      call-bind: 1.0.8
+      call-bound: 1.0.4
+      get-intrinsic: 1.3.0
+
+  is-arrayish@0.2.1: {}
+
+  is-arrayish@0.3.2: {}
+
+  is-async-function@2.1.1:
+    dependencies:
+      async-function: 1.0.0
+      call-bound: 1.0.4
+      get-proto: 1.0.1
+      has-tostringtag: 1.0.2
+      safe-regex-test: 1.1.0
+
+  is-bigint@1.1.0:
+    dependencies:
+      has-bigints: 1.1.0
+
+>>>>>>> 8c59a46 (misc stuff trying to get it working)
   is-binary-path@1.0.1:
     dependencies:
       binary-extensions: 1.13.1
@@ -17317,7 +18176,11 @@ snapshots:
 
   istanbul-lib-source-maps@3.0.6:
     dependencies:
+<<<<<<< HEAD
       debug: 4.4.0(supports-color@7.2.0)
+=======
+      debug: 4.4.0(supports-color@8.1.1)
+>>>>>>> 8c59a46 (misc stuff trying to get it working)
       istanbul-lib-coverage: 2.0.5
       make-dir: 2.1.0
       rimraf: 2.7.1
@@ -17327,7 +18190,11 @@ snapshots:
 
   istanbul-lib-source-maps@4.0.1:
     dependencies:
+<<<<<<< HEAD
       debug: 4.4.0(supports-color@7.2.0)
+=======
+      debug: 4.4.0(supports-color@8.1.1)
+>>>>>>> 8c59a46 (misc stuff trying to get it working)
       istanbul-lib-coverage: 3.2.2
       source-map: 0.6.1
     transitivePeerDependencies:
@@ -17394,7 +18261,11 @@ snapshots:
       '@jest/environment': 27.5.1
       '@jest/test-result': 27.5.1
       '@jest/types': 27.5.1
+<<<<<<< HEAD
       '@types/node': 12.20.55
+=======
+      '@types/node': 22.13.9
+>>>>>>> 8c59a46 (misc stuff trying to get it working)
       chalk: 4.1.2
       co: 4.6.0
       dedent: 0.7.0
@@ -17476,16 +18347,26 @@ snapshots:
       - supports-color
       - utf-8-validate
 
+<<<<<<< HEAD
   jest-cli@27.5.1(ts-node@10.9.2(@swc/core@1.11.5)(@types/node@12.20.55)(typescript@4.9.5)):
     dependencies:
       '@jest/core': 27.5.1(ts-node@10.9.2(@swc/core@1.11.5)(@types/node@12.20.55)(typescript@4.9.5))
+=======
+  jest-cli@27.5.1(ts-node@10.9.2(@types/node@12.20.55)(typescript@4.9.5)):
+    dependencies:
+      '@jest/core': 27.5.1(ts-node@10.9.2(@types/node@12.20.55)(typescript@4.9.5))
+>>>>>>> 8c59a46 (misc stuff trying to get it working)
       '@jest/test-result': 27.5.1
       '@jest/types': 27.5.1
       chalk: 4.1.2
       exit: 0.1.2
       graceful-fs: 4.2.11
       import-local: 3.2.0
+<<<<<<< HEAD
       jest-config: 27.5.1(ts-node@10.9.2(@swc/core@1.11.5)(@types/node@12.20.55)(typescript@4.9.5))
+=======
+      jest-config: 27.5.1(ts-node@10.9.2(@types/node@12.20.55)(typescript@4.9.5))
+>>>>>>> 8c59a46 (misc stuff trying to get it working)
       jest-util: 27.5.1
       jest-validate: 27.5.1
       prompts: 2.4.2
@@ -17497,16 +18378,26 @@ snapshots:
       - ts-node
       - utf-8-validate
 
+<<<<<<< HEAD
   jest-cli@27.5.1(ts-node@10.9.2(@swc/core@1.11.5)(@types/node@12.20.55)(typescript@5.8.2)):
     dependencies:
       '@jest/core': 27.5.1(ts-node@10.9.2(@swc/core@1.11.5)(@types/node@12.20.55)(typescript@5.8.2))
+=======
+  jest-cli@27.5.1(ts-node@10.9.2(@types/node@12.20.55)(typescript@5.8.2)):
+    dependencies:
+      '@jest/core': 27.5.1(ts-node@10.9.2(@types/node@12.20.55)(typescript@5.8.2))
+>>>>>>> 8c59a46 (misc stuff trying to get it working)
       '@jest/test-result': 27.5.1
       '@jest/types': 27.5.1
       chalk: 4.1.2
       exit: 0.1.2
       graceful-fs: 4.2.11
       import-local: 3.2.0
+<<<<<<< HEAD
       jest-config: 27.5.1(ts-node@10.9.2(@swc/core@1.11.5)(@types/node@12.20.55)(typescript@5.8.2))
+=======
+      jest-config: 27.5.1(ts-node@10.9.2(@types/node@12.20.55)(typescript@5.8.2))
+>>>>>>> 8c59a46 (misc stuff trying to get it working)
       jest-util: 27.5.1
       jest-validate: 27.5.1
       prompts: 2.4.2
@@ -17563,7 +18454,11 @@ snapshots:
       - supports-color
       - utf-8-validate
 
+<<<<<<< HEAD
   jest-config@27.5.1(ts-node@10.9.2(@swc/core@1.11.5)(@types/node@12.20.55)(typescript@4.9.5)):
+=======
+  jest-config@27.5.1(ts-node@10.9.2(@types/node@12.20.55)(typescript@4.9.5)):
+>>>>>>> 8c59a46 (misc stuff trying to get it working)
     dependencies:
       '@babel/core': 7.26.9
       '@jest/test-sequencer': 27.5.1
@@ -17590,14 +18485,22 @@ snapshots:
       slash: 3.0.0
       strip-json-comments: 3.1.1
     optionalDependencies:
+<<<<<<< HEAD
       ts-node: 10.9.2(@swc/core@1.11.5)(@types/node@12.20.55)(typescript@4.9.5)
+=======
+      ts-node: 10.9.2(@types/node@12.20.55)(typescript@4.9.5)
+>>>>>>> 8c59a46 (misc stuff trying to get it working)
     transitivePeerDependencies:
       - bufferutil
       - canvas
       - supports-color
       - utf-8-validate
 
+<<<<<<< HEAD
   jest-config@27.5.1(ts-node@10.9.2(@swc/core@1.11.5)(@types/node@12.20.55)(typescript@5.8.2)):
+=======
+  jest-config@27.5.1(ts-node@10.9.2(@types/node@12.20.55)(typescript@5.8.2)):
+>>>>>>> 8c59a46 (misc stuff trying to get it working)
     dependencies:
       '@babel/core': 7.26.9
       '@jest/test-sequencer': 27.5.1
@@ -17624,7 +18527,11 @@ snapshots:
       slash: 3.0.0
       strip-json-comments: 3.1.1
     optionalDependencies:
+<<<<<<< HEAD
       ts-node: 10.9.2(@swc/core@1.11.5)(@types/node@12.20.55)(typescript@5.8.2)
+=======
+      ts-node: 10.9.2(@types/node@12.20.55)(typescript@5.8.2)
+>>>>>>> 8c59a46 (misc stuff trying to get it working)
     transitivePeerDependencies:
       - bufferutil
       - canvas
@@ -17721,7 +18628,11 @@ snapshots:
       '@jest/environment': 27.5.1
       '@jest/fake-timers': 27.5.1
       '@jest/types': 27.5.1
+<<<<<<< HEAD
       '@types/node': 12.20.55
+=======
+      '@types/node': 22.13.9
+>>>>>>> 8c59a46 (misc stuff trying to get it working)
       jest-mock: 27.5.1
       jest-util: 27.5.1
       jsdom: 16.7.0
@@ -17751,7 +18662,11 @@ snapshots:
       '@jest/environment': 27.5.1
       '@jest/fake-timers': 27.5.1
       '@jest/types': 27.5.1
+<<<<<<< HEAD
       '@types/node': 12.20.55
+=======
+      '@types/node': 22.13.9
+>>>>>>> 8c59a46 (misc stuff trying to get it working)
       jest-mock: 27.5.1
       jest-util: 27.5.1
 
@@ -17807,7 +18722,11 @@ snapshots:
     dependencies:
       '@jest/types': 27.5.1
       '@types/graceful-fs': 4.1.9
+<<<<<<< HEAD
       '@types/node': 12.20.55
+=======
+      '@types/node': 22.13.9
+>>>>>>> 8c59a46 (misc stuff trying to get it working)
       anymatch: 3.1.3
       fb-watchman: 2.0.2
       graceful-fs: 4.2.11
@@ -17891,7 +18810,11 @@ snapshots:
       '@jest/source-map': 27.5.1
       '@jest/test-result': 27.5.1
       '@jest/types': 27.5.1
+<<<<<<< HEAD
       '@types/node': 12.20.55
+=======
+      '@types/node': 22.13.9
+>>>>>>> 8c59a46 (misc stuff trying to get it working)
       chalk: 4.1.2
       co: 4.6.0
       expect: 27.5.1
@@ -18007,12 +18930,20 @@ snapshots:
   jest-mock@27.5.1:
     dependencies:
       '@jest/types': 27.5.1
+<<<<<<< HEAD
       '@types/node': 12.20.55
+=======
+      '@types/node': 22.13.9
+>>>>>>> 8c59a46 (misc stuff trying to get it working)
 
   jest-mock@29.7.0:
     dependencies:
       '@jest/types': 29.6.3
+<<<<<<< HEAD
       '@types/node': 22.13.9
+=======
+      '@types/node': 12.20.55
+>>>>>>> 8c59a46 (misc stuff trying to get it working)
       jest-util: 29.7.0
 
   jest-pnp-resolver@1.2.3(jest-resolve@24.9.0):
@@ -18132,7 +19063,11 @@ snapshots:
       '@jest/test-result': 27.5.1
       '@jest/transform': 27.5.1
       '@jest/types': 27.5.1
+<<<<<<< HEAD
       '@types/node': 12.20.55
+=======
+      '@types/node': 22.13.9
+>>>>>>> 8c59a46 (misc stuff trying to get it working)
       chalk: 4.1.2
       emittery: 0.8.1
       graceful-fs: 4.2.11
@@ -18245,7 +19180,11 @@ snapshots:
 
   jest-serializer@27.5.1:
     dependencies:
+<<<<<<< HEAD
       '@types/node': 12.20.55
+=======
+      '@types/node': 22.13.9
+>>>>>>> 8c59a46 (misc stuff trying to get it working)
       graceful-fs: 4.2.11
 
   jest-snapshot@23.6.0:
@@ -18337,7 +19276,11 @@ snapshots:
   jest-util@27.5.1:
     dependencies:
       '@jest/types': 27.5.1
+<<<<<<< HEAD
       '@types/node': 12.20.55
+=======
+      '@types/node': 22.13.9
+>>>>>>> 8c59a46 (misc stuff trying to get it working)
       chalk: 4.1.2
       ci-info: 3.9.0
       graceful-fs: 4.2.11
@@ -18346,7 +19289,11 @@ snapshots:
   jest-util@28.1.3:
     dependencies:
       '@jest/types': 28.1.3
+<<<<<<< HEAD
       '@types/node': 12.20.55
+=======
+      '@types/node': 22.13.9
+>>>>>>> 8c59a46 (misc stuff trying to get it working)
       chalk: 4.1.2
       ci-info: 3.9.0
       graceful-fs: 4.2.11
@@ -18355,7 +19302,11 @@ snapshots:
   jest-util@29.7.0:
     dependencies:
       '@jest/types': 29.6.3
+<<<<<<< HEAD
       '@types/node': 22.13.9
+=======
+      '@types/node': 12.20.55
+>>>>>>> 8c59a46 (misc stuff trying to get it working)
       chalk: 4.1.2
       ci-info: 3.9.0
       graceful-fs: 4.2.11
@@ -18386,11 +19337,19 @@ snapshots:
       leven: 3.1.0
       pretty-format: 27.5.1
 
+<<<<<<< HEAD
   jest-watch-typeahead@1.1.0(jest@27.5.1(ts-node@10.9.2(@swc/core@1.11.5)(@types/node@12.20.55)(typescript@5.8.2))):
     dependencies:
       ansi-escapes: 4.3.2
       chalk: 4.1.2
       jest: 27.5.1(ts-node@10.9.2(@swc/core@1.11.5)(@types/node@12.20.55)(typescript@5.8.2))
+=======
+  jest-watch-typeahead@1.1.0(jest@27.5.1(ts-node@10.9.2(@types/node@12.20.55)(typescript@5.8.2))):
+    dependencies:
+      ansi-escapes: 4.3.2
+      chalk: 4.1.2
+      jest: 27.5.1(ts-node@10.9.2(@types/node@12.20.55)(typescript@5.8.2))
+>>>>>>> 8c59a46 (misc stuff trying to get it working)
       jest-regex-util: 28.0.2
       jest-watcher: 28.1.3
       slash: 4.0.0
@@ -18419,7 +19378,11 @@ snapshots:
     dependencies:
       '@jest/test-result': 27.5.1
       '@jest/types': 27.5.1
+<<<<<<< HEAD
       '@types/node': 12.20.55
+=======
+      '@types/node': 22.13.9
+>>>>>>> 8c59a46 (misc stuff trying to get it working)
       ansi-escapes: 4.3.2
       chalk: 4.1.2
       jest-util: 27.5.1
@@ -18429,7 +19392,11 @@ snapshots:
     dependencies:
       '@jest/test-result': 28.1.3
       '@jest/types': 28.1.3
+<<<<<<< HEAD
       '@types/node': 12.20.55
+=======
+      '@types/node': 22.13.9
+>>>>>>> 8c59a46 (misc stuff trying to get it working)
       ansi-escapes: 4.3.2
       chalk: 4.1.2
       emittery: 0.10.2
@@ -18447,19 +19414,31 @@ snapshots:
 
   jest-worker@26.6.2:
     dependencies:
+<<<<<<< HEAD
       '@types/node': 12.20.55
+=======
+      '@types/node': 22.13.9
+>>>>>>> 8c59a46 (misc stuff trying to get it working)
       merge-stream: 2.0.0
       supports-color: 7.2.0
 
   jest-worker@27.5.1:
     dependencies:
+<<<<<<< HEAD
       '@types/node': 12.20.55
+=======
+      '@types/node': 22.13.9
+>>>>>>> 8c59a46 (misc stuff trying to get it working)
       merge-stream: 2.0.0
       supports-color: 8.1.1
 
   jest-worker@28.1.3:
     dependencies:
+<<<<<<< HEAD
       '@types/node': 12.20.55
+=======
+      '@types/node': 22.13.9
+>>>>>>> 8c59a46 (misc stuff trying to get it working)
       merge-stream: 2.0.0
       supports-color: 8.1.1
 
@@ -18472,11 +19451,19 @@ snapshots:
       - supports-color
       - utf-8-validate
 
+<<<<<<< HEAD
   jest@27.5.1(ts-node@10.9.2(@swc/core@1.11.5)(@types/node@12.20.55)(typescript@4.9.5)):
     dependencies:
       '@jest/core': 27.5.1(ts-node@10.9.2(@swc/core@1.11.5)(@types/node@12.20.55)(typescript@4.9.5))
       import-local: 3.2.0
       jest-cli: 27.5.1(ts-node@10.9.2(@swc/core@1.11.5)(@types/node@12.20.55)(typescript@4.9.5))
+=======
+  jest@27.5.1(ts-node@10.9.2(@types/node@12.20.55)(typescript@4.9.5)):
+    dependencies:
+      '@jest/core': 27.5.1(ts-node@10.9.2(@types/node@12.20.55)(typescript@4.9.5))
+      import-local: 3.2.0
+      jest-cli: 27.5.1(ts-node@10.9.2(@types/node@12.20.55)(typescript@4.9.5))
+>>>>>>> 8c59a46 (misc stuff trying to get it working)
     transitivePeerDependencies:
       - bufferutil
       - canvas
@@ -18484,11 +19471,19 @@ snapshots:
       - ts-node
       - utf-8-validate
 
+<<<<<<< HEAD
   jest@27.5.1(ts-node@10.9.2(@swc/core@1.11.5)(@types/node@12.20.55)(typescript@5.8.2)):
     dependencies:
       '@jest/core': 27.5.1(ts-node@10.9.2(@swc/core@1.11.5)(@types/node@12.20.55)(typescript@5.8.2))
       import-local: 3.2.0
       jest-cli: 27.5.1(ts-node@10.9.2(@swc/core@1.11.5)(@types/node@12.20.55)(typescript@5.8.2))
+=======
+  jest@27.5.1(ts-node@10.9.2(@types/node@12.20.55)(typescript@5.8.2)):
+    dependencies:
+      '@jest/core': 27.5.1(ts-node@10.9.2(@types/node@12.20.55)(typescript@5.8.2))
+      import-local: 3.2.0
+      jest-cli: 27.5.1(ts-node@10.9.2(@types/node@12.20.55)(typescript@5.8.2))
+>>>>>>> 8c59a46 (misc stuff trying to get it working)
     transitivePeerDependencies:
       - bufferutil
       - canvas
@@ -18527,8 +19522,11 @@ snapshots:
 
   jsbn@0.1.1: {}
 
+<<<<<<< HEAD
   jsbn@1.1.0: {}
 
+=======
+>>>>>>> 8c59a46 (misc stuff trying to get it working)
   jsdoc@3.6.11:
     dependencies:
       '@babel/parser': 7.26.9
@@ -18621,6 +19619,7 @@ snapshots:
 
   jsesc@3.1.0: {}
 
+<<<<<<< HEAD
   json-buffer@3.0.1: {}
 
   json-parse-better-errors@1.0.2: {}
@@ -18643,6 +19642,28 @@ snapshots:
 
   json5@0.5.1: {}
 
+=======
+  json-parse-better-errors@1.0.2: {}
+
+  json-parse-even-better-errors@2.3.1: {}
+
+  json-schema-traverse@0.3.1: {}
+
+  json-schema-traverse@0.4.1: {}
+
+  json-schema-traverse@1.0.0: {}
+
+  json-schema@0.4.0: {}
+
+  json-source-map@0.6.1: {}
+
+  json-stable-stringify-without-jsonify@1.0.1: {}
+
+  json-stringify-safe@5.0.1: {}
+
+  json5@0.5.1: {}
+
+>>>>>>> 8c59a46 (misc stuff trying to get it working)
   json5@1.0.2:
     dependencies:
       minimist: 1.2.8
@@ -18710,6 +19731,7 @@ snapshots:
     dependencies:
       tsscmp: 1.0.6
 
+<<<<<<< HEAD
   keyv@4.5.4:
     dependencies:
       json-buffer: 3.0.1
@@ -18728,6 +19750,18 @@ snapshots:
 
   kind-of@6.0.3: {}
 
+=======
+  kind-of@3.2.2:
+    dependencies:
+      is-buffer: 1.1.6
+
+  kind-of@4.0.0:
+    dependencies:
+      is-buffer: 1.1.6
+
+  kind-of@6.0.3: {}
+
+>>>>>>> 8c59a46 (misc stuff trying to get it working)
   klaw@3.0.0:
     dependencies:
       graceful-fs: 4.2.11
@@ -18794,7 +19828,11 @@ snapshots:
 
   koa-route@3.2.0:
     dependencies:
+<<<<<<< HEAD
       debug: 4.4.0(supports-color@7.2.0)
+=======
+      debug: 4.4.0(supports-color@8.1.1)
+>>>>>>> 8c59a46 (misc stuff trying to get it working)
       methods: 1.1.2
       path-to-regexp: 1.9.0
     transitivePeerDependencies:
@@ -18823,7 +19861,11 @@ snapshots:
       content-disposition: 0.5.4
       content-type: 1.0.5
       cookies: 0.9.1
+<<<<<<< HEAD
       debug: 4.4.0(supports-color@7.2.0)
+=======
+      debug: 4.4.0(supports-color@8.1.1)
+>>>>>>> 8c59a46 (misc stuff trying to get it working)
       delegates: 1.0.0
       depd: 2.0.0
       destroy: 1.2.0
@@ -18857,10 +19899,13 @@ snapshots:
 
   lazy-ass@1.6.0: {}
 
+<<<<<<< HEAD
   lazy-cache@0.2.7: {}
 
   lazy-cache@1.0.4: {}
 
+=======
+>>>>>>> 8c59a46 (misc stuff trying to get it working)
   lcid@2.0.0:
     dependencies:
       invert-kv: 2.0.0
@@ -18876,11 +19921,14 @@ snapshots:
       prelude-ls: 1.1.2
       type-check: 0.3.2
 
+<<<<<<< HEAD
   levn@0.4.1:
     dependencies:
       prelude-ls: 1.2.1
       type-check: 0.4.0
 
+=======
+>>>>>>> 8c59a46 (misc stuff trying to get it working)
   lie@3.3.0:
     dependencies:
       immediate: 3.0.6
@@ -19028,6 +20076,7 @@ snapshots:
 
   lodash.memoize@4.1.2: {}
 
+<<<<<<< HEAD
   lodash.merge@4.6.2: {}
 
   lodash.once@4.1.1: {}
@@ -19046,6 +20095,24 @@ snapshots:
 
   lodash@4.17.21: {}
 
+=======
+  lodash.once@4.1.1: {}
+
+  lodash.padend@4.6.1: {}
+
+  lodash.pick@4.4.0: {}
+
+  lodash.sortby@4.7.0: {}
+
+  lodash.throttle@4.1.1: {}
+
+  lodash.topath@4.5.2: {}
+
+  lodash.uniq@4.5.0: {}
+
+  lodash@4.17.21: {}
+
+>>>>>>> 8c59a46 (misc stuff trying to get it working)
   log-symbols@1.0.2:
     dependencies:
       chalk: 1.1.3
@@ -19090,8 +20157,11 @@ snapshots:
     dependencies:
       yallist: 3.1.1
 
+<<<<<<< HEAD
   lru-cache@7.18.3: {}
 
+=======
+>>>>>>> 8c59a46 (misc stuff trying to get it working)
   lws-basic-auth@0.1.1:
     dependencies:
       basic-auth: 1.1.0
@@ -19303,6 +20373,7 @@ snapshots:
 
   memorystream@0.3.1: {}
 
+<<<<<<< HEAD
   merge-deep@3.0.3:
     dependencies:
       arr-union: 3.1.0
@@ -19311,6 +20382,10 @@ snapshots:
 
   merge-descriptors@1.0.3: {}
 
+=======
+  merge-descriptors@1.0.3: {}
+
+>>>>>>> 8c59a46 (misc stuff trying to get it working)
   merge-stream@1.0.1:
     dependencies:
       readable-stream: 2.3.8
@@ -19381,11 +20456,19 @@ snapshots:
 
   mimic-fn@2.1.0: {}
 
+<<<<<<< HEAD
   mini-css-extract-plugin@2.9.2(webpack@5.98.0(@swc/core@1.11.5)):
     dependencies:
       schema-utils: 4.3.0
       tapable: 2.2.1
       webpack: 5.98.0(@swc/core@1.11.5)
+=======
+  mini-css-extract-plugin@2.9.2(webpack@5.98.0):
+    dependencies:
+      schema-utils: 4.3.0
+      tapable: 2.2.1
+      webpack: 5.98.0
+>>>>>>> 8c59a46 (misc stuff trying to get it working)
 
   minimalistic-assert@1.0.1: {}
 
@@ -19420,18 +20503,24 @@ snapshots:
       stream-each: 1.2.3
       through2: 2.0.5
 
+<<<<<<< HEAD
   mitt@3.0.1: {}
 
+=======
+>>>>>>> 8c59a46 (misc stuff trying to get it working)
   mixin-deep@1.3.2:
     dependencies:
       for-in: 1.0.2
       is-extendable: 1.0.1
 
+<<<<<<< HEAD
   mixin-object@2.0.1:
     dependencies:
       for-in: 0.1.8
       is-extendable: 0.1.1
 
+=======
+>>>>>>> 8c59a46 (misc stuff trying to get it working)
   mkdirp@0.5.6:
     dependencies:
       minimist: 1.2.8
@@ -19534,8 +20623,11 @@ snapshots:
 
   neo-async@2.6.2: {}
 
+<<<<<<< HEAD
   netmask@2.0.2: {}
 
+=======
+>>>>>>> 8c59a46 (misc stuff trying to get it working)
   nice-try@1.0.5: {}
 
   nise@1.5.3:
@@ -19797,6 +20889,7 @@ snapshots:
       type-check: 0.3.2
       word-wrap: 1.2.5
 
+<<<<<<< HEAD
   optionator@0.9.4:
     dependencies:
       deep-is: 0.1.4
@@ -19810,6 +20903,12 @@ snapshots:
 
   os-homedir@1.0.2: {}
 
+=======
+  os-browserify@0.3.0: {}
+
+  os-homedir@1.0.2: {}
+
+>>>>>>> 8c59a46 (misc stuff trying to get it working)
   os-locale@3.1.0:
     dependencies:
       execa: 1.0.0
@@ -19883,6 +20982,7 @@ snapshots:
 
   p-try@2.2.0: {}
 
+<<<<<<< HEAD
   pac-proxy-agent@7.2.0:
     dependencies:
       '@tootallnate/quickjs-emscripten': 0.23.0
@@ -19903,6 +21003,10 @@ snapshots:
 
   package-json-from-dist@1.0.1: {}
 
+=======
+  package-json-from-dist@1.0.1: {}
+
+>>>>>>> 8c59a46 (misc stuff trying to get it working)
   pako@1.0.11: {}
 
   parallel-transform@1.2.0:
@@ -20267,29 +21371,49 @@ snapshots:
       postcss: 8.5.3
       postcss-value-parser: 4.2.0
 
+<<<<<<< HEAD
   postcss-load-config@3.1.4(postcss@7.0.39)(ts-node@10.9.2(@swc/core@1.11.5)(@types/node@12.20.55)(typescript@5.8.2)):
+=======
+  postcss-load-config@3.1.4(postcss@7.0.39)(ts-node@10.9.2(@types/node@12.20.55)(typescript@5.8.2)):
+>>>>>>> 8c59a46 (misc stuff trying to get it working)
     dependencies:
       lilconfig: 2.1.0
       yaml: 1.10.2
     optionalDependencies:
       postcss: 7.0.39
+<<<<<<< HEAD
       ts-node: 10.9.2(@swc/core@1.11.5)(@types/node@12.20.55)(typescript@5.8.2)
 
   postcss-load-config@4.0.2(postcss@8.5.3)(ts-node@10.9.2(@swc/core@1.11.5)(@types/node@12.20.55)(typescript@5.8.2)):
+=======
+      ts-node: 10.9.2(@types/node@12.20.55)(typescript@5.8.2)
+
+  postcss-load-config@4.0.2(postcss@8.5.3)(ts-node@10.9.2(@types/node@12.20.55)(typescript@5.8.2)):
+>>>>>>> 8c59a46 (misc stuff trying to get it working)
     dependencies:
       lilconfig: 3.1.3
       yaml: 2.7.0
     optionalDependencies:
       postcss: 8.5.3
+<<<<<<< HEAD
       ts-node: 10.9.2(@swc/core@1.11.5)(@types/node@12.20.55)(typescript@5.8.2)
 
   postcss-loader@6.2.1(postcss@8.5.3)(webpack@5.98.0(@swc/core@1.11.5)):
+=======
+      ts-node: 10.9.2(@types/node@12.20.55)(typescript@5.8.2)
+
+  postcss-loader@6.2.1(postcss@8.5.3)(webpack@5.98.0):
+>>>>>>> 8c59a46 (misc stuff trying to get it working)
     dependencies:
       cosmiconfig: 7.1.0
       klona: 2.0.6
       postcss: 8.5.3
       semver: 7.7.1
+<<<<<<< HEAD
       webpack: 5.98.0(@swc/core@1.11.5)
+=======
+      webpack: 5.98.0
+>>>>>>> 8c59a46 (misc stuff trying to get it working)
 
   postcss-logical@5.0.4(postcss@8.5.3):
     dependencies:
@@ -20574,6 +21698,7 @@ snapshots:
 
   prelude-ls@1.1.2: {}
 
+<<<<<<< HEAD
   prelude-ls@1.2.1: {}
 
   preserve@0.2.0: {}
@@ -20584,6 +21709,16 @@ snapshots:
 
   pretty-bytes@5.6.0: {}
 
+=======
+  preserve@0.2.0: {}
+
+  prettier@1.19.1: {}
+
+  prettier@2.8.8: {}
+
+  pretty-bytes@5.6.0: {}
+
+>>>>>>> 8c59a46 (misc stuff trying to get it working)
   pretty-error@4.0.0:
     dependencies:
       lodash: 4.17.21
@@ -20650,10 +21785,13 @@ snapshots:
     dependencies:
       asap: 2.0.6
 
+<<<<<<< HEAD
   prompt-sync@4.2.0:
     dependencies:
       strip-ansi: 5.2.0
 
+=======
+>>>>>>> 8c59a46 (misc stuff trying to get it working)
   prompts@0.1.14:
     dependencies:
       kleur: 2.0.2
@@ -20675,6 +21813,7 @@ snapshots:
       forwarded: 0.2.0
       ipaddr.js: 1.9.1
 
+<<<<<<< HEAD
   proxy-agent@6.5.0:
     dependencies:
       agent-base: 7.1.3
@@ -20692,6 +21831,10 @@ snapshots:
 
   prr@1.0.1: {}
 
+=======
+  prr@1.0.1: {}
+
+>>>>>>> 8c59a46 (misc stuff trying to get it working)
   ps-tree@1.2.0:
     dependencies:
       event-stream: 3.3.4
@@ -20733,6 +21876,7 @@ snapshots:
 
   punycode@2.3.1: {}
 
+<<<<<<< HEAD
   puppeteer-core@24.3.1:
     dependencies:
       '@puppeteer/browsers': 2.7.1
@@ -20805,6 +21949,8 @@ snapshots:
       - typescript
       - utf-8-validate
 
+=======
+>>>>>>> 8c59a46 (misc stuff trying to get it working)
   purgecss@4.1.3:
     dependencies:
       commander: 8.3.0
@@ -20877,7 +22023,11 @@ snapshots:
       regenerator-runtime: 0.13.11
       whatwg-fetch: 3.6.20
 
+<<<<<<< HEAD
   react-dev-utils@12.0.1(eslint@9.21.0(jiti@1.21.7))(typescript@5.8.2)(webpack@5.98.0(@swc/core@1.11.5)):
+=======
+  react-dev-utils@12.0.1(eslint@4.19.1)(typescript@5.8.2)(webpack@5.98.0):
+>>>>>>> 8c59a46 (misc stuff trying to get it working)
     dependencies:
       '@babel/code-frame': 7.26.2
       address: 1.2.2
@@ -20888,7 +22038,11 @@ snapshots:
       escape-string-regexp: 4.0.0
       filesize: 8.0.7
       find-up: 5.0.0
+<<<<<<< HEAD
       fork-ts-checker-webpack-plugin: 6.5.3(eslint@9.21.0(jiti@1.21.7))(typescript@5.8.2)(webpack@5.98.0(@swc/core@1.11.5))
+=======
+      fork-ts-checker-webpack-plugin: 6.5.3(eslint@4.19.1)(typescript@5.8.2)(webpack@5.98.0)
+>>>>>>> 8c59a46 (misc stuff trying to get it working)
       global-modules: 2.0.0
       globby: 11.1.0
       gzip-size: 6.0.0
@@ -20903,7 +22057,11 @@ snapshots:
       shell-quote: 1.8.2
       strip-ansi: 6.0.1
       text-table: 0.2.0
+<<<<<<< HEAD
       webpack: 5.98.0(@swc/core@1.11.5)
+=======
+      webpack: 5.98.0
+>>>>>>> 8c59a46 (misc stuff trying to get it working)
     optionalDependencies:
       typescript: 5.8.2
     transitivePeerDependencies:
@@ -20955,6 +22113,7 @@ snapshots:
       '@remix-run/router': 1.23.0
       react: 18.3.1
 
+<<<<<<< HEAD
   react-scripts@5.0.1(@babel/plugin-syntax-flow@7.26.0(@babel/core@7.26.9))(@babel/plugin-transform-react-jsx@7.25.9(@babel/core@7.26.9))(@swc/core@1.11.5)(@types/babel__core@7.20.5)(eslint@9.21.0(jiti@1.21.7))(react@18.3.1)(sass@1.85.1)(ts-node@10.9.2(@swc/core@1.11.5)(@types/node@12.20.55)(typescript@5.8.2))(type-fest@0.21.3)(typescript@5.8.2):
     dependencies:
       '@babel/core': 7.26.9
@@ -20962,12 +22121,22 @@ snapshots:
       '@svgr/webpack': 5.5.0
       babel-jest: 27.5.1(@babel/core@7.26.9)
       babel-loader: 8.4.1(@babel/core@7.26.9)(webpack@5.98.0(@swc/core@1.11.5))
+=======
+  react-scripts@5.0.1(@babel/plugin-syntax-flow@7.26.0(@babel/core@7.26.9))(@babel/plugin-transform-react-jsx@7.25.9(@babel/core@7.26.9))(@types/babel__core@7.20.5)(eslint@4.19.1)(react@18.3.1)(sass@1.85.1)(ts-node@10.9.2(@types/node@12.20.55)(typescript@5.8.2))(type-fest@0.21.3)(typescript@5.8.2):
+    dependencies:
+      '@babel/core': 7.26.9
+      '@pmmmwh/react-refresh-webpack-plugin': 0.5.15(react-refresh@0.11.0)(type-fest@0.21.3)(webpack-dev-server@4.15.2(webpack@5.98.0))(webpack@5.98.0)
+      '@svgr/webpack': 5.5.0
+      babel-jest: 27.5.1(@babel/core@7.26.9)
+      babel-loader: 8.4.1(@babel/core@7.26.9)(webpack@5.98.0)
+>>>>>>> 8c59a46 (misc stuff trying to get it working)
       babel-plugin-named-asset-import: 0.3.8(@babel/core@7.26.9)
       babel-preset-react-app: 10.1.0
       bfj: 7.1.0
       browserslist: 4.24.4
       camelcase: 6.3.0
       case-sensitive-paths-webpack-plugin: 2.4.0
+<<<<<<< HEAD
       css-loader: 6.11.0(webpack@5.98.0(@swc/core@1.11.5))
       css-minimizer-webpack-plugin: 3.4.1(webpack@5.98.0(@swc/core@1.11.5))
       dotenv: 10.0.0
@@ -20986,11 +22155,32 @@ snapshots:
       postcss: 8.5.3
       postcss-flexbugs-fixes: 5.0.2(postcss@8.5.3)
       postcss-loader: 6.2.1(postcss@8.5.3)(webpack@5.98.0(@swc/core@1.11.5))
+=======
+      css-loader: 6.11.0(webpack@5.98.0)
+      css-minimizer-webpack-plugin: 3.4.1(webpack@5.98.0)
+      dotenv: 10.0.0
+      dotenv-expand: 5.1.0
+      eslint: 4.19.1
+      eslint-config-react-app: 7.0.1(@babel/plugin-syntax-flow@7.26.0(@babel/core@7.26.9))(@babel/plugin-transform-react-jsx@7.25.9(@babel/core@7.26.9))(eslint@4.19.1)(jest@27.5.1(ts-node@10.9.2(@types/node@12.20.55)(typescript@5.8.2)))(typescript@5.8.2)
+      eslint-webpack-plugin: 3.2.0(eslint@4.19.1)(webpack@5.98.0)
+      file-loader: 6.2.0(webpack@5.98.0)
+      fs-extra: 10.1.0
+      html-webpack-plugin: 5.6.3(webpack@5.98.0)
+      identity-obj-proxy: 3.0.0
+      jest: 27.5.1(ts-node@10.9.2(@types/node@12.20.55)(typescript@5.8.2))
+      jest-resolve: 27.5.1
+      jest-watch-typeahead: 1.1.0(jest@27.5.1(ts-node@10.9.2(@types/node@12.20.55)(typescript@5.8.2)))
+      mini-css-extract-plugin: 2.9.2(webpack@5.98.0)
+      postcss: 8.5.3
+      postcss-flexbugs-fixes: 5.0.2(postcss@8.5.3)
+      postcss-loader: 6.2.1(postcss@8.5.3)(webpack@5.98.0)
+>>>>>>> 8c59a46 (misc stuff trying to get it working)
       postcss-normalize: 10.0.1(browserslist@4.24.4)(postcss@8.5.3)
       postcss-preset-env: 7.8.3(postcss@8.5.3)
       prompts: 2.4.2
       react: 18.3.1
       react-app-polyfill: 3.0.0
+<<<<<<< HEAD
       react-dev-utils: 12.0.1(eslint@9.21.0(jiti@1.21.7))(typescript@5.8.2)(webpack@5.98.0(@swc/core@1.11.5))
       react-refresh: 0.11.0
       resolve: 1.22.10
@@ -21005,6 +22195,22 @@ snapshots:
       webpack-dev-server: 4.15.2(webpack@5.98.0(@swc/core@1.11.5))
       webpack-manifest-plugin: 4.1.1(webpack@5.98.0(@swc/core@1.11.5))
       workbox-webpack-plugin: 6.6.0(@types/babel__core@7.20.5)(webpack@5.98.0(@swc/core@1.11.5))
+=======
+      react-dev-utils: 12.0.1(eslint@4.19.1)(typescript@5.8.2)(webpack@5.98.0)
+      react-refresh: 0.11.0
+      resolve: 1.22.10
+      resolve-url-loader: 4.0.0
+      sass-loader: 12.6.0(sass@1.85.1)(webpack@5.98.0)
+      semver: 7.7.1
+      source-map-loader: 3.0.2(webpack@5.98.0)
+      style-loader: 3.3.4(webpack@5.98.0)
+      tailwindcss: 3.4.17(ts-node@10.9.2(@types/node@12.20.55)(typescript@5.8.2))
+      terser-webpack-plugin: 5.3.12(webpack@5.98.0)
+      webpack: 5.98.0
+      webpack-dev-server: 4.15.2(webpack@5.98.0)
+      webpack-manifest-plugin: 4.1.1(webpack@5.98.0)
+      workbox-webpack-plugin: 6.6.0(@types/babel__core@7.20.5)(webpack@5.98.0)
+>>>>>>> 8c59a46 (misc stuff trying to get it working)
     optionalDependencies:
       fsevents: 2.3.3
       typescript: 5.8.2
@@ -21503,11 +22709,19 @@ snapshots:
 
   sanitize.css@13.0.0: {}
 
+<<<<<<< HEAD
   sass-loader@12.6.0(sass@1.85.1)(webpack@5.98.0(@swc/core@1.11.5)):
     dependencies:
       klona: 2.0.6
       neo-async: 2.6.2
       webpack: 5.98.0(@swc/core@1.11.5)
+=======
+  sass-loader@12.6.0(sass@1.85.1)(webpack@5.98.0):
+    dependencies:
+      klona: 2.0.6
+      neo-async: 2.6.2
+      webpack: 5.98.0
+>>>>>>> 8c59a46 (misc stuff trying to get it working)
     optionalDependencies:
       sass: 1.85.1
 
@@ -21686,6 +22900,7 @@ snapshots:
       inherits: 2.0.4
       safe-buffer: 5.2.1
 
+<<<<<<< HEAD
   shallow-clone@0.1.2:
     dependencies:
       is-extendable: 0.1.1
@@ -21693,6 +22908,8 @@ snapshots:
       lazy-cache: 0.2.7
       mixin-object: 2.0.1
 
+=======
+>>>>>>> 8c59a46 (misc stuff trying to get it working)
   shebang-command@1.2.0:
     dependencies:
       shebang-regex: 1.0.0
@@ -21777,8 +22994,11 @@ snapshots:
     dependencies:
       is-fullwidth-code-point: 2.0.0
 
+<<<<<<< HEAD
   smart-buffer@4.2.0: {}
 
+=======
+>>>>>>> 8c59a46 (misc stuff trying to get it working)
   snapdragon-node@2.1.1:
     dependencies:
       define-property: 1.0.0
@@ -21808,6 +23028,7 @@ snapshots:
       uuid: 8.3.2
       websocket-driver: 0.7.4
 
+<<<<<<< HEAD
   socks-proxy-agent@8.0.5:
     dependencies:
       agent-base: 7.1.3
@@ -21826,11 +23047,22 @@ snapshots:
   source-map-js@1.2.1: {}
 
   source-map-loader@3.0.2(webpack@5.98.0(@swc/core@1.11.5)):
+=======
+  source-list-map@2.0.1: {}
+
+  source-map-js@1.2.1: {}
+
+  source-map-loader@3.0.2(webpack@5.98.0):
+>>>>>>> 8c59a46 (misc stuff trying to get it working)
     dependencies:
       abab: 2.0.6
       iconv-lite: 0.6.3
       source-map-js: 1.2.1
+<<<<<<< HEAD
       webpack: 5.98.0(@swc/core@1.11.5)
+=======
+      webpack: 5.98.0
+>>>>>>> 8c59a46 (misc stuff trying to get it working)
 
   source-map-resolve@0.5.3:
     dependencies:
@@ -21881,7 +23113,11 @@ snapshots:
 
   spdy-transport@3.0.0:
     dependencies:
+<<<<<<< HEAD
       debug: 4.4.0(supports-color@7.2.0)
+=======
+      debug: 4.4.0(supports-color@8.1.1)
+>>>>>>> 8c59a46 (misc stuff trying to get it working)
       detect-node: 2.1.0
       hpack.js: 2.1.6
       obuf: 1.1.2
@@ -21892,7 +23128,11 @@ snapshots:
 
   spdy@4.0.2:
     dependencies:
+<<<<<<< HEAD
       debug: 4.4.0(supports-color@7.2.0)
+=======
+      debug: 4.4.0(supports-color@8.1.1)
+>>>>>>> 8c59a46 (misc stuff trying to get it working)
       handle-thing: 2.0.1
       http-deceiver: 1.2.7
       select-hose: 2.0.0
@@ -21910,8 +23150,11 @@ snapshots:
 
   sprintf-js@1.0.3: {}
 
+<<<<<<< HEAD
   sprintf-js@1.1.3: {}
 
+=======
+>>>>>>> 8c59a46 (misc stuff trying to get it working)
   sshpk@1.18.0:
     dependencies:
       asn1: 0.2.6
@@ -22017,6 +23260,7 @@ snapshots:
 
   streamsearch@1.1.0: {}
 
+<<<<<<< HEAD
   streamx@2.22.0:
     dependencies:
       fast-fifo: 1.3.2
@@ -22024,6 +23268,8 @@ snapshots:
     optionalDependencies:
       bare-events: 2.5.4
 
+=======
+>>>>>>> 8c59a46 (misc stuff trying to get it working)
   string-length@2.0.0:
     dependencies:
       astral-regex: 1.0.0
@@ -22181,9 +23427,15 @@ snapshots:
 
   strip-json-comments@3.1.1: {}
 
+<<<<<<< HEAD
   style-loader@3.3.4(webpack@5.98.0(@swc/core@1.11.5)):
     dependencies:
       webpack: 5.98.0(@swc/core@1.11.5)
+=======
+  style-loader@3.3.4(webpack@5.98.0):
+    dependencies:
+      webpack: 5.98.0
+>>>>>>> 8c59a46 (misc stuff trying to get it working)
 
   style-mod@4.1.2: {}
 
@@ -22304,7 +23556,11 @@ snapshots:
 
   taffydb@2.6.2: {}
 
+<<<<<<< HEAD
   tailwindcss@3.4.17(ts-node@10.9.2(@swc/core@1.11.5)(@types/node@12.20.55)(typescript@5.8.2)):
+=======
+  tailwindcss@3.4.17(ts-node@10.9.2(@types/node@12.20.55)(typescript@5.8.2)):
+>>>>>>> 8c59a46 (misc stuff trying to get it working)
     dependencies:
       '@alloc/quick-lru': 5.2.0
       arg: 5.0.2
@@ -22323,7 +23579,11 @@ snapshots:
       postcss: 8.5.3
       postcss-import: 15.1.0(postcss@8.5.3)
       postcss-js: 4.0.1(postcss@8.5.3)
+<<<<<<< HEAD
       postcss-load-config: 4.0.2(postcss@8.5.3)(ts-node@10.9.2(@swc/core@1.11.5)(@types/node@12.20.55)(typescript@5.8.2))
+=======
+      postcss-load-config: 4.0.2(postcss@8.5.3)(ts-node@10.9.2(@types/node@12.20.55)(typescript@5.8.2))
+>>>>>>> 8c59a46 (misc stuff trying to get it working)
       postcss-nested: 6.2.0(postcss@8.5.3)
       postcss-selector-parser: 6.1.2
       resolve: 1.22.10
@@ -22335,6 +23595,7 @@ snapshots:
 
   tapable@2.2.1: {}
 
+<<<<<<< HEAD
   tar-fs@3.0.8:
     dependencies:
       pump: 3.0.2
@@ -22353,6 +23614,10 @@ snapshots:
 
   temp-dir@2.0.0: {}
 
+=======
+  temp-dir@2.0.0: {}
+
+>>>>>>> 8c59a46 (misc stuff trying to get it working)
   tempy@0.6.0:
     dependencies:
       is-stream: 2.0.1
@@ -22383,16 +23648,24 @@ snapshots:
       webpack-sources: 1.4.3
       worker-farm: 1.7.0
 
+<<<<<<< HEAD
   terser-webpack-plugin@5.3.12(@swc/core@1.11.5)(webpack@5.98.0(@swc/core@1.11.5)):
+=======
+  terser-webpack-plugin@5.3.12(webpack@5.98.0):
+>>>>>>> 8c59a46 (misc stuff trying to get it working)
     dependencies:
       '@jridgewell/trace-mapping': 0.3.25
       jest-worker: 27.5.1
       schema-utils: 4.3.0
       serialize-javascript: 6.0.2
       terser: 5.39.0
+<<<<<<< HEAD
       webpack: 5.98.0(@swc/core@1.11.5)
     optionalDependencies:
       '@swc/core': 1.11.5
+=======
+      webpack: 5.98.0
+>>>>>>> 8c59a46 (misc stuff trying to get it working)
 
   terser@4.8.1:
     dependencies:
@@ -22429,12 +23702,17 @@ snapshots:
       glob: 7.2.3
       minimatch: 3.1.2
 
+<<<<<<< HEAD
   text-decoder@1.2.3:
     dependencies:
       b4a: 1.6.7
 
   text-table@0.2.0: {}
 
+=======
+  text-table@0.2.0: {}
+
+>>>>>>> 8c59a46 (misc stuff trying to get it working)
   thenify-all@1.6.0:
     dependencies:
       thenify: 3.3.1
@@ -22541,12 +23819,20 @@ snapshots:
 
   ts-interface-checker@0.1.13: {}
 
+<<<<<<< HEAD
   ts-jest@29.2.6(@babel/core@7.26.9)(@jest/types@29.6.3)(jest@27.5.1(ts-node@10.9.2(@swc/core@1.11.5)(@types/node@12.20.55)(typescript@4.9.5)))(typescript@4.9.5):
+=======
+  ts-jest@29.2.6(@babel/core@7.26.9)(@jest/types@29.6.3)(jest@27.5.1(ts-node@10.9.2(@types/node@12.20.55)(typescript@4.9.5)))(typescript@4.9.5):
+>>>>>>> 8c59a46 (misc stuff trying to get it working)
     dependencies:
       bs-logger: 0.2.6
       ejs: 3.1.10
       fast-json-stable-stringify: 2.1.0
+<<<<<<< HEAD
       jest: 27.5.1(ts-node@10.9.2(@swc/core@1.11.5)(@types/node@12.20.55)(typescript@4.9.5))
+=======
+      jest: 27.5.1(ts-node@10.9.2(@types/node@12.20.55)(typescript@4.9.5))
+>>>>>>> 8c59a46 (misc stuff trying to get it working)
       jest-util: 29.7.0
       json5: 2.2.3
       lodash.memoize: 4.1.2
@@ -22558,12 +23844,20 @@ snapshots:
       '@babel/core': 7.26.9
       '@jest/types': 29.6.3
 
+<<<<<<< HEAD
   ts-jest@29.2.6(@babel/core@7.26.9)(@jest/types@29.6.3)(jest@27.5.1(ts-node@10.9.2(@swc/core@1.11.5)(@types/node@12.20.55)(typescript@5.8.2)))(typescript@5.8.2):
+=======
+  ts-jest@29.2.6(@babel/core@7.26.9)(@jest/types@29.6.3)(jest@27.5.1(ts-node@10.9.2(@types/node@12.20.55)(typescript@5.8.2)))(typescript@5.8.2):
+>>>>>>> 8c59a46 (misc stuff trying to get it working)
     dependencies:
       bs-logger: 0.2.6
       ejs: 3.1.10
       fast-json-stable-stringify: 2.1.0
+<<<<<<< HEAD
       jest: 27.5.1(ts-node@10.9.2(@swc/core@1.11.5)(@types/node@12.20.55)(typescript@5.8.2))
+=======
+      jest: 27.5.1(ts-node@10.9.2(@types/node@12.20.55)(typescript@5.8.2))
+>>>>>>> 8c59a46 (misc stuff trying to get it working)
       jest-util: 29.7.0
       json5: 2.2.3
       lodash.memoize: 4.1.2
@@ -22575,6 +23869,7 @@ snapshots:
       '@babel/core': 7.26.9
       '@jest/types': 29.6.3
 
+<<<<<<< HEAD
   ts-loader@8.2.0(typescript@5.8.2)(webpack@5.98.0(@swc/core@1.11.5)):
     dependencies:
       chalk: 4.1.2
@@ -22586,6 +23881,19 @@ snapshots:
       webpack: 5.98.0(@swc/core@1.11.5)
 
   ts-node@10.9.2(@swc/core@1.11.5)(@types/node@12.20.55)(typescript@4.9.5):
+=======
+  ts-loader@9.5.2(typescript@5.8.2)(webpack@5.98.0):
+    dependencies:
+      chalk: 4.1.2
+      enhanced-resolve: 5.18.1
+      micromatch: 4.0.8
+      semver: 7.7.1
+      source-map: 0.7.4
+      typescript: 5.8.2
+      webpack: 5.98.0
+
+  ts-node@10.9.2(@types/node@12.20.55)(typescript@4.9.5):
+>>>>>>> 8c59a46 (misc stuff trying to get it working)
     dependencies:
       '@cspotcode/source-map-support': 0.8.1
       '@tsconfig/node10': 1.0.11
@@ -22602,11 +23910,17 @@ snapshots:
       typescript: 4.9.5
       v8-compile-cache-lib: 3.0.1
       yn: 3.1.1
+<<<<<<< HEAD
     optionalDependencies:
       '@swc/core': 1.11.5
     optional: true
 
   ts-node@10.9.2(@swc/core@1.11.5)(@types/node@12.20.55)(typescript@5.8.2):
+=======
+    optional: true
+
+  ts-node@10.9.2(@types/node@12.20.55)(typescript@5.8.2):
+>>>>>>> 8c59a46 (misc stuff trying to get it working)
     dependencies:
       '@cspotcode/source-map-support': 0.8.1
       '@tsconfig/node10': 1.0.11
@@ -22623,11 +23937,17 @@ snapshots:
       typescript: 5.8.2
       v8-compile-cache-lib: 3.0.1
       yn: 3.1.1
+<<<<<<< HEAD
     optionalDependencies:
       '@swc/core': 1.11.5
     optional: true
 
   ts-node@10.9.2(@swc/core@1.11.5)(@types/node@22.13.9)(typescript@5.8.2):
+=======
+    optional: true
+
+  ts-node@10.9.2(@types/node@22.13.9)(typescript@5.8.2):
+>>>>>>> 8c59a46 (misc stuff trying to get it working)
     dependencies:
       '@cspotcode/source-map-support': 0.8.1
       '@tsconfig/node10': 1.0.11
@@ -22644,8 +23964,11 @@ snapshots:
       typescript: 5.8.2
       v8-compile-cache-lib: 3.0.1
       yn: 3.1.1
+<<<<<<< HEAD
     optionalDependencies:
       '@swc/core': 1.11.5
+=======
+>>>>>>> 8c59a46 (misc stuff trying to get it working)
 
   tsconfig-paths@3.15.0:
     dependencies:
@@ -22677,6 +24000,7 @@ snapshots:
     dependencies:
       prelude-ls: 1.1.2
 
+<<<<<<< HEAD
   type-check@0.4.0:
     dependencies:
       prelude-ls: 1.2.1
@@ -22689,6 +24013,16 @@ snapshots:
 
   type-fest@0.21.3: {}
 
+=======
+  type-detect@4.0.8: {}
+
+  type-fest@0.16.0: {}
+
+  type-fest@0.20.2: {}
+
+  type-fest@0.21.3: {}
+
+>>>>>>> 8c59a46 (misc stuff trying to get it working)
   type-is@1.6.18:
     dependencies:
       media-typer: 0.3.0
@@ -22727,8 +24061,11 @@ snapshots:
       possible-typed-array-names: 1.1.0
       reflect.getprototypeof: 1.0.10
 
+<<<<<<< HEAD
   typed-query-selector@2.12.0: {}
 
+=======
+>>>>>>> 8c59a46 (misc stuff trying to get it working)
   typedarray-to-buffer@3.1.5:
     dependencies:
       is-typedarray: 1.0.0
@@ -23029,16 +24366,26 @@ snapshots:
       webpack: 4.47.0(webpack-cli@3.3.12)
       yargs: 13.3.2
 
+<<<<<<< HEAD
   webpack-dev-middleware@5.3.4(webpack@5.98.0(@swc/core@1.11.5)):
+=======
+  webpack-dev-middleware@5.3.4(webpack@5.98.0):
+>>>>>>> 8c59a46 (misc stuff trying to get it working)
     dependencies:
       colorette: 2.0.20
       memfs: 3.5.3
       mime-types: 2.1.35
       range-parser: 1.2.1
       schema-utils: 4.3.0
+<<<<<<< HEAD
       webpack: 5.98.0(@swc/core@1.11.5)
 
   webpack-dev-server@4.15.2(webpack@5.98.0(@swc/core@1.11.5)):
+=======
+      webpack: 5.98.0
+
+  webpack-dev-server@4.15.2(webpack@5.98.0):
+>>>>>>> 8c59a46 (misc stuff trying to get it working)
     dependencies:
       '@types/bonjour': 3.5.13
       '@types/connect-history-api-fallback': 1.5.4
@@ -23068,20 +24415,34 @@ snapshots:
       serve-index: 1.9.1
       sockjs: 0.3.24
       spdy: 4.0.2
+<<<<<<< HEAD
       webpack-dev-middleware: 5.3.4(webpack@5.98.0(@swc/core@1.11.5))
       ws: 8.18.1
     optionalDependencies:
       webpack: 5.98.0(@swc/core@1.11.5)
+=======
+      webpack-dev-middleware: 5.3.4(webpack@5.98.0)
+      ws: 8.18.1
+    optionalDependencies:
+      webpack: 5.98.0
+>>>>>>> 8c59a46 (misc stuff trying to get it working)
     transitivePeerDependencies:
       - bufferutil
       - debug
       - supports-color
       - utf-8-validate
 
+<<<<<<< HEAD
   webpack-manifest-plugin@4.1.1(webpack@5.98.0(@swc/core@1.11.5)):
     dependencies:
       tapable: 2.2.1
       webpack: 5.98.0(@swc/core@1.11.5)
+=======
+  webpack-manifest-plugin@4.1.1(webpack@5.98.0):
+    dependencies:
+      tapable: 2.2.1
+      webpack: 5.98.0
+>>>>>>> 8c59a46 (misc stuff trying to get it working)
       webpack-sources: 2.3.1
 
   webpack-sources@1.4.3:
@@ -23126,7 +24487,11 @@ snapshots:
     transitivePeerDependencies:
       - supports-color
 
+<<<<<<< HEAD
   webpack@5.98.0(@swc/core@1.11.5):
+=======
+  webpack@5.98.0:
+>>>>>>> 8c59a46 (misc stuff trying to get it working)
     dependencies:
       '@types/eslint-scope': 3.7.7
       '@types/estree': 1.0.6
@@ -23148,7 +24513,11 @@ snapshots:
       neo-async: 2.6.2
       schema-utils: 4.3.0
       tapable: 2.2.1
+<<<<<<< HEAD
       terser-webpack-plugin: 5.3.12(@swc/core@1.11.5)(webpack@5.98.0(@swc/core@1.11.5))
+=======
+      terser-webpack-plugin: 5.3.12(webpack@5.98.0)
+>>>>>>> 8c59a46 (misc stuff trying to get it working)
       watchpack: 2.4.2
       webpack-sources: 3.2.3
     transitivePeerDependencies:
@@ -23362,12 +24731,20 @@ snapshots:
 
   workbox-sw@6.6.0: {}
 
+<<<<<<< HEAD
   workbox-webpack-plugin@6.6.0(@types/babel__core@7.20.5)(webpack@5.98.0(@swc/core@1.11.5)):
+=======
+  workbox-webpack-plugin@6.6.0(@types/babel__core@7.20.5)(webpack@5.98.0):
+>>>>>>> 8c59a46 (misc stuff trying to get it working)
     dependencies:
       fast-json-stable-stringify: 2.1.0
       pretty-bytes: 5.6.0
       upath: 1.2.0
+<<<<<<< HEAD
       webpack: 5.98.0(@swc/core@1.11.5)
+=======
+      webpack: 5.98.0
+>>>>>>> 8c59a46 (misc stuff trying to get it working)
       webpack-sources: 1.4.3
       workbox-build: 6.6.0(@types/babel__core@7.20.5)
     transitivePeerDependencies:
@@ -23548,6 +24925,7 @@ snapshots:
       y18n: 5.0.8
       yargs-parser: 20.2.9
 
+<<<<<<< HEAD
   yargs@17.7.2:
     dependencies:
       cliui: 8.0.1
@@ -23558,6 +24936,8 @@ snapshots:
       y18n: 5.0.8
       yargs-parser: 21.1.1
 
+=======
+>>>>>>> 8c59a46 (misc stuff trying to get it working)
   yauzl@2.10.0:
     dependencies:
       buffer-crc32: 0.2.13
@@ -23568,5 +24948,8 @@ snapshots:
   yn@3.1.1: {}
 
   yocto-queue@0.1.0: {}
+<<<<<<< HEAD
 
   zod@3.24.2: {}
+=======
+>>>>>>> 8c59a46 (misc stuff trying to get it working)

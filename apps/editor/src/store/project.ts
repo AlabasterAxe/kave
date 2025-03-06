@@ -2,28 +2,31 @@ import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 import { v4 as uuidv4 } from "uuid";
 import {
   Clip,
-  KaveFile,
-  KaveDoc,
-  Sequence,
-  UserInteractionLog,
   FileType,
   InteractionLogFile,
-  UserInteraction,
-  Track,
+  KaveDoc,
+  KaveFile,
   Project,
-  WheelEventPayload,
   RenderSettings,
+  Sequence,
+  Track,
+  UserInteraction,
+  UserInteractionLog,
+  WheelEventPayload,
 } from "kave-common";
-import { readLocalStoreProjects, upsertLocalStoreProject } from "../persistence/local-storage-utils";
+import {
+  readLocalStoreProjects,
+  upsertLocalStoreProject,
+} from "../persistence/local-storage-utils";
 
 const INTERACTION_DURATION_SECONDS = 0.1;
 
 function initialProject(): KaveDoc {
-  const fileId = '74340fe5-c232-4de4-803e-42fafcd6de31';
-  const userInteractionLogId = 'df805f00-4df7-4787-9a5d-9f067029bb3f';
-  const sequenceId = '0ed26414-999f-4c82-9810-745d3a6c9ddb';
-  const clipId1 = '3e3803ec-6b1c-4cf9-b699-43a1b57bb304';
-  const projectId = '5e6ba258-22be-46fe-a50e-96b1e64191a2';
+  const fileId = "74340fe5-c232-4de4-803e-42fafcd6de31";
+  const userInteractionLogId = "df805f00-4df7-4787-9a5d-9f067029bb3f";
+  const sequenceId = "0ed26414-999f-4c82-9810-745d3a6c9ddb";
+  const clipId1 = "3e3803ec-6b1c-4cf9-b699-43a1b57bb304";
+  const projectId = "5e6ba258-22be-46fe-a50e-96b1e64191a2";
 
   return {
     id: projectId,
@@ -42,7 +45,7 @@ function initialProject(): KaveDoc {
         resolution: {
           x: 893,
           y: 480,
-        }
+        },
       },
     ],
     files: [
@@ -53,7 +56,7 @@ function initialProject(): KaveDoc {
         resolution: {
           x: 893,
           y: 480,
-        }
+        },
       },
       {
         id: userInteractionLogId,
@@ -66,12 +69,12 @@ function initialProject(): KaveDoc {
         id: sequenceId,
         tracks: [
           {
-            id: '2f0cafdb-7f8e-4117-8b8c-4f1baafaadb1',
+            id: "2f0cafdb-7f8e-4117-8b8c-4f1baafaadb1",
             alignmentSeconds: 0,
             fileId: fileId,
           },
           {
-            id: '32a4f95f-f24c-4e48-b1e7-c388dd3e10c0',
+            id: "32a4f95f-f24c-4e48-b1e7-c388dd3e10c0",
             alignmentSeconds: 5.5,
             fileId: userInteractionLogId,
           },
@@ -110,16 +113,14 @@ export function blankProject(projectId: string): KaveDoc {
         resolution: {
           x: 1920,
           y: 1080,
-        }
+        },
       },
     ],
-    files: [
-    ],
+    files: [],
     sequences: [
       {
         id: sequenceId,
-        tracks: [
-        ],
+        tracks: [],
       },
     ],
     renderSettings: {
@@ -134,13 +135,13 @@ export function blankProject(projectId: string): KaveDoc {
 }
 
 function newProject(): KaveDoc {
-  const videoFileId = 'ef0b60f4-08cd-45a1-8363-419a6dbc50dc';
-  const userInteractionLogId = 'd8a111f3-8c5b-42cc-bd42-af1b059db41a';
-  const sequenceId = 'e8c8e417-727c-4a8e-9e45-2a786f154010';
-  const clipId1 = '21e5177e-c110-469f-bff5-843cc4a2c358';
-  const projectId = '7dbcaf88-5984-4cf0-8110-1e6acf18b975';
-  const track1Id = '3324f740-6cf7-4988-97ab-65bf34a3069c';
-  const track2Id = 'd978b76a-5e47-4010-bacb-773b6444c305';
+  const videoFileId = "ef0b60f4-08cd-45a1-8363-419a6dbc50dc";
+  const userInteractionLogId = "d8a111f3-8c5b-42cc-bd42-af1b059db41a";
+  const sequenceId = "e8c8e417-727c-4a8e-9e45-2a786f154010";
+  const clipId1 = "21e5177e-c110-469f-bff5-843cc4a2c358";
+  const projectId = "7dbcaf88-5984-4cf0-8110-1e6acf18b975";
+  const track1Id = "3324f740-6cf7-4988-97ab-65bf34a3069c";
+  const track2Id = "d978b76a-5e47-4010-bacb-773b6444c305";
 
   return {
     id: projectId,
@@ -207,13 +208,13 @@ function newProject(): KaveDoc {
 }
 
 function take_7(): KaveDoc {
-  const videoFileId = '1fb7df05-fb97-4d45-82f6-d01f394b2797';
-  const userInteractionLogId = '4ab6a265-b9a5-44e1-83d6-f746ae023a49';
-  const sequenceId = 'fb4b1d99-4104-4002-ac22-38697eedc9c8';
-  const clipId1 = '529d7130-c065-4533-8bbb-228f251e2cfc';
-  const projectId = 'b37fefab-792f-4e9e-bc98-73900b5b3d3e';
-  const track1Id = '3118a8c0-b387-4497-aba6-5559e8eed9c9';
-  const track2Id = 'ae6927cd-d9a4-4127-8300-a2d1e958b851';
+  const videoFileId = "1fb7df05-fb97-4d45-82f6-d01f394b2797";
+  const userInteractionLogId = "4ab6a265-b9a5-44e1-83d6-f746ae023a49";
+  const sequenceId = "fb4b1d99-4104-4002-ac22-38697eedc9c8";
+  const clipId1 = "529d7130-c065-4533-8bbb-228f251e2cfc";
+  const projectId = "b37fefab-792f-4e9e-bc98-73900b5b3d3e";
+  const track1Id = "3118a8c0-b387-4497-aba6-5559e8eed9c9";
+  const track2Id = "ae6927cd-d9a4-4127-8300-a2d1e958b851";
 
   return {
     id: projectId,
@@ -286,7 +287,8 @@ function clipOffsetToInteractionLogOffset(
   interactionLogTrack: Track,
   clipOffsetSeconds: number,
 ): number {
-  return clip.sourceOffsetSeconds + clipOffsetSeconds - interactionLogTrack.alignmentSeconds;
+  return clip.sourceOffsetSeconds + clipOffsetSeconds -
+    interactionLogTrack.alignmentSeconds;
 }
 
 export interface SplitClipPayload {
@@ -329,9 +331,9 @@ export const deleteSectionFromClips = (
   doc: KaveDoc,
   compositionId: string,
   deletionStartTimeSeconds: number,
-  deletionEndTimeSeconds: number
+  deletionEndTimeSeconds: number,
 ): KaveDoc => {
-  const composition = doc.compositions.find((c)=>c.id === compositionId);
+  const composition = doc.compositions.find((c) => c.id === compositionId);
   if (!composition) {
     return doc;
   }
@@ -374,8 +376,8 @@ export const deleteSectionFromClips = (
         newClips.push({
           ...clip,
           durationSeconds: newClipDuration,
-          sourceOffsetSeconds:
-            clip.sourceOffsetSeconds + deletionEndTimeSeconds - clipStartTime,
+          sourceOffsetSeconds: clip.sourceOffsetSeconds +
+            deletionEndTimeSeconds - clipStartTime,
         });
       }
     }
@@ -393,8 +395,14 @@ export const deleteSectionFromClips = (
   };
 };
 
-export function updateInteractionLogOffset(state: KaveDoc, clipId: string, delta: number): KaveDoc {
-  const composition = state.compositions.find((composition) => composition.clips.find((clip) => clip.id === clipId));
+export function updateInteractionLogOffset(
+  state: KaveDoc,
+  clipId: string,
+  delta: number,
+): KaveDoc {
+  const composition = state.compositions.find((composition) =>
+    composition.clips.find((clip) => clip.id === clipId)
+  );
   if (!composition) {
     console.warn("non-existent composition referenced in action payload");
     return state;
@@ -424,30 +432,43 @@ export function updateInteractionLogOffset(state: KaveDoc, clipId: string, delta
     ...state,
     sequences: state.sequences.filter((s) => s.id !== sequence.id).concat({
       ...sequence,
-      tracks: sequence.tracks.filter((t) => t.id !== newTrack?.id).concat(newTrack!),
+      tracks: sequence.tracks.filter((t) => t.id !== newTrack?.id).concat(
+        newTrack!,
+      ),
     }),
-  }
+  };
 }
 
-
-
 /** This will replace the events in the specified range of the log file and replace them with the supplied events that occur within the specified time range.
- *  It doesn't attempt to do anything clever with the timestamps of the incoming events so it's possible that the new events will overlap with the old ones. 
+ *  It doesn't attempt to do anything clever with the timestamps of the incoming events so it's possible that the new events will overlap with the old ones.
  */
-export function replaceInteractionLogRange(file: InteractionLogFile, startTimeSeconds: number, endTimeSeconds: number, newEvents: UserInteraction[]): InteractionLogFile {
+export function replaceInteractionLogRange(
+  file: InteractionLogFile,
+  startTimeSeconds: number,
+  endTimeSeconds: number,
+  newEvents: UserInteraction[],
+): InteractionLogFile {
   const logWithRemovedSection = file.userInteractionLog!.log.filter((event) => {
     const eventTimeSeconds = event.time / 1000;
-    return eventTimeSeconds < startTimeSeconds || eventTimeSeconds > endTimeSeconds;
+    return eventTimeSeconds < startTimeSeconds ||
+      eventTimeSeconds > endTimeSeconds;
   });
 
   const eventsWithinRange = newEvents.filter((event) => {
     const eventTimeSeconds = event.time / 1000;
-    return eventTimeSeconds >= startTimeSeconds && eventTimeSeconds <= endTimeSeconds;
+    return eventTimeSeconds >= startTimeSeconds &&
+      eventTimeSeconds <= endTimeSeconds;
   });
 
   logWithRemovedSection.push(...eventsWithinRange);
   logWithRemovedSection.sort((a, b) => a.time - b.time);
-  return { ...file, userInteractionLog: { ...file.userInteractionLog!, log: logWithRemovedSection } };
+  return {
+    ...file,
+    userInteractionLog: {
+      ...file.userInteractionLog!,
+      log: logWithRemovedSection,
+    },
+  };
 }
 
 const getTightenedClips = (
@@ -455,7 +476,7 @@ const getTightenedClips = (
   interactionLog: UserInteractionLog,
   interactionLogAlignmentSeconds: number,
   startTimeSeconds?: number,
-  endTimeSeconds?: number
+  endTimeSeconds?: number,
 ): ClipTighteningResult => {
   const tightenedClips: Clip[] = [];
   let durationSoFar = 0;
@@ -464,8 +485,8 @@ const getTightenedClips = (
     durationSoFar = startTimeSeconds;
   }
   const startTime = interactionLog.log[0].time;
-  const interactionLogOffset =
-    interactionLogAlignmentSeconds - clip.sourceOffsetSeconds;
+  const interactionLogOffset = interactionLogAlignmentSeconds -
+    clip.sourceOffsetSeconds;
 
   let interactionLogIndex = 0;
   let interactionLogTime = interactionLogOffset;
@@ -500,8 +521,8 @@ const getTightenedClips = (
       const currentInteractionTime =
         (interactionLog.log[interactionLogIndex].time - startTime) / 1000 +
         interactionLogOffset;
-      newInteractionClipEndTime =
-        currentInteractionTime + INTERACTION_DURATION_SECONDS;
+      newInteractionClipEndTime = currentInteractionTime +
+        INTERACTION_DURATION_SECONDS;
       interactionLogIndex++;
       if (interactionLogIndex <= interactionLog.log.length - 1) {
         const nextInteractionTime =
@@ -538,7 +559,10 @@ export const routerSlice = createSlice({
     setActiveProjectId: (state, action: PayloadAction<string | undefined>) => {
       state.activeProjectId = action.payload;
     },
-    setActiveCompositionId: (state, action: PayloadAction<string | undefined>) => {
+    setActiveCompositionId: (
+      state,
+      action: PayloadAction<string | undefined>,
+    ) => {
       state.activeCompositionId = action.payload;
     },
   },
@@ -546,10 +570,13 @@ export const routerSlice = createSlice({
 
 export const projectsSlice = createSlice({
   name: "projects",
-  initialState: readLocalStoreProjects().reduce((acc: Record<string, Project>, project) => {
-    acc[project.id] = project;
-    return acc;
-  },{}),
+  initialState: readLocalStoreProjects().reduce(
+    (acc: Record<string, Project>, project) => {
+      acc[project.id] = project;
+      return acc;
+    },
+    {},
+  ),
   reducers: {
     upsertProject: (state, action: PayloadAction<Project>) => {
       state[action.payload.id] = action.payload;
@@ -569,8 +596,11 @@ export const tempDocumentSlice = createSlice({
 });
 
 function smoothWheelEvents(events: UserInteraction[]): UserInteraction[] {
-  const wheelEvents = events.filter(e=>e.type === "wheel")
-  const totalScrollDistance = wheelEvents.reduce((acc, event) => acc + (event.payload as WheelEventPayload).deltaY ?? 0, 0);
+  const wheelEvents = events.filter((e) => e.type === "wheel");
+  const totalScrollDistance = wheelEvents.reduce(
+    (acc, event) => acc + (event.payload as WheelEventPayload).deltaY,
+    0,
+  );
   const selectionStartTime = wheelEvents[0].time;
   const selectionEndTime = wheelEvents[wheelEvents.length - 1].time;
   const timeDurationMillis = selectionEndTime - selectionStartTime;
@@ -585,7 +615,6 @@ function smoothWheelEvents(events: UserInteraction[]): UserInteraction[] {
   //   eventTime = Math.round(eventTime);
   // }
   while (eventTime < selectionEndTime) {
-    
     smoothedEvents.push({
       time: eventTime,
       type: "wheel",
@@ -611,11 +640,17 @@ export const documentSlice = createSlice({
     replaceDocument: (_, action: PayloadAction<ReplaceProjectPayload>) => {
       return action.payload.project;
     },
-    updateRenderSettings: (state, action: PayloadAction<Partial<RenderSettings>>) => {
+    updateRenderSettings: (
+      state,
+      action: PayloadAction<Partial<RenderSettings>>,
+    ) => {
       if (!state) {
         return state;
       }
-      return { ...state, renderSettings: { ...state.renderSettings, ...action.payload} };
+      return {
+        ...state,
+        renderSettings: { ...state.renderSettings, ...action.payload },
+      };
     },
     addFileToDefaultSequence: (state, action: PayloadAction<KaveFile>) => {
       if (!state) {
@@ -628,9 +663,12 @@ export const documentSlice = createSlice({
 
       // remove any existing interaction log tracks
       if (action.payload.type === FileType.interaction_log) {
-        sequence.tracks = sequence.tracks.filter((t)=>state.files.find((f)=>f.id === t.fileId)?.type !== FileType.interaction_log);
+        sequence.tracks = sequence.tracks.filter((t) =>
+          state.files.find((f) => f.id === t.fileId)?.type !==
+            FileType.interaction_log
+        );
       }
-      
+
       sequence.tracks.push({
         id: uuidv4(),
         alignmentSeconds: 0,
@@ -659,18 +697,25 @@ export const documentSlice = createSlice({
         clip.durationSeconds = maxEventTimeSeconds! - minEventTimeSeconds!;
       }
     },
-    updateInteractionLogOffsetAction: (state, action: PayloadAction<{ clipId: string; delta: number }>) => {
+    updateInteractionLogOffsetAction: (
+      state,
+      action: PayloadAction<{ clipId: string; delta: number }>,
+    ) => {
       if (!state) {
         return state;
       }
-      return updateInteractionLogOffset(state, action.payload.clipId, action.payload.delta);
+      return updateInteractionLogOffset(
+        state,
+        action.payload.clipId,
+        action.payload.delta,
+      );
     },
     splitClip: (state, action: PayloadAction<SplitClipPayload>) => {
       if (!state) {
         return state;
       }
       const composition = state.compositions.find(
-        (composition) => composition.id === action.payload.compositionId
+        (composition) => composition.id === action.payload.compositionId,
       );
 
       if (!composition) {
@@ -693,12 +738,10 @@ export const documentSlice = createSlice({
             id: clip.id,
           };
           const afterClip: Clip = {
-            durationSeconds:
-              durationSoFar +
+            durationSeconds: durationSoFar +
               clip.durationSeconds -
               action.payload.splitOffsetSeconds,
-            sourceOffsetSeconds:
-              clip.sourceOffsetSeconds +
+            sourceOffsetSeconds: clip.sourceOffsetSeconds +
               action.payload.splitOffsetSeconds -
               durationSoFar,
             sourceId: clip.sourceId,
@@ -713,7 +756,7 @@ export const documentSlice = createSlice({
       }
       composition.clips = newClips;
       const newCompositions = state.compositions.filter(
-        (c) => c.id !== composition.id
+        (c) => c.id !== composition.id,
       );
       newCompositions.push(composition);
       state.compositions = newCompositions;
@@ -723,7 +766,7 @@ export const documentSlice = createSlice({
         return state;
       }
       const composition = state.compositions.find(
-        (composition) => composition.id === action.payload.compositionId
+        (composition) => composition.id === action.payload.compositionId,
       );
       if (!composition) {
         console.warn("non-existent composition referenced in action payload");
@@ -740,7 +783,7 @@ export const documentSlice = createSlice({
       }
       composition.clips = newClips;
       const newCompositions = state.compositions.filter(
-        (c) => c.id !== composition.id
+        (c) => c.id !== composition.id,
       );
       newCompositions.push(composition);
       state.compositions = newCompositions;
@@ -750,7 +793,7 @@ export const documentSlice = createSlice({
         return state;
       }
       const composition = state.compositions.find(
-        (composition) => composition.id === action.payload.compositionId
+        (composition) => composition.id === action.payload.compositionId,
       );
       if (!composition) {
         console.warn("non-existent composition referenced in action payload");
@@ -761,7 +804,7 @@ export const documentSlice = createSlice({
         state,
         composition.id,
         action.payload.startTimeSeconds,
-        action.payload.endTimeSeconds
+        action.payload.endTimeSeconds,
       );
     },
     tightenSection: (state, action: PayloadAction<TightenSectionPayload>) => {
@@ -769,7 +812,7 @@ export const documentSlice = createSlice({
         return state;
       }
       const composition = state.compositions.find(
-        (composition) => composition.id === action.payload.compositionId
+        (composition) => composition.id === action.payload.compositionId,
       );
       if (!composition) {
         console.warn("non-existent composition referenced in action payload");
@@ -786,7 +829,7 @@ export const documentSlice = createSlice({
         }
 
         const seq = state.sequences.find(
-          (s: Sequence) => s.id === clip.sourceId
+          (s: Sequence) => s.id === clip.sourceId,
         );
         if (!seq) {
           continue;
@@ -796,7 +839,7 @@ export const documentSlice = createSlice({
         let userInteractionLogAlignment: number | null = null;
         for (const track of seq.tracks) {
           const trackFile: KaveFile | undefined = state.files.find(
-            (f: KaveFile) => f.id === track.fileId
+            (f: KaveFile) => f.id === track.fileId,
           );
           if (!trackFile) {
             continue;
@@ -824,7 +867,7 @@ export const documentSlice = createSlice({
           const result = getTightenedClips(
             clip,
             userInteractionLog!,
-            userInteractionLogAlignment!
+            userInteractionLogAlignment!,
           );
           newClips = newClips.concat(result.clips);
           nextStartTime = result.nextClipStartSeconds;
@@ -849,7 +892,7 @@ export const documentSlice = createSlice({
             userInteractionLog!,
             userInteractionLogAlignment!,
             startTimeSeconds,
-            endTimeSeconds
+            endTimeSeconds,
           );
           newClips = newClips.concat(result.clips);
           nextStartTime = result.nextClipStartSeconds;
@@ -858,27 +901,30 @@ export const documentSlice = createSlice({
 
       composition.clips = newClips;
       const newCompositions = state.compositions.filter(
-        (c) => c.id !== composition.id
+        (c) => c.id !== composition.id,
       );
       newCompositions.push(composition);
       state.compositions = newCompositions;
     },
-    smoothInteractions: (state, action: PayloadAction<TightenSectionPayload>) => {
+    smoothInteractions: (
+      state,
+      action: PayloadAction<TightenSectionPayload>,
+    ) => {
       if (!state) {
         return state;
       }
       const composition = state.compositions.find(
-        (composition) => composition.id === action.payload.compositionId
+        (composition) => composition.id === action.payload.compositionId,
       );
       if (!composition) {
         console.warn("non-existent composition referenced in action payload");
         return state;
       }
-      
+
       let nextStartTime = 0;
       for (const clip of composition.clips) {
         const clipEndTime = nextStartTime + clip.durationSeconds;
-        
+
         // before the selection
         if (clipEndTime < action.payload.startTimeSeconds) {
           nextStartTime = clipEndTime;
@@ -897,7 +943,7 @@ export const documentSlice = createSlice({
         }
 
         const seq = state.sequences.find(
-          (s: Sequence) => s.id === clip.sourceId
+          (s: Sequence) => s.id === clip.sourceId,
         );
 
         // this clip doesn't have an interaction log
@@ -909,7 +955,7 @@ export const documentSlice = createSlice({
         let interactionLogFile: InteractionLogFile | undefined;
         for (const track of seq.tracks) {
           const trackFile: KaveFile | undefined = state.files.find(
-            (f: KaveFile) => f.id === track.fileId
+            (f: KaveFile) => f.id === track.fileId,
           );
           if (!trackFile) {
             continue;
@@ -925,18 +971,36 @@ export const documentSlice = createSlice({
           continue;
         }
 
+        const selectionStartClipOffsetSeconds =
+          action.payload.startTimeSeconds - nextStartTime;
+        const selectionEndClipOffsetSeconds = action.payload.endTimeSeconds -
+          nextStartTime;
+        const selectionStartInteractionOffsetSeconds =
+          clipOffsetToInteractionLogOffset(
+            clip,
+            interactionLogTrack,
+            selectionStartClipOffsetSeconds,
+          );
+        const selectionEndInteractionOffsetSeconds =
+          clipOffsetToInteractionLogOffset(
+            clip,
+            interactionLogTrack,
+            selectionEndClipOffsetSeconds,
+          );
+        const sectionToSmooth = interactionLogFile.userInteractionLog?.log
+          .filter((event) => {
+            const eventTimeSeconds = event.time / 1000;
+            return eventTimeSeconds > selectionStartInteractionOffsetSeconds &&
+              eventTimeSeconds < selectionEndInteractionOffsetSeconds;
+          });
 
-        const selectionStartClipOffsetSeconds = action.payload.startTimeSeconds - nextStartTime;
-        const selectionEndClipOffsetSeconds = action.payload.endTimeSeconds - nextStartTime;
-        const selectionStartInteractionOffsetSeconds = clipOffsetToInteractionLogOffset(clip, interactionLogTrack, selectionStartClipOffsetSeconds);
-        const selectionEndInteractionOffsetSeconds = clipOffsetToInteractionLogOffset(clip, interactionLogTrack, selectionEndClipOffsetSeconds);
-        const sectionToSmooth = interactionLogFile.userInteractionLog?.log.filter((event) => {
-          const eventTimeSeconds = event.time / 1000;
-          return eventTimeSeconds > selectionStartInteractionOffsetSeconds && eventTimeSeconds < selectionEndInteractionOffsetSeconds;
-        });
+        const newInteractionLogFile = replaceInteractionLogRange(
+          interactionLogFile,
+          selectionStartInteractionOffsetSeconds,
+          selectionEndInteractionOffsetSeconds,
+          sectionToSmooth ? smoothWheelEvents(sectionToSmooth) : [],
+        );
 
-        const newInteractionLogFile = replaceInteractionLogRange(interactionLogFile, selectionStartInteractionOffsetSeconds, selectionEndInteractionOffsetSeconds, sectionToSmooth ? smoothWheelEvents(sectionToSmooth) : []);
-        
         state.files = state.files.map((file) => {
           if (file.id === interactionLogFile?.id) {
             return newInteractionLogFile;
@@ -948,7 +1012,7 @@ export const documentSlice = createSlice({
     },
     loadInteractionFile: (
       state,
-      action: PayloadAction<LoadInteractionFilePayload>
+      action: PayloadAction<LoadInteractionFilePayload>,
     ) => {
       if (!state) {
         return state;
