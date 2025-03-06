@@ -1,9 +1,9 @@
 import bodyParser from "body-parser";
-import { exec } from "node:child_process";
+import { exec } from "child_process";
 import cors from "cors";
 import express from "express";
 import fileUpload from "express-fileupload";
-import { writeFile } from "node:fs/promises";
+import { writeFile } from "fs/promises";
 import "isomorphic-fetch";
 import {
   RunInfo,
@@ -12,7 +12,7 @@ import {
   UserInteraction,
   WheelEventPayload,
 } from "kave-common";
-import { promisify } from "node:util";
+import { promisify } from "util";
 import { FALSE_CURSOR_CODE } from "./false-cursor";
 import puppeteer from "puppeteer-extra";
 import { Browser, Page } from "puppeteer";

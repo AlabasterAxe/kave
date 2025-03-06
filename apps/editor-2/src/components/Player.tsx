@@ -121,7 +121,7 @@ function Player() {
     if (canvasRef.current && context) {
       let videoContext = ctx;
       if (!videoContext) {
-        videoContext = new (VideoContext as any).VideoContext(
+        videoContext = new VideoContext(
           canvasRef.current,
           (err: any) =>
             console.error(
