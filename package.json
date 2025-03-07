@@ -5,7 +5,7 @@
   "main": "index.js",
   "scripts": {
     "test": "run-p test:*",
-    "dev:editor": "cd apps/editor-2 && pnpm run dev",
+    "dev:editor": "cd apps/editor && pnpm run dev",
     "dev:replayer": "cd apps/replayer && pnpm run dev",
     "dev:common": "cd lib/common && pnpm run watch",
     "test:common": "cd lib/common && pnpm run test",

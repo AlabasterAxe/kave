@@ -473,84 +473,84 @@ export async function run(
   page.close();
 }
 
-// const app = express();
+const app = express();
 
-// app.get("/ok", (_, res) => res.send("okso"));
+app.get("/ok", (_, res) => res.send("okso"));
 
-// app.use(bodyParser.json({ limit: "5mb" }));
+app.use(bodyParser.json({ limit: "5mb" }));
 
-// // this is needed to accept form post requests.
-// app.use(bodyParser.urlencoded({ extended: true }));
+// this is needed to accept form post requests.
+app.use(bodyParser.urlencoded({ extended: true }));
 
-// app.use(fileUpload());
-// app.use(cors());
+app.use(fileUpload());
+app.use(cors());
 
-// app.post("/run", (req, res) => {
-//   const runId = Math.random().toString(36).substring(7);
-//   run(runId, {
-//     ...req.body,
-//     render: req.body.render ?? false,
-//   });
-//   res.send({
-//     runId,
-//   });
-// });
+app.post("/run", (req, res) => {
+  const runId = Math.random().toString(36).substring(7);
+  run(runId, {
+    ...req.body,
+    render: req.body.render ?? false,
+  });
+  res.send({
+    runId,
+  });
+});
 
-// app.post("/cancel", (req, res) => {
-//   const job = renderJobs.get(req.body.runId);
+app.post("/cancel", (req, res) => {
+  const job = renderJobs.get(req.body.runId);
 
-//   if (job) {
-//     job.status = RunStatus.cancelled;
-//   }
+  if (job) {
+    job.status = RunStatus.cancelled;
+  }
 
-//   res.send(job);
-// });
+  res.send(job);
+});
 
-// app.post("/pause", (req, res) => {
-//   const job = renderJobs.get(req.body.runId);
+app.post("/pause", (req, res) => {
+  const job = renderJobs.get(req.body.runId);
 
-//   if (job) {
-//     job.status = RunStatus.paused;
-//   }
+  if (job) {
+    job.status = RunStatus.paused;
+  }
 
-//   res.send(job);
-// });
+  res.send(job);
+});
 
-// app.post("/play", (req, res) => {
-//   const job = renderJobs.get(req.body.runId);
+app.post("/play", (req, res) => {
+  const job = renderJobs.get(req.body.runId);
 
-//   if (job) {
-//     if (job.status === RunStatus.paused) {
-//       job.status = RunStatus.running;
-//     } else if (
-//       job.status === RunStatus.cancelled ||
-//       job.status === RunStatus.finished
-//     ) {
-//       res.sendStatus(400);
-//       return;
-//     }
-//   }
+  if (job) {
+    if (job.status === RunStatus.paused) {
+      job.status = RunStatus.running;
+    } else if (
+      job.status === RunStatus.cancelled ||
+      job.status === RunStatus.finished
+    ) {
+      res.sendStatus(400);
+      return;
+    }
+  }
 
-//   res.send(job);
-// });
+  res.send(job);
+});
 
-// app.get("/status", (req, res) => {
-//   const runId = (req.query as any)["runId"];
+app.get("/status", (req, res) => {
+  const runId = (req.query as any)["runId"];
 
-//   if (!runId) {
-//     res.sendStatus(400);
-//     return;
-//   }
-//   const job = renderJobs.get(runId);
+  if (!runId) {
+    res.sendStatus(400);
+    return;
+  }
+  const job = renderJobs.get(runId);
 
-//   if (!job) {
-//     res.sendStatus(404);
-//     return;
-//   }
+  if (!job) {
+    res.sendStatus(404);
+    return;
+  }
 
-//   res.send(job);
-// });
+  res.send(job);
+});
 
-// app.listen(port, () => {
-//   console.log(`Listening on port ${port}`);
-// });
+app.listen(port, () => {
+  console.log(`Listening on port ${port}`);
+});
