@@ -14,12 +14,17 @@ import {
 } from "kave-common";
 import { thunk, ThunkAction, ThunkDispatch } from "redux-thunk";
 import undoable, { ActionCreators, StateWithHistory } from "redux-undo";
-import { upsertLocalStoreProject } from "../persistence/local-storage-utils";
+import {
+  readLocalStoreProjects,
+  upsertLocalStoreProject,
+} from "../persistence/local-storage-utils";
 import { playbackSlice, PlaybackState } from "./playback";
 import {
+  blankProject,
   deleteSection,
   documentSlice,
   projectsSlice,
+  replaceDocument,
   routerSlice,
   RouterState,
   setActiveProjectId,
@@ -191,12 +196,16 @@ const sideEffectMiddleware =
 
     switch (action.type) {
       case setActiveProjectId.type:
-        if ((action as any).payload.initialize) {
-          upsertLocalStoreProject({
-            id: (action as any).payload.projectId,
-            name: "Untitled",
-          });
+        const projs = readLocalStoreProjects();
+        let project = projs.find((p) =>
+          p.id === (action as any).payload
+        ) as KaveDoc;
+
+        if (!project) {
+          project = blankProject((action as any).payload.projectId);
+          upsertLocalStoreProject(project);
         }
+        store.dispatch(replaceDocument({ project }));
         break;
       default:
         break;

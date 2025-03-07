@@ -417,6 +417,7 @@ export async function run(
   await page.evaluate(
     `window.localStorage.removeItem('logged_in_user');
      window.localStorage.setItem('students_displayed_columns_v2', '["exam","exam_level","questions_answered","questions_correct","percent_correct", "average_response_time", "paid_account", "expiration_status"]');
+     window.localStorage.setItem('userStats', '{ "startDate": "2025-01-01T05:00:00.000Z", "endDate": "2025-03-30T03:59:59.999Z" }');
     `,
   );
 

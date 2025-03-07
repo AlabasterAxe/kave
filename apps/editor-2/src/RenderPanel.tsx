@@ -102,13 +102,12 @@ export function RenderPanel() {
 
   const render = async () => {
     if (activeCompositionId && project) {
-      const {log, devicePixelRatio, resolution} = getInteractionLogEventsForComposition(
-        project,
-        activeCompositionId
-      );
+      const { log, devicePixelRatio, resolution } =
+        getInteractionLogEventsForComposition(project, activeCompositionId);
       const { runId } = await run({
         events: log,
-        render: true,
+        renderFrames: true,
+        headless: true,
         target,
         authTarget,
         username,
@@ -148,31 +147,26 @@ export function RenderPanel() {
 
   const cancel = async () => {
     if (runId && runStatus) {
-      const resp = await fetch(
-        "http://localhost:20001/cancel",
-        {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify({ runId }),
-        }
-      );
+      const resp = await fetch("http://localhost:20001/cancel", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ runId }),
+      });
       const runInfo = await resp.json();
       setRunStatus(runInfo);
     }
-    
   };
 
   const preview = async () => {
     if (activeCompositionId && project) {
-      const {log, devicePixelRatio, resolution} = getInteractionLogEventsForComposition(
-        project,
-        activeCompositionId
-      )
+      const { log, devicePixelRatio, resolution } =
+        getInteractionLogEventsForComposition(project, activeCompositionId);
       const { runId } = await run({
         events: log,
-        render: false,
+        renderFrames: false,
+        headless: false,
         target,
         authTarget,
         username,
@@ -188,135 +182,150 @@ export function RenderPanel() {
   return (
     <div className="h-96 w-96 bg-white border-2 border-black flex flex-col">
       <table className="w-full">
-        <tr>
-          <td className="font-bold">Target:</td>
-          <td>
-            <input
-              className="border-2 border-black"
-              name="target"
-              value={target}
-              onInput={(e) => {
-                setTarget((e.target as HTMLInputElement).value);
-              }}
-              onChange={(e) => {
-                dispatch(
-                  updateRenderSettings({
-                    target: (e.target as HTMLInputElement).value,
-                  })
-                );
-              }}
-            ></input>
-          </td>
-        </tr>
-        <tr>
-          <td className="font-bold">Auth Endpoint:</td>
-          <td>
-            <input
-              className="border-2 border-black"
-              name="authTarget"
-              value={authTarget}
-              onInput={(e) => {
-                setAuthTarget((e.target as HTMLInputElement).value);
-              }}
-              onChange={(e) => {
-                dispatch(
-                  updateRenderSettings({
-                    authTarget: (e.target as HTMLInputElement).value,
-                  })
-                );
-              }}
-            ></input>
-          </td>
-        </tr>
-        <tr>
-          <td className="font-bold">Username:</td>
-          <td>
-            <input
-              className="border-2 border-black"
-              value={username}
-              onInput={(e) => {
-                setUsername((e.target as HTMLInputElement).value);
-              }}
-              onChange={(e) => {
-                dispatch(
-                  updateRenderSettings({
-                    username: (e.target as HTMLInputElement).value,
-                  })
-                );
-              }}
-            ></input>
-          </td>
-        </tr>
-        <tr>
-          <td className="font-bold">Password:</td>
-          <td>
-            <input
-              className="border-2 border-black"
-              type="password"
-              value={password}
-              onInput={(e) => {
-                setPassword((e.target as HTMLInputElement).value);
-              }}
-              onChange={(e) => {
-                dispatch(
-                  updateRenderSettings({
-                    password: (e.target as HTMLInputElement).value,
-                  })
-                );
-              }}
-            />
-          </td>
-        </tr>
-        <tr>
-          <td className="font-bold" title="This is the amount to magnify the recorded video.">Original Zoom:</td>
-          <td>
-            <select
-              className="border-2 border-black"
-              value={originalZoom}
-              onInput={(e) => {
-                setOriginalZoom(Number((e.target as HTMLSelectElement).value));
-              }}
-              onChange={(e) => {
-                dispatch(
-                  updateRenderSettings({
-                    originalZoom: Number(
-                      (e.target as HTMLSelectElement).value
-                    ),
-                  })
-                );
-              }}
+        <tbody>
+          <tr>
+            <td className="font-bold">Target:</td>
+            <td>
+              <input
+                className="border-2 border-black"
+                name="target"
+                value={target}
+                onInput={(e) => {
+                  setTarget((e.target as HTMLInputElement).value);
+                }}
+                onChange={(e) => {
+                  dispatch(
+                    updateRenderSettings({
+                      target: (e.target as HTMLInputElement).value,
+                    })
+                  );
+                }}
+              ></input>
+            </td>
+          </tr>
+          <tr>
+            <td className="font-bold">Auth Endpoint:</td>
+            <td>
+              <input
+                className="border-2 border-black"
+                name="authTarget"
+                value={authTarget}
+                onInput={(e) => {
+                  setAuthTarget((e.target as HTMLInputElement).value);
+                }}
+                onChange={(e) => {
+                  dispatch(
+                    updateRenderSettings({
+                      authTarget: (e.target as HTMLInputElement).value,
+                    })
+                  );
+                }}
+              ></input>
+            </td>
+          </tr>
+          <tr>
+            <td className="font-bold">Username:</td>
+            <td>
+              <input
+                className="border-2 border-black"
+                value={username}
+                onInput={(e) => {
+                  setUsername((e.target as HTMLInputElement).value);
+                }}
+                onChange={(e) => {
+                  dispatch(
+                    updateRenderSettings({
+                      username: (e.target as HTMLInputElement).value,
+                    })
+                  );
+                }}
+              ></input>
+            </td>
+          </tr>
+          <tr>
+            <td className="font-bold">Password:</td>
+            <td>
+              <input
+                className="border-2 border-black"
+                type="password"
+                value={password}
+                onInput={(e) => {
+                  setPassword((e.target as HTMLInputElement).value);
+                }}
+                onChange={(e) => {
+                  dispatch(
+                    updateRenderSettings({
+                      password: (e.target as HTMLInputElement).value,
+                    })
+                  );
+                }}
+              />
+            </td>
+          </tr>
+          <tr>
+            <td
+              className="font-bold"
+              title="This is the amount to magnify the recorded video."
             >
-              <option value="1">1x</option>
-              <option value="2">2x</option>
-            </select>
-          </td>
-        </tr>
-        <tr>
-          <td className="font-bold" title="This is the amount to magnify the recorded video.">Magnification:</td>
-          <td>
-            <select
-              className="border-2 border-black"
-              value={magnification}
-              onInput={(e) => {
-                setMagnification(Number((e.target as HTMLSelectElement).value));
-              }}
-              onChange={(e) => {
-                dispatch(
-                  updateRenderSettings({
-                    magnification: Number(
-                      (e.target as HTMLSelectElement).value
-                    ),
-                  })
-                );
-              }}
+              Original Zoom:
+            </td>
+            <td>
+              <select
+                className="border-2 border-black"
+                value={originalZoom}
+                onInput={(e) => {
+                  setOriginalZoom(
+                    Number((e.target as HTMLSelectElement).value)
+                  );
+                }}
+                onChange={(e) => {
+                  dispatch(
+                    updateRenderSettings({
+                      originalZoom: Number(
+                        (e.target as HTMLSelectElement).value
+                      ),
+                    })
+                  );
+                }}
+              >
+                <option value="1">1x</option>
+                <option value="2">2x</option>
+              </select>
+            </td>
+          </tr>
+          <tr>
+            <td
+              className="font-bold"
+              title="This is the amount to magnify the recorded video."
             >
-              <option value="1">1x</option>
-              <option value="2">2x</option>
-              <option value="2.5">2.5x</option>
-            </select>
-          </td>
-        </tr>
-        
+              Magnification:
+            </td>
+            <td>
+              <select
+                className="border-2 border-black"
+                value={magnification}
+                onInput={(e) => {
+                  setMagnification(
+                    Number((e.target as HTMLSelectElement).value)
+                  );
+                }}
+                onChange={(e) => {
+                  dispatch(
+                    updateRenderSettings({
+                      magnification: Number(
+                        (e.target as HTMLSelectElement).value
+                      ),
+                    })
+                  );
+                }}
+              >
+                <option value="1">1x</option>
+                <option value="2">2x</option>
+                <option value="2.5">2.5x</option>
+              </select>
+            </td>
+          </tr>
+        </tbody>
       </table>
 
       <div className="flex flex-row">

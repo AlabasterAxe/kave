@@ -131,7 +131,7 @@ export function blankProject(projectId: string): KaveDoc {
       magnification: 1,
       originalZoom: 1,
     },
-  };
+  } satisfies KaveDoc;
 }
 
 function newProject(): KaveDoc {
