@@ -1,0 +1,25 @@
+{
+    "name": "Event Logger",
+    "version": "1.1",
+    "description": "Log Some Events to JSON",
+    "permissions": [
+        "activeTab", 
+        "scripting",
+        "tabs",
+        "storage"
+    ],
+    "background": {
+        "service_worker": "background.js"
+    },
+    "action": {
+        "default_popup": "ui.html"
+    },
+    "icons": {
+        "128": "icon.png"
+    },
+    "host_permissions": [
+        "http://localhost/*",
+        "https://weekly.mathchops.com/*"
+    ],
+    "manifest_version": 3
+}

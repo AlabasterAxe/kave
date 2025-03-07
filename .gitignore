@@ -7,3 +7,11 @@ yarn.lock
 Debug/
 
 *.vcxproj.user
+
+dist/
+
+media/
+
+.DS_Store
+
+frames/
